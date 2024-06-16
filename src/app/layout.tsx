@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./_styles";
+import Header from "../components/Header/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -9,14 +10,21 @@ export const metadata: Metadata = {
   description: "Capture and share your houseplant haven",
 };
 
-export default function RootLayout({
+const RootLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>) => {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <main className="h-screen flex flex-col justify-center items-center">
+          <Header />
+          {children}
+        </main>
+      </body>
     </html>
   );
-}
+};
+
+export default RootLayout;

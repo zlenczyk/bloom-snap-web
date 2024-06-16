@@ -1,7 +1,5 @@
-export default function Home() {
-  return (
-    <main>
-      <h1>Hello from Bloom Snap!</h1>
-    </main>
-  );
-}
+const Home = () => {
+  return <h1 className="text-xxl">Home</h1>;
+};
+
+export default Home;
