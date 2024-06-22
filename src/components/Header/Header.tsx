@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { EnterIcon } from "@radix-ui/react-icons";
+import { LogIn } from "lucide-react";
 
 const Header = () => {
   return (
@@ -12,7 +12,7 @@ const Header = () => {
         </Link>
         <Button asChild>
           <Link href="/sign-in">
-            <EnterIcon className="mr-2 h-4 w-4" />
+            <LogIn className="mr-2 h-4 w-4" />
             Sign in
           </Link>
         </Button>
