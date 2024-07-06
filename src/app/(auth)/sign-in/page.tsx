@@ -1,7 +1,8 @@
 import React from "react";
+import SignInForm from "../SignInForm";
 
-const SignInForm = () => {
-  return <div>Sign In</div>;
+const SignIn = () => {
+  return <SignInForm />;
 };
 
-export default SignInForm;
+export default SignIn;
