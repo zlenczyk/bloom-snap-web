@@ -18,9 +18,12 @@ import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 
 const FormSchema = z.object({
-  email: z.string().min(1, {
-    message: "Email is required",
-  }).email('Invalid email'),
+  email: z
+    .string()
+    .min(1, {
+      message: "Email is required",
+    })
+    .email("Invalid email"),
   password: z
     .string()
     .min(1, "Password is required")
@@ -49,7 +52,7 @@ const SignInForm = () => {
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="SucculentSage99"
+                      placeholder="your.email@example.com"
                       type="email"
                       {...field}
                     />
@@ -65,11 +68,7 @@ const SignInForm = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="cactus.caretaker@example.com"
-                      type="password"
-                      {...field}
-                    />
+                    <Input type="password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
