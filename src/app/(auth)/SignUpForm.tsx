@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
+import GoogleSignInButton from "./GoogleSignInButton";
 
 const FormSchema = z
   .object({
@@ -112,7 +113,7 @@ const SignUpForm = () => {
               )}
             />
           </div>
-          <Button className="w-full my-8" type="submit">
+          <Button className="w-full mb-2 mt-4" type="submit">
             Submit
           </Button>
         </form>
@@ -121,6 +122,7 @@ const SignUpForm = () => {
           or
           <Separator className="my-4 ml-4 bg-slate-400" decorative={true} />
         </div>
+        <GoogleSignInButton>Sign up with Google</GoogleSignInButton>
         <p className="text-sm text-gray-500 mt-2 text-center">
           Already a member?{" "}
           <Link
