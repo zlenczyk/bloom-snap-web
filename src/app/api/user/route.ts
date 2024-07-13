@@ -1,4 +1,5 @@
 import db from "@/lib/db";
+import { hash } from "bcrypt";
 
 export async function POST(req: Request) {
   try {
@@ -29,11 +30,13 @@ export async function POST(req: Request) {
       );
     }
 
+    const hashedPassword = await hash(password, 10);
+
     const newUser = await db.user.create({
       data: {
         username,
         email,
-        password,
+        password: hashedPassword,
       },
     });
 
