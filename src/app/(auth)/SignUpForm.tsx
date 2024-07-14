@@ -17,6 +17,7 @@ import { z } from "zod";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import GoogleSignInButton from "./GoogleSignInButton";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z
   .object({
@@ -47,8 +48,32 @@ const SignUpForm = () => {
     resolver: zodResolver(FormSchema),
   });
 
-  const onSubmit = (values: z.infer<typeof FormSchema>) => {
-    console.log(values);
+  const router = useRouter();
+
+  const onSubmit = async (values: z.infer<typeof FormSchema>) => {
+    try {
+      const response = await fetch("/api/user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: values.username,
+          email: values.email,
+          password: values.password,
+        }),
+      });
+
+      if (response.ok) {
+        router.push("/sign-in");
+      } else {
+        console.error(
+          `Registration failed, error: ${response.status} - ${response.statusText}`
+        );
+      }
+    } catch (error) {
+      console.error("An unexpected error occurred:", error);
+    }
   };
 
   return (
