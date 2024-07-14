@@ -40,8 +40,10 @@ export async function POST(req: Request) {
       },
     });
 
+    const { password: newUserPassword, ...newUserData } = newUser;
+
     return Response.json(
-      { user: newUser, message: "User created successfully" },
+      { user: newUserData, message: "User created successfully" },
       { status: 201 }
     );
   } catch (error) {
