@@ -1,10 +1,29 @@
 import db from "@/lib/db";
 import { hash } from "bcrypt";
+import { z } from "zod";
+
+const userSchema = z.object({
+  username: z
+    .string()
+    .min(1, "Username is required")
+    .min(3, "Username must have at least 3 characters")
+    .max(50, { message: "Username too long. Use up to 50 characters." }),
+  email: z
+    .string()
+    .min(1, {
+      message: "Email is required",
+    })
+    .email("Invalid email"),
+  password: z
+    .string()
+    .min(1, "Password confirmation is required")
+    .min(8, "Password must have at least 8 characters"),
+});
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { email, username, password } = body;
+    const { email, username, password } = userSchema.parse(body);
 
     const existingEmail = await db.user.findUnique({ where: { email: email } });
     if (existingEmail) {
