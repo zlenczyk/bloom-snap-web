@@ -1,0 +1,64 @@
+import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import db from "./lib/db";
+import { compare } from "bcrypt";
+import { z } from "zod";
+
+const credentialsSchema = z.object({
+  email: z
+    .string()
+    .min(1, {
+      message: "Email is required",
+    })
+    .email("Invalid email"),
+  password: z
+    .string()
+    .min(1, "Password is required")
+    .min(8, "Password must have at least 8 characters"),
+});
+
+export const { handlers, signIn, signOut, auth } = NextAuth({
+  adapter: PrismaAdapter(db),
+  pages: {
+    signIn: "/sign-in",
+  },
+  providers: [
+    Credentials({
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      authorize: async (credentials) => {
+        //TODO: check parseAsync?
+        const parsedCredentials = credentialsSchema.safeParse(credentials);
+
+        if (!parsedCredentials.success) {
+          return null;
+        }
+
+        const { email, password } = parsedCredentials.data;
+
+        const existingUser = await db.user.findUnique({
+          where: { email: email },
+        });
+
+        if (!existingUser) {
+          return null;
+        }
+
+        const passwordMatch = await compare(password, existingUser.password);
+
+        if (!passwordMatch) {
+          return null;
+        }
+
+        return {
+          id: existingUser.id,
+          email: existingUser.email,
+          password: existingUser.password,
+        };
+      },
+    }),
+  ],
+});
