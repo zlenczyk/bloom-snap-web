@@ -3,7 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import db from "./lib/db";
 import { compare } from "bcrypt";
-import { z } from "zod";
+import * as z from "zod";
 
 const credentialsSchema = z.object({
   email: z
@@ -50,6 +50,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const passwordMatch = await compare(password, existingUser.password);
 
         if (!passwordMatch) {
+          console.log('Invalid credentials');
           return null;
         }
 
