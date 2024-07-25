@@ -70,7 +70,6 @@ export async function POST(req: Request) {
 
     return Response.json(
       {
-        user: null,
         message: "An error occurred while creating the user",
       },
       { status: 500 }
