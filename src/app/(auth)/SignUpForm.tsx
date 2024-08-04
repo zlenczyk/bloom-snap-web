@@ -19,7 +19,7 @@ import GoogleSignInButton from "./GoogleSignInButton";
 // import { useRouter } from "next/navigation";
 import signUp, { type SignUpFormState } from "./sign-up/actions";
 import SignUpFormSchema from "./sign-up/schema";
-import { cn } from "@/lib/utils";
+import ErrorMessage from "./ErrorMessage";
 
 const initialState: SignUpFormState = {
   isError: false,
@@ -74,18 +74,14 @@ const SignUpForm = () => {
   };
 
   const FormInputErrorMessage = ({ inputName }: ErrorMessageTypeProps) => {
-    const message =
+    const messages =
       state.isError && state.inputErrors && state.inputErrors[inputName];
 
-    if (!message) {
+    if (!messages) {
       return null;
     }
 
-    return (
-      <p className={cn("text-[0.8rem] font-medium text-destructive pt-1")}>
-        {message}
-      </p>
-    );
+    return <ErrorMessage messages={messages} />;
   };
 
   const FormSubmitErrorMessage = () => {
@@ -95,11 +91,7 @@ const SignUpForm = () => {
       return null;
     }
 
-    return (
-      <p className={cn("text-[0.8rem] font-medium text-destructive pt-2")}>
-        {message}
-      </p>
-    );
+    return <ErrorMessage messages={[message]} />;
   };
 
   return (
