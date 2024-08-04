@@ -69,6 +69,7 @@ const SignInForm = () => {
                     <Input
                       placeholder="your.email@example.com"
                       type="email"
+                      autoComplete="on"
                       {...field}
                     />
                   </FormControl>
@@ -83,7 +84,7 @@ const SignInForm = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input type="password" {...field} autoComplete="on" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

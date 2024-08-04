@@ -6,91 +6,122 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useActionState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import GoogleSignInButton from "./GoogleSignInButton";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
+import signUp, { type SignUpFormState } from "./sign-up/actions";
+import SignUpFormSchema from "./sign-up/schema";
+import { cn } from "@/lib/utils";
 
-const FormSchema = z
-  .object({
-    username: z
-      .string()
-      .min(1, "Username is required")
-      .min(3, "Username must have at least 3 characters")
-      .max(50, { message: "Username too long. Use up to 50 characters." }),
-    email: z
-      .string()
-      .min(1, {
-        message: "Email is required",
-      })
-      .email("Invalid email"),
-    password: z
-      .string()
-      .min(1, "Password confirmation is required")
-      .min(8, "Password must have at least 8 characters"),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    path: ["confirmPassword"],
-    message: "Password do not match",
-  });
+const initialState: SignUpFormState = {
+  isError: false,
+};
 
 const SignUpForm = () => {
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const [state, formAction, isPending] = useActionState<
+    SignUpFormState,
+    FormData
+  >(signUp, initialState);
+
+  const form = useForm<z.infer<typeof SignUpFormSchema>>({
+    resolver: zodResolver(SignUpFormSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
 
-  const router = useRouter();
+  // const router = useRouter();
 
-  const onSubmit = async (values: z.infer<typeof FormSchema>) => {
-    try {
-      const response = await fetch("/api/user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: values.username,
-          email: values.email,
-          password: values.password,
-        }),
-      });
+  // const onSubmit = async (values: z.infer<typeof SignUpFormSchema>) => {
+  //   try {
+  //     const response = await fetch("/api/user", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         username: values.username,
+  //         email: values.email,
+  //         password: values.password,
+  //       }),
+  //     });
 
-      if (response.ok) {
-        router.push("/sign-in");
-      } else {
-        console.error(
-          `Registration failed, error: ${response.status} - ${response.statusText}`
-        );
-      }
-    } catch (error) {
-      console.error("An unexpected error occurred:", error);
+  //     if (response.ok) {
+  //       router.push("/sign-in");
+  //     } else {
+  //       console.error(
+  //         `Registration failed, error: ${response.status} - ${response.statusText}`
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error("An unexpected error occurred:", error);
+  //   }
+  // };
+
+  type ErrorMessageTypeProps = {
+    inputName: "username" | "email" | "password" | "confirmPassword";
+  };
+
+  const FormInputErrorMessage = ({ inputName }: ErrorMessageTypeProps) => {
+    const message =
+      state.isError && state.inputErrors && state.inputErrors[inputName];
+
+    if (!message) {
+      return null;
     }
+
+    return (
+      <p className={cn("text-[0.8rem] font-medium text-destructive pt-1")}>
+        {message}
+      </p>
+    );
+  };
+
+  const FormSubmitErrorMessage = () => {
+    const message = state.isError && !state.inputErrors && state.message;
+
+    if (!message) {
+      return null;
+    }
+
+    return (
+      <p className={cn("text-[0.8rem] font-medium text-destructive pt-2")}>
+        {message}
+      </p>
+    );
   };
 
   return (
     <Form {...form}>
       <div className="bg-slate-200 p-10 rounded-lg max-w-80 w-full">
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        {/* <form onSubmit={form.handleSubmit(onSubmit)}> */}
+        <form action={formAction}>
           <div className="space-y-2">
             <FormField
               control={form.control}
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="SucculentSage99" {...field} />
+                    <Input
+                      placeholder="SucculentSage99"
+                      autoComplete="on"
+                      {...field}
+                    />
                   </FormControl>
-                  <FormMessage />
+                  <FormInputErrorMessage inputName="username" />
                 </FormItem>
               )}
             />
@@ -104,10 +135,11 @@ const SignUpForm = () => {
                     <Input
                       placeholder="cactus.caretaker@example.com"
                       type="email"
+                      autoComplete="on"
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormInputErrorMessage inputName="email" />
                 </FormItem>
               )}
             />
@@ -118,9 +150,9 @@ const SignUpForm = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input type="password" {...field} autoComplete="off" />
                   </FormControl>
-                  <FormMessage />
+                  <FormInputErrorMessage inputName="password" />
                 </FormItem>
               )}
             />
@@ -131,15 +163,16 @@ const SignUpForm = () => {
                 <FormItem>
                   <FormLabel>Confirm password</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input type="password" {...field} autoComplete="off" />
                   </FormControl>
-                  <FormMessage />
+                  <FormInputErrorMessage inputName="confirmPassword" />
                 </FormItem>
               )}
             />
           </div>
+          <FormSubmitErrorMessage />
           <Button className="w-full mb-2 mt-4" type="submit">
-            Submit
+            {isPending ? "Submitting" : "Sign up"}
           </Button>
         </form>
         <div className="flex items-center">
