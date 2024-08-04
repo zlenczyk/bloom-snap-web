@@ -29,6 +29,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
+      //TODO: consider augmenting the User Interface
+      // https://authjs.dev/getting-started/typescript#module-augmentation
       authorize: async (credentials) => {
         //TODO: check parseAsync?
         const parsedCredentials = credentialsSchema.safeParse(credentials);
@@ -50,7 +52,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const passwordMatch = await compare(password, existingUser.password);
 
         if (!passwordMatch) {
-          console.log('Invalid credentials');
+          console.log("Invalid credentials");
           return null;
         }
 
