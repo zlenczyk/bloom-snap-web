@@ -2,7 +2,7 @@
 
 import SignUpFormSchema from "./schema";
 import db from "@/lib/db";
-import { hash } from "bcrypt";
+import { hash } from "bcryptjs";
 import { redirect } from "next/navigation";
 
 type InputErrors = {
