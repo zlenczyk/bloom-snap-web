@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import db from "./lib/db";
-import { compare } from "bcrypt";
+import { compare } from "bcryptjs";
 import * as z from "zod";
 
 const credentialsSchema = z.object({
