@@ -24,3 +24,4 @@ Technologies links:
 
 Issues:
 1. change use of bcrypt to bcryptjs -> https://github.com/kelektiv/node.bcrypt.js/issues/979
+2. prisma with edge environment (fix: installation neon adapter) -> https://github.com/prisma/prisma/issues/20560 
