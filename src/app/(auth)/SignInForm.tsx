@@ -20,7 +20,7 @@ import GoogleSignInButton from "./GoogleSignInButton";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { authenticate } from "./sign-in/actions";
-import { CircleAlert } from 'lucide-react';
+import { CircleAlert } from "lucide-react";
 
 const FormSchema = z.object({
   email: z
@@ -38,6 +38,10 @@ const FormSchema = z.object({
 const SignInForm = () => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
   const [errorMessage, formAction, isPending] = useActionState(
