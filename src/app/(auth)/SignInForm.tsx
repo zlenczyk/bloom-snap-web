@@ -19,7 +19,7 @@ import Link from "next/link";
 import GoogleSignInButton from "./GoogleSignInButton";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { authenticate } from "./sign-in/actions";
+import { authenticateCredentials } from "./sign-in/actions";
 import { CircleAlert } from "lucide-react";
 
 const FormSchema = z.object({
@@ -45,7 +45,7 @@ const SignInForm = () => {
   });
 
   const [errorMessage, formAction, isPending] = useActionState(
-    authenticate,
+    authenticateCredentials,
     undefined
   );
 
