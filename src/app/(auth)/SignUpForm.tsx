@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -8,18 +9,16 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useActionState } from "react";
+import Link from "next/link";
+import { useActionState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Separator } from "@/components/ui/separator";
-import Link from "next/link";
+import ErrorMessage from "./ErrorMessage";
 import GoogleSignInButton from "./GoogleSignInButton";
-// import { useRouter } from "next/navigation";
 import signUp, { type SignUpFormState } from "./sign-up/actions";
 import SignUpFormSchema from "./sign-up/schema";
-import ErrorMessage from "./ErrorMessage";
 
 const initialState: SignUpFormState = {
   isError: false,
@@ -40,34 +39,6 @@ const SignUpForm = () => {
       confirmPassword: "",
     },
   });
-
-  // const router = useRouter();
-
-  // const onSubmit = async (values: z.infer<typeof SignUpFormSchema>) => {
-  //   try {
-  //     const response = await fetch("/api/user", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         username: values.username,
-  //         email: values.email,
-  //         password: values.password,
-  //       }),
-  //     });
-
-  //     if (response.ok) {
-  //       router.push("/sign-in");
-  //     } else {
-  //       console.error(
-  //         `Registration failed, error: ${response.status} - ${response.statusText}`
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.error("An unexpected error occurred:", error);
-  //   }
-  // };
 
   type ErrorMessageTypeProps = {
     inputName: "username" | "email" | "password" | "confirmPassword";
@@ -97,7 +68,6 @@ const SignUpForm = () => {
   return (
     <Form {...form}>
       <div className="bg-slate-200 p-10 rounded-lg max-w-80 w-full">
-        {/* <form onSubmit={form.handleSubmit(onSubmit)}> */}
         <form action={formAction}>
           <div className="space-y-2">
             <FormField
