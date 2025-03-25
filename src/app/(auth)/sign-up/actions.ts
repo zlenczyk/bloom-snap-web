@@ -43,7 +43,7 @@ const signUp = async (state: SignUpFormState, formData: FormData) => {
   const { username, email, password } = validationResult.data;
 
   const existingUsername = await db.user.findUnique({
-    where: { name: username },
+    where: { username: username },
   });
 
   if (existingUsername) {
@@ -69,7 +69,7 @@ const signUp = async (state: SignUpFormState, formData: FormData) => {
   try {
     await db.user.create({
       data: {
-        name: username,
+        username,
         email,
         password: hashedPassword,
       },
