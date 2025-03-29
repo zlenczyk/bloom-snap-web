@@ -26,6 +26,8 @@ Issues:
 1. change use of bcrypt to bcryptjs -> https://github.com/kelektiv/node.bcrypt.js/issues/979
 2. prisma with edge environment (fix: installation neon adapter) -> https://github.com/prisma/prisma/issues/20560
 3. shadcn components not always support newest versions of libraries they use: https://github.com/shadcn-ui/ui/issues/4366
+4. design: when user is asking for "yes" or "no", but he has option to not answer at all, what is the best design (select vs radio discussion)
+5. database: difference between null and "" in the database.  
 
 Bigger dependencies changes during working on app:
 1. Tailwind 3 -> 4
