@@ -247,19 +247,16 @@ const AddPlantFormSchema = z.object({
   species: z
     .string()
     .max(100, { message: "Species too long. Use up to 100 characters." })
-    .or(z.literal(""))
     .optional(),
 
   genus: z
     .string()
     .max(100, { message: "Genus too long. Use up to 100 characters." })
-    .or(z.literal(""))
     .optional(),
 
   nickname: z
     .string()
     .max(100, { message: "Nickname too long. Use up to 100 characters." })
-    .or(z.literal(""))
     .optional(),
 
   description: z
@@ -267,13 +264,11 @@ const AddPlantFormSchema = z.object({
     .max(250, {
       message: "Custom description too long. Use up to 250 characters.",
     })
-    .or(z.literal(""))
     .optional(),
 
   source: z
     .string()
     .max(100, { message: "Source too long. Use up to 100 characters." })
-    .or(z.literal(""))
     .optional(),
 
   ownedSince: z.coerce
@@ -291,7 +286,6 @@ const AddPlantFormSchema = z.object({
   roomLocation: z
     .string()
     .max(50, { message: "Room name too long. Use up to 50 characters." })
-    .or(z.literal(""))
     .optional(),
 
   isPetSafe: z.enum(["true", "false", "null"]),
