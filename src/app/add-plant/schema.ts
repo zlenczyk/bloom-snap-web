@@ -242,42 +242,28 @@ const fileSchema = z.object({
 const AddPlantFormSchema = z.object({
   commonName: z
     .string()
-    .min(2, { message: "Common name must have at least 2 characters." })
     .max(100, { message: "Common name too long. Use up to 100 characters." }),
 
   species: z
     .string()
-    .min(2, {
-      message: "Optional. If set, species must have at least 2 characters.",
-    })
     .max(100, { message: "Species too long. Use up to 100 characters." })
     .or(z.literal(""))
     .optional(),
 
   genus: z
     .string()
-    .min(2, {
-      message: "Optional. If set, genus must have at least 2 characters.",
-    })
     .max(100, { message: "Genus too long. Use up to 100 characters." })
     .or(z.literal(""))
     .optional(),
 
   nickname: z
     .string()
-    .min(2, {
-      message: "Optional. If set, nickname must have at least 2 characters.",
-    })
     .max(100, { message: "Nickname too long. Use up to 100 characters." })
     .or(z.literal(""))
     .optional(),
 
   description: z
     .string()
-    .min(2, {
-      message:
-        "Optional. If set, custom description must have at least 2 characters.",
-    })
     .max(250, {
       message: "Custom description too long. Use up to 250 characters.",
     })
@@ -286,9 +272,6 @@ const AddPlantFormSchema = z.object({
 
   source: z
     .string()
-    .min(2, {
-      message: "Optional. If set, source must have at least 2 characters.",
-    })
     .max(100, { message: "Source too long. Use up to 100 characters." })
     .or(z.literal(""))
     .optional(),
@@ -307,9 +290,6 @@ const AddPlantFormSchema = z.object({
 
   roomLocation: z
     .string()
-    .min(2, {
-      message: "Optional. If set, room name must have at least 2 characters.",
-    })
     .max(50, { message: "Room name too long. Use up to 50 characters." })
     .or(z.literal(""))
     .optional(),
