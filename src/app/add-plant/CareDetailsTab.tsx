@@ -111,16 +111,29 @@ const CareDetailsTab = ({ form, state }: CareDetailsTabProps) => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="null">Do not specify</SelectItem>
-                  <SelectItem value="north">North</SelectItem>
-                  <SelectItem value="south">South</SelectItem>
-                  <SelectItem value="east">East</SelectItem>
-                  <SelectItem value="west">West</SelectItem>
-                  <SelectItem value="northeast">Northeast</SelectItem>
-                  <SelectItem value="northwest">Northwest</SelectItem>
-                  <SelectItem value="southeast">Southeast</SelectItem>
-                  <SelectItem value="southwest">Southwest</SelectItem>
-                  <SelectItem value="artificial">
-                    Artificial light only
+                  <SelectItem value="north-facing-northern-hemisphere">
+                    North-facing (Northern Hemisphere)
+                  </SelectItem>
+                  <SelectItem value="south-facing-northern-hemisphere">
+                    South-facing (Northern Hemisphere)
+                  </SelectItem>
+                  <SelectItem value="east-facing-northern-hemisphere">
+                    East-facing (Northern Hemisphere)
+                  </SelectItem>
+                  <SelectItem value="west-facing-northern-hemisphere">
+                    West-facing (Northern Hemisphere)
+                  </SelectItem>
+                  <SelectItem value="north-facing-southern-hemisphere">
+                    North-facing (Southern Hemisphere)
+                  </SelectItem>
+                  <SelectItem value="south-facing-southern-hemisphere">
+                    South-facing (Southern Hemisphere)
+                  </SelectItem>
+                  <SelectItem value="east-facing-southern-hemisphere">
+                    East-facing (Southern Hemisphere)
+                  </SelectItem>
+                  <SelectItem value="west-facing-southern-hemisphere">
+                    West-facing (Southern Hemisphere)
                   </SelectItem>
                 </SelectContent>
               </Select>
