@@ -1,5 +1,6 @@
 "use client";
 
+import MultiSelectTagInput from "@/components/MultiSelectTagInput";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -22,10 +23,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
-import { CultivationType } from "./CultivationType";
-import { format } from "date-fns";
+import pottingComponents from "./potting";
 
 type CareDetailsTabProps = {
   form: UseFormReturn<any>;
@@ -182,12 +183,46 @@ const CareDetailsTab = ({ form, state }: CareDetailsTabProps) => {
 
       <FormField
         control={form.control}
-        name="source"
+        name="growingMedium"
         render={({ field }) => (
           <FormItem className="gap-3 self-start">
-            <FormLabel>Cultivation type</FormLabel>
+            <FormLabel>Growing Medium</FormLabel>
+            <FormControl className="w-full">
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                value={field.value}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select light exposure" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="null">Do not specify</SelectItem>
+                  <SelectItem value="soil">Soil</SelectItem>
+                  <SelectItem value="semi-hydroponics">
+                    Semi-hydroponics
+                  </SelectItem>
+                  <SelectItem value="hydroponics">Hydroponics</SelectItem>
+                </SelectContent>
+              </Select>
+            </FormControl>
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="pottingMix"
+        render={({ field }) => (
+          <FormItem className="gap-3 self-start">
+            <FormLabel>Potting Mix</FormLabel>
             <FormControl>
-              <CultivationType />
+              <MultiSelectTagInput
+                options={pottingComponents}
+                selected={field.value}
+                onChange={field.onChange}
+                placeholder="Select or add potting components..."
+              />
             </FormControl>
           </FormItem>
         )}
