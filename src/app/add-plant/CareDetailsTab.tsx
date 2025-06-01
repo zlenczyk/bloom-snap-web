@@ -141,6 +141,45 @@ const CareDetailsTab = ({ form, state }: CareDetailsTabProps) => {
           </FormItem>
         )}
       />
+
+      <FormField
+        control={form.control}
+        name="lightExposure"
+        render={({ field }) => (
+          <FormItem className="gap-3 self-start">
+            <FormLabel>Light exposure</FormLabel>
+            <FormControl className="w-full">
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                value={field.value}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select light exposure" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="null">Do not specify</SelectItem>
+                  <SelectItem value="morning-sun-light">Morning sun</SelectItem>
+                  <SelectItem value="afternoon-sun-light">
+                    Afternoon sun
+                  </SelectItem>
+                  <SelectItem value="full-day-sun-light">
+                    Full-day sun
+                  </SelectItem>
+                  <SelectItem value="low-sun-light">Low sunlight</SelectItem>
+                  <SelectItem value="indirect-sun-light">
+                    Indirect light
+                  </SelectItem>
+                  <SelectItem value="artificial-light">
+                    Artificial light
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </FormControl>
+          </FormItem>
+        )}
+      />
+
       <FormField
         control={form.control}
         name="source"
