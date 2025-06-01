@@ -68,13 +68,15 @@ const AddPlantFormSchema = z.object({
     .date()
     .min(new Date("1900-01-01"), { message: "Date must be after 1900." })
     .max(new Date(), { message: "Date cannot be in the future." })
-    .optional(),
+    .optional()
+    .nullable(),
 
   lastRepotted: z.coerce
     .date()
     .min(new Date("1900-01-01"), { message: "Date must be after 1900." })
     .max(new Date(), { message: "Date cannot be in the future." })
-    .optional(),
+    .optional()
+    .nullable(),
 
   roomLocation: z
     .preprocess(
@@ -87,78 +89,102 @@ const AddPlantFormSchema = z.object({
     .optional(),
 
   isPetSafe: z
-    .preprocess((val) => {
-      if (val === "true") return true;
-      if (val === "false") return false;
-      if (val === "null" || val === "") return null;
-      return val;
+    .preprocess((value) => {
+      if (value === "true") return true;
+      if (value === "false") return false;
+      if (value === "null" || value === "") return null;
+      return value;
     }, z.boolean().nullable())
     .optional(),
 
   isHealthy: z
-    .preprocess((val) => {
-      if (val === "true") return true;
-      if (val === "false") return false;
-      if (val === "null" || val === "") return null;
-      return val;
+    .preprocess((value) => {
+      if (value === "true") return true;
+      if (value === "false") return false;
+      if (value === "null" || value === "") return null;
+      return value;
     }, z.boolean().nullable())
     .optional(),
 
   windowDirection: z
     .preprocess(
-      (val) => {
-        if (val === "null" || val === "") {
+      (value) => {
+        if (value === "null" || value === "") {
           return null;
         }
-        return val;
+        return value;
       },
-      z.enum([
-        "north-facing-northern-hemisphere", // North-facing (no direct sun in Northern Hemisphere)
-        "south-facing-northern-hemisphere", // South-facing (full day of sun in Northern Hemisphere)
-        "east-facing-northern-hemisphere", // East-facing (morning sun, partial shade, good for plants)
-        "west-facing-northern-hemisphere", // West-facing (afternoon sun, tends to be harsher)
+      z
+        .enum([
+          "north-facing-northern-hemisphere", // North-facing (no direct sun in Northern Hemisphere)
+          "south-facing-northern-hemisphere", // South-facing (full day of sun in Northern Hemisphere)
+          "east-facing-northern-hemisphere", // East-facing (morning sun, partial shade, good for plants)
+          "west-facing-northern-hemisphere", // West-facing (afternoon sun, tends to be harsher)
 
-        "north-facing-southern-hemisphere", // North-facing (full day of sun in Southern Hemisphere)
-        "south-facing-southern-hemisphere", // South-facing (no direct sun in Southern Hemisphere)
-        "east-facing-southern-hemisphere", // East-facing (morning sun, partial shade, good for plants)
-        "west-facing-southern-hemisphere", // West-facing (afternoon sun, tends to be harsher)
-      ])
+          "north-facing-southern-hemisphere", // North-facing (full day of sun in Southern Hemisphere)
+          "south-facing-southern-hemisphere", // South-facing (no direct sun in Southern Hemisphere)
+          "east-facing-southern-hemisphere", // East-facing (morning sun, partial shade, good for plants)
+          "west-facing-southern-hemisphere", // West-facing (afternoon sun, tends to be harsher)
+        ])
+        .nullable()
     )
     .optional(),
 
-  //add window exposure
-
-  //   lightExposure: z
-  // .preprocess((val) => {
-  //   if (val === "null" || val === "") return null;
-  //   return val;
-  // }, z.enum([
-  //   "morning-sun-light",     // gentle light in the morning (usually east-facing)
-  //   "afternoon-sun-light",   // stronger light in the afternoon (usually west-facing)
-  //   "full-day-sun-light",    // full direct sunlight throughout the day (usually south-facing in the Northern Hemisphere)
-  //   "low-sun-light",         // low amount of natural sunlight (often north-facing)
-  //   "indirect-light",        // diffused or reflected light, not directly hitting the plant
-  //   "artificial-light",      // no natural light, only from bulbs or grow lights
-  // ]))
-  // .optional(),
+  lightExposure: z
+    .preprocess(
+      (value) => {
+        if (value === "null" || value === "") return null;
+        return value;
+      },
+      z
+        .enum([
+          "morning-sun-light", // gentle light in the morning (usually east-facing)
+          "afternoon-sun-light", // stronger light in the afternoon (usually west-facing)
+          "full-day-sun-light", // full direct sunlight throughout the day (usually south-facing in the Northern Hemisphere)
+          "low-sun-light", // low amount of natural sunlight (often north-facing)
+          "indirect-sun-light", // diffused or reflected light, not directly hitting the plant
+          "artificial-light", // no natural light, only from bulbs or grow lights
+        ])
+        .nullable()
+    )
+    .optional(),
 
   isBlooming: z
-    .preprocess((val) => {
-      if (val === "true") return true;
-      if (val === "false") return false;
-      if (val === "null" || val === "") return null;
-      return val;
+    .preprocess((value) => {
+      if (value === "true") return true;
+      if (value === "false") return false;
+      if (value === "null" || value === "") return null;
+      return value;
     }, z.boolean().nullable())
     .optional(),
 
   isAirCleaning: z
-    .preprocess((val) => {
-      if (val === "true") return true;
-      if (val === "false") return false;
-      if (val === "null" || val === "") return null;
-      return val;
+    .preprocess((value) => {
+      if (value === "true") return true;
+      if (value === "false") return false;
+      if (value === "null" || value === "") return null;
+      return value;
     }, z.boolean().nullable())
     .optional(),
+
+  growingMedium: z
+    .preprocess((value) => {
+      if (value === "null" || value === "") return null;
+      return value;
+    }, z.enum(["soil", "semi-hydroponics", "hydroponics"]).nullable())
+    .optional(),
+
+  pottingMix: z.preprocess((value) => {
+    if (!Array.isArray(value)) {
+      return null;
+    }
+
+    if (value.length === 0) {
+      return null;
+    }
+
+    return value;
+  }, z.union([z.array(z.string()), z.null()])),
 
   // pictures: z
   //   .array(fileSchema)
