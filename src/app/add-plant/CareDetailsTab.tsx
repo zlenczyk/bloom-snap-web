@@ -1,6 +1,6 @@
 "use client";
 
-import MultiSelectTagInput from "@/components/MultiSelectTagInput";
+import MultiSelectTagInput from "@/components/MultiSelectTagInput/MultiSelectTagInput";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -48,6 +48,11 @@ const CareDetailsTab = ({ form, state }: CareDetailsTabProps) => {
                 {...field}
               />
             </FormControl>
+            {state?.errors?.roomLocation && (
+              <p className="text-sm text-destructive">
+                {state.errors.roomLocation[0]}
+              </p>
+            )}
           </FormItem>
         )}
       />
@@ -219,9 +224,9 @@ const CareDetailsTab = ({ form, state }: CareDetailsTabProps) => {
             <FormControl>
               <MultiSelectTagInput
                 options={pottingComponents}
-                selected={field.value}
+                selectedItems={field.value}
                 onChange={field.onChange}
-                placeholder="Select or add potting components..."
+                emptyMessage="Select or add potting components..."
               />
             </FormControl>
           </FormItem>
