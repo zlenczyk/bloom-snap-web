@@ -226,7 +226,6 @@ const CareDetailsTab = ({ form, state }: CareDetailsTabProps) => {
                 options={pottingComponents}
                 selectedItems={field.value}
                 onChange={field.onChange}
-                emptyMessage="Select or add potting components..."
               />
             </FormControl>
           </FormItem>
