@@ -27,6 +27,14 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 import pottingComponents from "./potting";
+import {
+  WINDOW_DIRECTION_OPTIONS,
+  WindowDirection,
+} from "@/lib/data/window-direction";
+import {
+  LIGHT_EXPOSURE_OPTIONS,
+  LightExposure,
+} from "@/lib/data/light-exposure";
 
 type CareDetailsTabProps = {
   form: UseFormReturn<any>;
@@ -117,29 +125,77 @@ const CareDetailsTab = ({ form, state }: CareDetailsTabProps) => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="null">Do not specify</SelectItem>
-                  <SelectItem value="north-facing-northern-hemisphere">
-                    North-facing (Northern Hemisphere)
+                  <SelectItem
+                    value={WindowDirection.NorthFacingNorthernHemisphere}
+                  >
+                    {
+                      WINDOW_DIRECTION_OPTIONS[
+                        WindowDirection.NorthFacingNorthernHemisphere
+                      ].label
+                    }
                   </SelectItem>
-                  <SelectItem value="south-facing-northern-hemisphere">
-                    South-facing (Northern Hemisphere)
+                  <SelectItem
+                    value={WindowDirection.SouthFacingNorthernHemisphere}
+                  >
+                    {
+                      WINDOW_DIRECTION_OPTIONS[
+                        WindowDirection.SouthFacingNorthernHemisphere
+                      ].label
+                    }
                   </SelectItem>
-                  <SelectItem value="east-facing-northern-hemisphere">
-                    East-facing (Northern Hemisphere)
+                  <SelectItem
+                    value={WindowDirection.EastFacingNorthernHemisphere}
+                  >
+                    {
+                      WINDOW_DIRECTION_OPTIONS[
+                        WindowDirection.EastFacingNorthernHemisphere
+                      ].label
+                    }
                   </SelectItem>
-                  <SelectItem value="west-facing-northern-hemisphere">
-                    West-facing (Northern Hemisphere)
+                  <SelectItem
+                    value={WindowDirection.WestFacingNorthernHemisphere}
+                  >
+                    {
+                      WINDOW_DIRECTION_OPTIONS[
+                        WindowDirection.WestFacingNorthernHemisphere
+                      ].label
+                    }
                   </SelectItem>
-                  <SelectItem value="north-facing-southern-hemisphere">
-                    North-facing (Southern Hemisphere)
+                  <SelectItem
+                    value={WindowDirection.NorthFacingSouthernHemisphere}
+                  >
+                    {
+                      WINDOW_DIRECTION_OPTIONS[
+                        WindowDirection.NorthFacingSouthernHemisphere
+                      ].label
+                    }
                   </SelectItem>
-                  <SelectItem value="south-facing-southern-hemisphere">
-                    South-facing (Southern Hemisphere)
+                  <SelectItem
+                    value={WindowDirection.SouthFacingSouthernHemisphere}
+                  >
+                    {
+                      WINDOW_DIRECTION_OPTIONS[
+                        WindowDirection.SouthFacingSouthernHemisphere
+                      ].label
+                    }
                   </SelectItem>
-                  <SelectItem value="east-facing-southern-hemisphere">
-                    East-facing (Southern Hemisphere)
+                  <SelectItem
+                    value={WindowDirection.EastFacingSouthernHemisphere}
+                  >
+                    {
+                      WINDOW_DIRECTION_OPTIONS[
+                        WindowDirection.EastFacingSouthernHemisphere
+                      ].label
+                    }
                   </SelectItem>
-                  <SelectItem value="west-facing-southern-hemisphere">
-                    West-facing (Southern Hemisphere)
+                  <SelectItem
+                    value={WindowDirection.WestFacingSouthernHemisphere}
+                  >
+                    {
+                      WINDOW_DIRECTION_OPTIONS[
+                        WindowDirection.WestFacingSouthernHemisphere
+                      ].label
+                    }
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -165,19 +221,23 @@ const CareDetailsTab = ({ form, state }: CareDetailsTabProps) => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="null">Do not specify</SelectItem>
-                  <SelectItem value="morning-sun-light">Morning sun</SelectItem>
-                  <SelectItem value="afternoon-sun-light">
-                    Afternoon sun
+                  <SelectItem value={LightExposure.MorningSun}>
+                    {LIGHT_EXPOSURE_OPTIONS[LightExposure.MorningSun].label}
                   </SelectItem>
-                  <SelectItem value="full-day-sun-light">
-                    Full-day sun
+                  <SelectItem value={LightExposure.AfternoonSun}>
+                    {LIGHT_EXPOSURE_OPTIONS[LightExposure.AfternoonSun].label}
                   </SelectItem>
-                  <SelectItem value="low-sun-light">Low sunlight</SelectItem>
-                  <SelectItem value="indirect-sun-light">
-                    Indirect light
+                  <SelectItem value={LightExposure.FullDaySun}>
+                    {LIGHT_EXPOSURE_OPTIONS[LightExposure.FullDaySun].label}
                   </SelectItem>
-                  <SelectItem value="artificial-light">
-                    Artificial light
+                  <SelectItem value={LightExposure.LowSun}>
+                    {LIGHT_EXPOSURE_OPTIONS[LightExposure.LowSun].label}
+                  </SelectItem>
+                  <SelectItem value={LightExposure.Indirect}>
+                    {LIGHT_EXPOSURE_OPTIONS[LightExposure.Indirect].label}
+                  </SelectItem>
+                  <SelectItem value={LightExposure.Artificial}>
+                    {LIGHT_EXPOSURE_OPTIONS[LightExposure.Artificial].label}
                   </SelectItem>
                 </SelectContent>
               </Select>
