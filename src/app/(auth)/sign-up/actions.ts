@@ -1,7 +1,7 @@
 "use server";
 
 import SignUpFormSchema from "./schema";
-import db from "@/lib/db";
+import db from "@/lib/db/db";
 import { hash } from "bcryptjs";
 import { redirect } from "next/navigation";
 
