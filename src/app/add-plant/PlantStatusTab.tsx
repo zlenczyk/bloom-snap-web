@@ -24,7 +24,6 @@ const PlantStatusTab = ({ form, state }: PlantStatusTabProps) => {
         render={({ field }) => (
           <FormItem className="gap-3 self-start">
             <FormLabel>Does it purify the air?</FormLabel>
-            <span>{field.value}</span>
             <FormControl>
               <RadioGroup
                 id="isAirCleaning"
@@ -113,7 +112,6 @@ const PlantStatusTab = ({ form, state }: PlantStatusTabProps) => {
         render={({ field }) => (
           <FormItem className="gap-3 self-start">
             <FormLabel>Is it healthy now?</FormLabel>
-            <span>{field.value}</span>
             <FormControl>
               <RadioGroup
                 id="isHealthy"
