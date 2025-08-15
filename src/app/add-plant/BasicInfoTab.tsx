@@ -155,7 +155,6 @@ const BasicInfoTab = ({ form, state }: BasicInfoTabProps) => {
                   />
                 </PopoverContent>
               </Popover>
-              {/* </FormControl> */}
               {state?.errors?.ownedSince && (
                 <p className="text-sm text-destructive">
                   {state.errors.ownedSince[0]}
