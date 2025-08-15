@@ -124,9 +124,9 @@ const BasicInfoTab = ({ form, state }: BasicInfoTabProps) => {
           render={({ field }) => (
             <FormItem className="gap-3 self-start">
               <FormLabel>When did you get the plant?</FormLabel>
-              <FormControl>
-                <Popover>
-                  <PopoverTrigger asChild>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
                     <Button
                       variant={"outline"}
                       className={cn(
@@ -141,19 +141,21 @@ const BasicInfoTab = ({ form, state }: BasicInfoTabProps) => {
                         <span>Pick a date</span>
                       )}
                     </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      startMonth={new Date(1950, 0, 1)}
-                      endMonth={new Date()}
-                      disabled={{ after: new Date() }}
-                    />
-                  </PopoverContent>
-                </Popover>
-              </FormControl>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    captionLayout="dropdown"
+                    disabled={(date) =>
+                      date > new Date() || date < new Date("1900-01-01")
+                    }
+                  />
+                </PopoverContent>
+              </Popover>
+              {/* </FormControl> */}
               {state?.errors?.ownedSince && (
                 <p className="text-sm text-destructive">
                   {state.errors.ownedSince[0]}
