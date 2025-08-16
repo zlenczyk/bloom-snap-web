@@ -61,3 +61,16 @@ model VerificationToken {
 
   @@id([identifier, token])
 }
+
+model TimelineEvent {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  date        DateTime
+  icon        String
+  color       String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("timeline_event")
+}
