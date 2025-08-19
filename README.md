@@ -29,6 +29,34 @@ Issues:
 4. design: when user is asking for "yes" or "no", but he has option to not answer at all, what is the best design (select vs radio discussion)
 5. database: difference between null and "" in the database.  
 
+# Potential Features for an Expanded App Version
+
+## Main Feed
+- Show photos from users with public collections.
+- Users can see their own collection, plus collections they liked or follow.
+- Users can set their collection as **private** or **public**.
+- Follow other accounts, comment, and like photos.
+
+## AI agents/ external APIs
+- Analyze photos to detect plant health.
+- Identify plant species.
+- Provide care tips
+
+## Sharing & Export
+- Export collection data to CSV or PDF.
+- Share collections with friends via link / messenger / whatsapp, etc.
+
+## Achievements & Gamification
+- Collect trophies for milestones, e.g: First plant, First 50 plants, Healing a sick plant, etc.
+
+## Timeline & Event Visibility
+- Show plant timeline events (e.g., flowering, location changes, health updates) **not only in timeline view but also on plant cards, collection view, and badges**, so users can see important events without opening detailed views.
+
+## Plant Statistics
+- Detailed stats in form of graphs and analytics screen summarizing user’s plants, e.g. health status, age, species distribution, etc.
+
+> **Note:** The features listed here are just a starting point. There can always be more, and everything depends on real user needs. The app may evolve and change over time based on feedback and usage patterns. 
+
 Bigger dependencies changes during working on app:
 1. Tailwind 3 -> 4
 2. Next.js 14 -> 15
