@@ -55,6 +55,10 @@ Issues:
 ## Plant Statistics
 - Detailed stats in form of graphs and analytics screen summarizing user’s plants, e.g. health status, age, species distribution, etc.
 
+## Expansion of Scope
+- Currently focused on house plants, the app could expand to **herbs, garden plants, and other plant types**, catering to different user needs and interests.
+- This expansion could introduce **features tailored to specific plant types**, e.g., statistics for garden plants may include seasonal or weather-related data, while house plant stats may focus on indoor conditions.
+
 > **Note:** The features listed here are just a starting point. There can always be more, and everything depends on real user needs. The app may evolve and change over time based on feedback and usage patterns. 
 
 Bigger dependencies changes during working on app:
