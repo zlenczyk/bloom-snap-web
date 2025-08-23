@@ -60,11 +60,11 @@ export default function PlantDetail() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const plantImages = [
-    "/placeholder.svg?height=400&width=300",
-    "/placeholder.svg?height=400&width=300",
-    "/placeholder.svg?height=400&width=300",
-    "/placeholder.svg?height=400&width=300",
-    "/placeholder.svg?height=400&width=300",
+    "/assets/spider-plant-1.jpg",
+    "/assets/spider-plant-2.webp",
+    "/assets/fiddle-leaf-fig-1.webp",
+    "/assets/fiddle-leaf-fig-2.jpg",
+    "/assets/fiddle-leaf-fig-3.webp",
   ];
 
   const pottingMixComponents = [
@@ -110,7 +110,6 @@ export default function PlantDetail() {
   return (
     <SidebarProvider>
       <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-green-50">
-        {/* Sidebar */}
         <Sidebar side="left" variant="sidebar" collapsible="icon">
           <SidebarContent className="py-6">
             <SidebarGroup>
@@ -226,7 +225,7 @@ export default function PlantDetail() {
 
         {/* Main Content Area */}
         <SidebarInset className="flex-1 overflow-auto pb-8">
-          <div className="max-w-7xl mx-auto px-6 py-8">
+          <div className="mx-auto px-6 py-8">
             {/* Top Bar for Edit Button and Sidebar Trigger */}
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-3">
@@ -260,29 +259,17 @@ export default function PlantDetail() {
               {/* Left Column: Image Gallery & Description */}
               <div className="col-span-1 lg:col-span-5 flex flex-col gap-8">
                 {/* Image Gallery Section */}
-                <section
-                  id="image-gallery"
-                  className="bg-white rounded-xl p-6 shadow-md border border-gray-200 flex flex-col"
-                >
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 rounded-lg bg-blue-100">
-                      <ImageIcon className="h-5 w-5 text-blue-700" />
-                    </div>
-                    <h2 className="text-xl font-semibold text-gray-900">
-                      Image Gallery
-                    </h2>
-                  </div>
-
+                <section id="image-gallery" className="flex flex-col">
                   <div className="flex-1 flex flex-col space-y-4">
                     {/* Main Image */}
-                    <div className="relative flex-1 min-h-[300px] rounded-lg overflow-hidden shadow-lg">
+                    <div className="relative flex-1 min-h-[600px] rounded-lg overflow-hidden shadow-lg">
                       <Image
                         src={
                           plantImages[currentImageIndex] || "/placeholder.svg"
                         }
                         alt="Fiddle Leaf Fig"
                         fill
-                        className="object-cover"
+                        className="object-contain"
                       />
 
                       {/* Navigation Arrows */}
@@ -314,7 +301,7 @@ export default function PlantDetail() {
                         <button
                           key={index}
                           onClick={() => setCurrentImageIndex(index)}
-                          className={`shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 transition-all ${
+                          className={`shrink-0 w-30 h-30 rounded-md overflow-hidden border-2 transition-all ${
                             index === currentImageIndex
                               ? "border-green-500"
                               : "border-gray-200 hover:border-gray-300"
