@@ -19,7 +19,6 @@ import {
   CalendarArrowDown,
   CalendarArrowUp,
   Filter,
-  Leaf,
   Plus,
   Search,
   SlidersHorizontal
@@ -152,12 +151,10 @@ const Collection = ({ plants = [] }: CollectionProps) => {
     return result;
   }, [plants, searchQuery, filters, sortBy]);
 
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="flex items-center text-2xl font-bold">
-          <Leaf className="mr-2 h-6 w-6 text-green-600" />
           My Plant Collection
         </h2>
         <Button className="flex items-center gap-2">
