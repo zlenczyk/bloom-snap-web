@@ -1,14 +1,12 @@
 "use client";
 
+import CarouselArrows from "@/components/CarouselArrows/CarouselArrows";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { WINDOW_DIRECTION_OPTIONS } from "@/lib/data/window-direction";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import {
-  ChevronLeft,
-  ChevronRight,
   Compass,
   HeartCrack,
   Info,
@@ -17,6 +15,7 @@ import {
   ShoppingCart,
   Wind
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Plant } from "./Collection";
@@ -38,16 +37,6 @@ const PlantCard = ({ plant }: PlantCardProps) => {
 
   const images = plant.pictures?.map((pic) => pic.url) ?? [];
 
-  const nextImage = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-  };
-
-  const prevImage = () => {
-    setCurrentImageIndex(
-      (prevIndex) => (prevIndex - 1 + images.length) % images.length
-    );
-  };
-
   return (
     <Card className="group relative h-[450px] overflow-hidden transition-all hover:shadow-lg">
       <div className="relative h-full w-full overflow-hidden">
@@ -58,12 +47,19 @@ const PlantCard = ({ plant }: PlantCardProps) => {
           >
             {images.length > 0
               ? images.map((image, index) => (
-                  <img
+                  <div
                     key={index}
-                    src={image}
-                    alt={`${plant.commonName} - image ${index + 1}`}
-                    className="h-full w-full flex-shrink-0 object-cover"
-                  />
+                    className="h-full w-full flex-shrink-0 relative"
+                  >
+                    <Image
+                      src={image}
+                      alt={`${plant.commonName} - image ${index + 1}`}
+                      layout="fill"
+                      objectFit="cover"
+                      className="rounded"
+                      priority={index === 0}
+                    />
+                  </div>
                 ))
               : null}
 
@@ -72,24 +68,11 @@ const PlantCard = ({ plant }: PlantCardProps) => {
         </div>
 
         {images.length > 1 && (
-          <>
-            <Button
-              variant="secondary"
-              size="icon"
-              className="absolute left-2 top-1/2 z-20 h-8 w-8 -translate-y-1/2 rounded-full bg-black/40 hover:bg-white/20 backdrop-blur-xl text-white opacity-0 transition-opacity group-hover:opacity-100"
-              onClick={prevImage}
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </Button>
-            <Button
-              variant="secondary"
-              size="icon"
-              className="absolute right-2 top-1/2 z-20 h-8 w-8 -translate-y-1/2 rounded-full bg-black/40 hover:bg-white/20 backdrop-blur-xl text-white opacity-0 transition-opacity group-hover:opacity-100"
-              onClick={nextImage}
-            >
-              <ChevronRight className="h-5 w-5" />
-            </Button>
-          </>
+          <CarouselArrows
+            length={images.length}
+            onIndexChange={(index) => setCurrentImageIndex(index)}
+            currentIndex={currentImageIndex}
+          />
         )}
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
