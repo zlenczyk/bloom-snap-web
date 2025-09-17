@@ -142,7 +142,7 @@ const samplePlants = [
 
 export default function Home() {
   return (
-    <main className="container py-8 mx-auto">
+    <main className="container py-8 px-6 mx-auto max-w-7xl">
       <Collection plants={samplePlants} />
     </main>
   );
