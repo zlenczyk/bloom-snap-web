@@ -1,4 +1,4 @@
-import CarouselArrows from "@/components/CarouselArrows/CarouselArrows";
+import CarouselArrows from "@/components/CarouselArrows";
 import Image from "next/image";
 import { useLayoutEffect, useRef, useState } from "react";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import CarouselArrows from "@/components/CarouselArrows/CarouselArrows";
+import CarouselArrows from "@/components/CarouselArrows";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { WINDOW_DIRECTION_OPTIONS } from "@/lib/data/window-direction";
