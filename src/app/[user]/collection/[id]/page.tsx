@@ -1,4 +1,5 @@
 import { getTimelineEvents } from "@/lib/db/queries/getTimelineEvents";
+import PlantDetails from "./PlantDetails/PlantDetails";
 import Timeline from "./Timeline/Timeline";
 
 const Page = async () => {
@@ -6,7 +7,7 @@ const Page = async () => {
 
   return (
     <div className="w-full">
-      {/* <PlantDetails /> */}
+      <PlantDetails />
       <Timeline initialEvents={events} />
     </div>
   );
