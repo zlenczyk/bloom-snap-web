@@ -22,7 +22,6 @@ import BasicInfoTab from "./BasicInfoTab";
 import CareDetailsTab from "./CareDetailsTab";
 import PlantStatusTab from "./PlantStatusTab";
 import { AddPlantFormInputSchema } from "./schema";
-// import AddPlantFormSchema from "./_schema";
 
 //remove any from states!!!
 
@@ -55,12 +54,10 @@ const AddPlant = () => {
       lastRepotted: undefined,
       roomLocation: "",
       isPetSafe: "null",
-      // isHealthy: "null" as unknown as null,
-      // windowDirection: "null" as unknown as null,
-      // lightExposure: "null" as unknown as null,
-      // isBlooming: "null" as unknown as null,
-      // isAirCleaning: "null" as unknown as null,
-      // growingMedium: "null" as unknown as null,
+      isAirCleaning: "null",
+      windowDirection: "null",
+      lightExposure: "null",
+      growingMedium: "null",
       // pottingMix: [],
       // pictures: undefined,
     },
@@ -75,7 +72,7 @@ const AddPlant = () => {
         formData.append(key, getCurrentIsoDate(value));
       }
 
-      if (value === undefined || value === null) {
+      if (!value || value === "null") {
         return;
       }
 

@@ -26,7 +26,7 @@ import { useActionState, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { CultivationType } from "./CultivationType";
-import NewPlantFormSchema from "./schema";
+import NewPlantFormSchema from "./_schema";
 import {
   Select,
   SelectContent,

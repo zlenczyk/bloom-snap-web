@@ -284,7 +284,7 @@ const CareDetailsTab = ({ form, state }: CareDetailsTabProps) => {
             <FormControl>
               <MultiSelectTagInput
                 options={pottingComponents}
-                selectedItems={field.value}
+                selectedItems={field.value ?? []}
                 onChange={field.onChange}
               />
             </FormControl>

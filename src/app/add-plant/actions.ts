@@ -1,11 +1,11 @@
 "use server";
 
-import NewPlantFormSchema from "./schema";
+import NewPlantFormSchema from "./_schema";
 import db from "@/lib/db/db";
 import { hash } from "bcryptjs";
 import { redirect } from "next/navigation";
 import { json } from "stream/consumers";
-import AddPlantFormSchema from "./schema";
+import AddPlantFormSchema from "./_schema";
 
 type Errors = {
   species?: string[];

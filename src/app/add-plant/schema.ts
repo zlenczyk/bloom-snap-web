@@ -13,6 +13,9 @@ const dateOrNull = z
 
 const booleanStringOrNull = z.enum(["true", "false", "null"]);
 
+// const enumWithNull = <T extends [string, ...string[]]>(values: T) =>
+//   z.enum(values).or(z.literal("null"));
+
 export const AddPlantFormInputSchema = z.object({
   commonName: z.string().min(1, { message: "Common name is required." }),
   species: stringOrNull.optional(),
@@ -24,10 +27,9 @@ export const AddPlantFormInputSchema = z.object({
   lastRepotted: dateOrNull.optional(),
   roomLocation: stringOrNull.optional(),
   isPetSafe: booleanStringOrNull.optional(),
-  isHealthy: booleanStringOrNull.optional(),
-  windowDirection: z.enum(WindowDirection).nullable().optional(),
-  lightExposure: z.enum(LightExposure).nullable().optional(),
   isAirCleaning: booleanStringOrNull.optional(),
-  growingMedium: z.enum(GrowingMedium).nullable().optional(),
+  windowDirection: z.enum(WindowDirection).or(z.literal("null")).optional(),
+  lightExposure: z.enum(LightExposure).or(z.literal("null")).optional(),
+  growingMedium: z.enum(GrowingMedium).or(z.literal("null")).optional(),
   pottingMix: z.array(z.string()).nullable().optional(),
 });
