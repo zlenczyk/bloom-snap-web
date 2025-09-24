@@ -124,24 +124,6 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
 
       <FormField
         control={form.control}
-        name="temperature"
-        render={({ field }) => (
-          <FormItem className="gap-3 self-start">
-            <FormLabel>How’s the temperature there?</FormLabel>
-            <FormControl>
-              <Input placeholder="18°C, 22°C, 75°F, etc." {...field} />
-            </FormControl>
-            {state?.errors?.temperature && (
-              <p className="text-sm text-destructive">
-                {state.errors.temperature[0]}
-              </p>
-            )}
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
         name="humidity"
         render={({ field }) => (
           <FormItem className="gap-3 self-start">
@@ -160,21 +142,65 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
 
       <FormField
         control={form.control}
-        name="roomLocation"
+        name="temperature"
         render={({ field }) => (
           <FormItem className="gap-3 self-start">
-            <FormLabel>Which room/place is it in?</FormLabel>
+            <FormLabel>How’s the temperature there?</FormLabel>
             <FormControl>
-              <Input
-                placeholder="Living room, bedroom, balcony, etc."
-                {...field}
-              />
+              <Input placeholder="18°C, 22°C, 75°F, etc." {...field} />
             </FormControl>
-            {state?.errors?.roomLocation && (
+            {state?.errors?.temperature && (
               <p className="text-sm text-destructive">
-                {state.errors.roomLocation[0]}
+                {state.errors.temperature[0]}
               </p>
             )}
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="lightExposure"
+        render={({ field }) => (
+          <FormItem className="gap-3 self-start">
+            <FormLabel>What type of light does it get?</FormLabel>
+            <FormControl className="w-full">
+              <Select
+                value={field.value}
+                onValueChange={field.onChange}
+                key={field.value}
+              >
+                <ClearableSelectTrigger
+                  value={field.value}
+                  placeholder="Select type of light"
+                  onClear={() => field.onChange(undefined)}
+                />
+
+                <SelectContent>
+                  <SelectItem value={LightExposureEnum.MorningSun}>
+                    {LIGHT_EXPOSURE_OPTIONS[LightExposureEnum.MorningSun].label}
+                  </SelectItem>
+                  <SelectItem value={LightExposureEnum.AfternoonSun}>
+                    {
+                      LIGHT_EXPOSURE_OPTIONS[LightExposureEnum.AfternoonSun]
+                        .label
+                    }
+                  </SelectItem>
+                  <SelectItem value={LightExposureEnum.FullDaySun}>
+                    {LIGHT_EXPOSURE_OPTIONS[LightExposureEnum.FullDaySun].label}
+                  </SelectItem>
+                  <SelectItem value={LightExposureEnum.LowSun}>
+                    {LIGHT_EXPOSURE_OPTIONS[LightExposureEnum.LowSun].label}
+                  </SelectItem>
+                  <SelectItem value={LightExposureEnum.Indirect}>
+                    {LIGHT_EXPOSURE_OPTIONS[LightExposureEnum.Indirect].label}
+                  </SelectItem>
+                  <SelectItem value={LightExposureEnum.Artificial}>
+                    {LIGHT_EXPOSURE_OPTIONS[LightExposureEnum.Artificial].label}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </FormControl>
           </FormItem>
         )}
       />
@@ -285,47 +311,21 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
 
       <FormField
         control={form.control}
-        name="lightExposure"
+        name="roomLocation"
         render={({ field }) => (
           <FormItem className="gap-3 self-start">
-            <FormLabel>What type of light does it get?</FormLabel>
-            <FormControl className="w-full">
-              <Select
-                value={field.value}
-                onValueChange={field.onChange}
-                key={field.value}
-              >
-                <ClearableSelectTrigger
-                  value={field.value}
-                  placeholder="Select type of light"
-                  onClear={() => field.onChange(undefined)}
-                />
-
-                <SelectContent>
-                  <SelectItem value={LightExposureEnum.MorningSun}>
-                    {LIGHT_EXPOSURE_OPTIONS[LightExposureEnum.MorningSun].label}
-                  </SelectItem>
-                  <SelectItem value={LightExposureEnum.AfternoonSun}>
-                    {
-                      LIGHT_EXPOSURE_OPTIONS[LightExposureEnum.AfternoonSun]
-                        .label
-                    }
-                  </SelectItem>
-                  <SelectItem value={LightExposureEnum.FullDaySun}>
-                    {LIGHT_EXPOSURE_OPTIONS[LightExposureEnum.FullDaySun].label}
-                  </SelectItem>
-                  <SelectItem value={LightExposureEnum.LowSun}>
-                    {LIGHT_EXPOSURE_OPTIONS[LightExposureEnum.LowSun].label}
-                  </SelectItem>
-                  <SelectItem value={LightExposureEnum.Indirect}>
-                    {LIGHT_EXPOSURE_OPTIONS[LightExposureEnum.Indirect].label}
-                  </SelectItem>
-                  <SelectItem value={LightExposureEnum.Artificial}>
-                    {LIGHT_EXPOSURE_OPTIONS[LightExposureEnum.Artificial].label}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+            <FormLabel>Which room/place is it in?</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="Living room, bedroom, balcony, etc."
+                {...field}
+              />
             </FormControl>
+            {state?.errors?.roomLocation && (
+              <p className="text-sm text-destructive">
+                {state.errors.roomLocation[0]}
+              </p>
+            )}
           </FormItem>
         )}
       />
