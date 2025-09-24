@@ -27,7 +27,10 @@ Issues:
 2. prisma with edge environment (fix: installation neon adapter) -> https://github.com/prisma/prisma/issues/20560
 3. shadcn components not always support newest versions of libraries they use: https://github.com/shadcn-ui/ui/issues/4366 https://date-picker.luca-felix.com/
 4. design: when user is asking for "yes" or "no", but he has option to not answer at all, what is the best design (select vs radio discussion)
-5. database: difference between null and "" in the database.  
+5. database: difference between null and "" in the database.
+6. Problem with clearing shadcn Select component. When using custom clear buttom, form data is updated, but UI not. For example, when choosing "No" and then clicking clear button - user still see "No". First solution was just not to try to show placeholder again as no value, but have one more value always, e.g. "null" that will be choosen on clear. This way user could see "Do not specify", "Yes", and "No", when option "Do not specify" was set with custom clear button. Final solution is a little bit hacky, but very simple - give the <Select> component the key prop. In react - when key is updated, component must rerender. This way clearing button works perfectly without additional "Do not specify" option!
+https://www.reddit.com/r/nextjs/comments/1gl2wmv/strange_behavior_with_shadcn_ui_select_component/
+https://github.com/radix-ui/primitives/issues/1569
 
 # Potential Features for an Expanded App Version
 
