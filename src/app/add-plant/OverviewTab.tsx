@@ -21,16 +21,22 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { isAirPurifyingEnum, isSafeEnum } from "@/lib/data/plantDetailsTypes";
+import {
+  isAirPurifyingEnum,
+  isSafeEnum,
+  OverviewFieldsEnum,
+} from "@/lib/data/plantDetailsTypes";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
+import { AddPlantFormState } from "./actions";
+import { AddPlantForm } from "./schema";
 import { booleanToSelectString, selectStringToBoolean } from "./utils";
 
 type OverviewTabProps = {
-  form: UseFormReturn<any>;
-  state?: any;
+  form: UseFormReturn<AddPlantForm>;
+  state?: AddPlantFormState;
 };
 
 const OverviewTab = ({ form, state }: OverviewTabProps) => {
@@ -39,7 +45,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <FormField
           control={form.control}
-          name="commonName"
+          name={OverviewFieldsEnum.CommonName}
           render={({ field }) => (
             <FormItem className="gap-3 self-start">
               <FormLabel>
@@ -65,7 +71,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
         />
         <FormField
           control={form.control}
-          name="species"
+          name={OverviewFieldsEnum.Species}
           render={({ field }) => (
             <FormItem className="gap-3 self-start">
               <FormLabel>Species</FormLabel>
@@ -86,7 +92,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
         />
         <FormField
           control={form.control}
-          name="genus"
+          name={OverviewFieldsEnum.Genus}
           render={({ field }) => (
             <FormItem className="gap-3 self-start">
               <FormLabel>Genus</FormLabel>
@@ -107,7 +113,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
         />
         <FormField
           control={form.control}
-          name="nickname"
+          name={OverviewFieldsEnum.Nickname}
           render={({ field }) => (
             <FormItem className="gap-3 self-start">
               <FormLabel>Nickname</FormLabel>
@@ -128,7 +134,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
         />
         <FormField
           control={form.control}
-          name="source"
+          name={OverviewFieldsEnum.Source}
           render={({ field }) => (
             <FormItem className="gap-3 self-start">
               <FormLabel>Where you get it?</FormLabel>
@@ -150,7 +156,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
 
         <FormField
           control={form.control}
-          name="ownedSince"
+          name={OverviewFieldsEnum.OwnedSince}
           render={({ field }) => (
             <FormItem className="gap-3 self-start">
               <FormLabel>When did you get it?</FormLabel>
@@ -196,7 +202,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
 
         <FormField
           control={form.control}
-          name="isAirPurifying"
+          name={OverviewFieldsEnum.IsAirPurifying}
           render={({ field }) => {
             const selectValue = booleanToSelectString(field.value);
 
@@ -213,7 +219,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
                   >
                     <ClearableSelectTrigger
                       value={selectValue}
-                      placeholder="Choose an option"
+                      placeholder="Select an option"
                       onClear={() => field.onChange(undefined)}
                     />
 
@@ -234,7 +240,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
 
         <FormField
           control={form.control}
-          name="isSafe"
+          name={OverviewFieldsEnum.IsSafe}
           render={({ field }) => {
             const selectValue = booleanToSelectString(field.value);
 
@@ -251,7 +257,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
                   >
                     <ClearableSelectTrigger
                       value={selectValue}
-                      placeholder="Choose an option"
+                      placeholder="Select an option"
                       onClear={() => field.onChange(undefined)}
                     />
 
@@ -268,7 +274,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
       </div>
       <FormField
         control={form.control}
-        name="description"
+        name={OverviewFieldsEnum.Description}
         render={({ field }) => (
           <FormItem className="gap-3 self-start">
             <FormLabel>

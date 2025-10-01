@@ -11,31 +11,31 @@ const enumOrNull = <T extends Record<string, string>>(e: T) =>
     z.enum(enumValues(e)).nullable()
   );
 
-export enum WindowDirection {
-  NorthFacingNorthernHemisphere = "north-facing-northern-hemisphere",
-  SouthFacingNorthernHemisphere = "south-facing-northern-hemisphere",
-  EastFacingNorthernHemisphere = "east-facing-northern-hemisphere",
-  WestFacingNorthernHemisphere = "west-facing-northern-hemisphere",
-  NorthFacingSouthernHemisphere = "north-facing-southern-hemisphere",
-  SouthFacingSouthernHemisphere = "south-facing-southern-hemisphere",
-  EastFacingSouthernHemisphere = "east-facing-southern-hemisphere",
-  WestFacingSouthernHemisphere = "west-facing-southern-hemisphere",
-}
+// export enum WindowDirection {
+//   NorthFacingNorthernHemisphere = "north-facing-northern-hemisphere",
+//   SouthFacingNorthernHemisphere = "south-facing-northern-hemisphere",
+//   EastFacingNorthernHemisphere = "east-facing-northern-hemisphere",
+//   WestFacingNorthernHemisphere = "west-facing-northern-hemisphere",
+//   NorthFacingSouthernHemisphere = "north-facing-southern-hemisphere",
+//   SouthFacingSouthernHemisphere = "south-facing-southern-hemisphere",
+//   EastFacingSouthernHemisphere = "east-facing-southern-hemisphere",
+//   WestFacingSouthernHemisphere = "west-facing-southern-hemisphere",
+// }
 
-export enum LightExposure {
-  MorningSun = "morning-sun-light",
-  AfternoonSun = "afternoon-sun-light",
-  FullDaySun = "full-day-sun-light",
-  LowSun = "low-sun-light",
-  IndirectSun = "indirect-sun-light",
-  Artificial = "artificial-light",
-}
+// export enum LightExposure {
+//   MorningSun = "morning-sun-light",
+//   AfternoonSun = "afternoon-sun-light",
+//   FullDaySun = "full-day-sun-light",
+//   LowSun = "low-sun-light",
+//   IndirectSun = "indirect-sun-light",
+//   Artificial = "artificial-light",
+// }
 
-export enum GrowingMedium {
-  Soil = "soil",
-  SemiHydroponics = "semi-hydroponics",
-  Hydroponics = "hydroponics",
-}
+// export enum GrowingMedium {
+//   Soil = "soil",
+//   SemiHydroponics = "semi-hydroponics",
+//   Hydroponics = "hydroponics",
+// }
 
 const fileSchema = z.object({
   name: z.string(),
@@ -205,7 +205,7 @@ const booleanOrNull = z.enum(["true", "false", "null"]).transform((val) => {
 //     )
 //     .optional(),
 
-//   isPetSafe: z
+//   isSafe: z
 //     .preprocess((value) => {
 //       if (value === "true") return true;
 //       if (value === "false") return false;
@@ -275,7 +275,7 @@ const booleanOrNull = z.enum(["true", "false", "null"]).transform((val) => {
 //     }, z.boolean().nullable())
 //     .optional(),
 
-//   isAirCleaning: z
+//   isAirPurifying: z
 //     .preprocess((value) => {
 //       if (value === "true") return true;
 //       if (value === "false") return false;
@@ -334,12 +334,12 @@ const AddPlantFormSchema = z.object({
   ownedSince: dateOrNull.optional(),
   lastRepotted: dateOrNull.optional(),
   roomLocation: stringOrNull.optional(),
-  isPetSafe: booleanOrNull.optional(),
+  isSafe: booleanOrNull.optional(),
   // isHealthy: booleanOrNull.optional(),
   // windowDirection: enumOrNull(WindowDirection).optional(),
   // lightExposure: enumOrNull(LightExposure).optional(),
   // isBlooming: booleanOrNull.optional(),
-  // isAirCleaning: booleanOrNull.optional(),
+  // isAirPurifying: booleanOrNull.optional(),
   // growingMedium: enumOrNull(GrowingMedium).optional(),
   // pottingMix: z.array(z.string()).nullable().optional(),
 });

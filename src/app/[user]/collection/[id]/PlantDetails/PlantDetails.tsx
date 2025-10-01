@@ -43,8 +43,8 @@ const PlantDetails = () => {
             </div>
 
             <div className="col-span-1 lg:col-span-6 flex flex-col gap-8">
-              <Environment />
               <Growth />
+              <Environment />
             </div>
           </div>
         </div>

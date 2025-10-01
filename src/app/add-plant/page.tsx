@@ -11,21 +11,24 @@ import {
 } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  EnvironmentFieldsEnum,
+  NotesFieldsEnum,
+  OverviewFieldsEnum,
+  TabEnum,
+  tabFieldInputs,
+} from "@/lib/data/plantDetailsTypes";
+import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Leaf, Sprout } from "lucide-react";
-import { useActionState, useState } from "react";
+import { startTransition, useActionState, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
 import { getCurrentIsoDate } from "../utils";
 import addPlant, { AddPlantFormState } from "./actions";
-import BasicInfoTab from "./BasicInfoTab";
-import CareDetailsTab from "./CareDetailsTab";
-import PlantStatusTab from "./PlantStatusTab";
-import { AddPlantFormInputSchema } from "./schema";
-
-//remove any from states!!!
-
-type FormSchema = z.infer<typeof AddPlantFormInputSchema>;
+import CareNotes from "./CareNotes";
+import EnvironmentTab from "./EnvironmentTab";
+import OverviewTab from "./OverviewTab";
+import { AddPlantForm, AddPlantFormSchema } from "./schema";
 
 const initialState: AddPlantFormState = {
   errors: {},
@@ -35,35 +38,69 @@ const initialState: AddPlantFormState = {
 
 const AddPlant = () => {
   const [images, setImages] = useState<(File | null)[]>(Array(5).fill(null));
+  const [activeTab, setActiveTab] = useState("overview");
 
   const [state, formAction, isPending] = useActionState<
     AddPlantFormState,
     FormData
   >(addPlant, initialState);
 
-  const form = useForm<FormSchema>({
-    resolver: zodResolver(AddPlantFormInputSchema),
+  const form = useForm<AddPlantForm>({
+    resolver: zodResolver(AddPlantFormSchema),
     defaultValues: {
-      commonName: "",
-      species: "",
-      genus: "",
-      nickname: "",
-      description: "",
-      source: "",
-      ownedSince: undefined,
-      lastRepotted: undefined,
-      roomLocation: "",
-      isPetSafe: "null",
-      isAirCleaning: "null",
-      windowDirection: "null",
-      lightExposure: "null",
-      growingMedium: "null",
-      // pottingMix: [],
+      [OverviewFieldsEnum.CommonName]: "",
+      [OverviewFieldsEnum.Species]: "",
+      [OverviewFieldsEnum.Genus]: "",
+      [OverviewFieldsEnum.Nickname]: "",
+      [OverviewFieldsEnum.Description]: "",
+      [OverviewFieldsEnum.Source]: "",
+      [OverviewFieldsEnum.OwnedSince]: undefined,
+      [OverviewFieldsEnum.IsSafe]: undefined,
+      [OverviewFieldsEnum.IsAirPurifying]: undefined,
+      [EnvironmentFieldsEnum.CurrentHeight]: "",
+      [EnvironmentFieldsEnum.CurrentPotSize]: "",
+      [NotesFieldsEnum.WateringNotes]: "",
+      [NotesFieldsEnum.MistingNotes]: "",
+      [NotesFieldsEnum.LeafCleaningNotes]: "",
+      [NotesFieldsEnum.FertilizingNotes]: "",
+      [NotesFieldsEnum.AdditionalNotes]: "",
+      [EnvironmentFieldsEnum.Humidity]: "",
+      [EnvironmentFieldsEnum.Temperature]: "",
+      [EnvironmentFieldsEnum.LastRepotted]: undefined,
+      [EnvironmentFieldsEnum.RoomLocation]: "",
+      [EnvironmentFieldsEnum.WindowDirection]: undefined,
+      [EnvironmentFieldsEnum.LightExposure]: undefined,
+      [EnvironmentFieldsEnum.GrowingMedium]: undefined,
+      [EnvironmentFieldsEnum.PottingMix]: [],
       // pictures: undefined,
     },
   });
 
-  const onSubmit: SubmitHandler<FormSchema> = async (data) => {
+  const getTabsWithErrors = () => {
+    const errors = form.formState.errors;
+    const errorFields = Object.keys(errors);
+
+    const tabsWithErrors = [];
+
+    for (const [tabName, fields] of Object.entries(tabFieldInputs)) {
+      if (fields.some((field) => errorFields.includes(field))) {
+        tabsWithErrors.push(tabName);
+      }
+    }
+
+    return tabsWithErrors;
+  };
+
+  useEffect(() => {
+    const tabsWithErrors = getTabsWithErrors();
+    if (tabsWithErrors.length > 0) {
+      setActiveTab(tabsWithErrors[0]);
+    }
+  }, [form.formState.errors]);
+
+  const tabsWithErrors = getTabsWithErrors();
+
+  const onSubmit: SubmitHandler<AddPlantForm> = async (data) => {
     console.log("data: ", JSON.stringify(data));
     const formData = new FormData();
 
@@ -72,7 +109,12 @@ const AddPlant = () => {
         formData.append(key, getCurrentIsoDate(value));
       }
 
-      if (!value || value === "null") {
+      if (value === true || value === false) {
+        formData.append(key, value ? "true" : "false");
+        return;
+      }
+
+      if (!value) {
         return;
       }
 
@@ -83,7 +125,7 @@ const AddPlant = () => {
       console.log(key + ": " + value);
     }
 
-    formAction(formData);
+    startTransition(() => formAction(formData));
   };
 
   return (
@@ -106,38 +148,85 @@ const AddPlant = () => {
             </CardHeader>
 
             <CardContent className="p-6">
-              <Tabs defaultValue="basic" className="w-full gap-6">
+              <Tabs
+                value={activeTab}
+                onValueChange={setActiveTab}
+                className="w-full gap-6"
+              >
                 <TabsList className="grid grid-cols-3 w-full">
-                  <TabsTrigger value="basic">Basic Info</TabsTrigger>
-                  <TabsTrigger value="care">Care Details</TabsTrigger>
-                  <TabsTrigger value="status">Plant Status</TabsTrigger>
+                  <TabsTrigger
+                    value={TabEnum.Overview}
+                    className={cn(
+                      tabsWithErrors.includes(TabEnum.Overview) &&
+                        "text-destructive",
+                      activeTab === TabEnum.Overview &&
+                        tabsWithErrors.includes(TabEnum.Overview) &&
+                        "outline-1 outline-destructive outline-offset-[-1px] bg-destructive/10 hover:bg-destructive/20"
+                    )}
+                  >
+                    Overview
+                    {tabsWithErrors.includes(TabEnum.Overview) && (
+                      <span className="text-destructive">●</span>
+                    )}
+                  </TabsTrigger>
+
+                  <TabsTrigger
+                    value={TabEnum.Environment}
+                    className={cn(
+                      tabsWithErrors.includes(TabEnum.Environment) &&
+                        "text-destructive",
+                      activeTab === TabEnum.Environment &&
+                        tabsWithErrors.includes(TabEnum.Environment) &&
+                        "outline-1 outline-destructive outline-offset-[-1px] bg-destructive/10 hover:bg-destructive/20"
+                    )}
+                  >
+                    Environment
+                    {tabsWithErrors.includes(TabEnum.Environment) && (
+                      <span className="text-destructive">●</span>
+                    )}
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value={TabEnum.Notes}
+                    className={cn(
+                      tabsWithErrors.includes(TabEnum.Notes) &&
+                        "text-destructive",
+                      activeTab === TabEnum.Notes &&
+                        tabsWithErrors.includes(TabEnum.Notes) &&
+                        "outline-1 outline-destructive outline-offset-[-1px] bg-destructive/10 hover:bg-destructive/20"
+                    )}
+                  >
+                    Care Notes
+                    {tabsWithErrors.includes(TabEnum.Notes) && (
+                      <span className="text-destructive">●</span>
+                    )}
+                  </TabsTrigger>
                 </TabsList>
 
                 <TabsContent
-                  value="basic"
+                  value="overview"
                   forceMount
                   className="data-[state=inactive]:hidden"
                 >
-                  <BasicInfoTab form={form} state={state} />
+                  <OverviewTab form={form} state={state} />
                 </TabsContent>
 
                 <TabsContent
-                  value="care"
+                  value="environment"
                   forceMount
                   className="data-[state=inactive]:hidden"
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <CareDetailsTab form={form} state={state} />
+                    <EnvironmentTab form={form} state={state} />
                   </div>
                 </TabsContent>
 
                 <TabsContent
-                  value="status"
+                  value="notes"
                   forceMount
                   className="data-[state=inactive]:hidden"
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <PlantStatusTab form={form} state={state} />
+                  <div className="grid grid-cols-1 gap-6">
+                    <CareNotes form={form} state={state} />
                   </div>
                 </TabsContent>
               </Tabs>

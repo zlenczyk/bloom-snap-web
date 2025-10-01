@@ -1,27 +1,34 @@
 "use server";
 
-import NewPlantFormSchema from "./_schema";
+import { auth } from "@/auth";
 import db from "@/lib/db/db";
-import { hash } from "bcryptjs";
-import { redirect } from "next/navigation";
-import { json } from "stream/consumers";
-import AddPlantFormSchema from "./_schema";
+import { AddPlantFormSchema } from "./schema";
 
 type Errors = {
+  commonName?: string[];
   species?: string[];
   genus?: string[];
-  commonName?: string[];
   nickname?: string[];
+  currentHeight?: string[];
+  currentPotSize?: string[];
+  wateringNotes?: string[];
+  mistingNotes?: string[];
+  leafCleaningNotes?: string[];
+  fertilizingNotes?: string[];
+  additionalNotes?: string[];
+  humidity?: string[];
+  temperature?: string[];
   description?: string[];
   source?: string[];
   ownedSince?: string[];
   lastRepotted?: string[];
   roomLocation?: string[];
-  isPetSafe?: string[];
-  isHealthy?: string[];
+  isSafe?: string[];
+  isAirPurifying?: string[];
   windowDirection?: string[];
-  isBlooming?: string[];
-  isAirCleaning?: string[];
+  lightExposure?: string[];
+  growingMedium?: string[];
+  pottingMix?: string[];
 };
 
 export type AddPlantFormState = {
@@ -30,7 +37,19 @@ export type AddPlantFormState = {
   errors?: Errors;
 };
 
+const toOptionalBoolean = (value: unknown): boolean | null => {
+  if (value === "true") return true;
+  if (value === "false") return false;
+  return null;
+};
+
 const addPlant = async (state: AddPlantFormState, formData: FormData) => {
+  const session = await auth()
+
+  if (!session?.user) return null
+  
+  const userId = session?.user?.id;
+
   try {
     const ownedSinceStr = formData.get("ownedSince");
     const lastRepottedStr = formData.get("lastRepotted");
@@ -42,29 +61,23 @@ const addPlant = async (state: AddPlantFormState, formData: FormData) => {
     }
 
     const validationResult = AddPlantFormSchema.safeParse({
-      species: formData.get("species"),
-      genus: formData.get("genus"),
-      commonName: formData.get("commonName"),
-      nickname: formData.get("nickname"),
-      description: formData.get("description"),
-      source: formData.get("source"),
-      // ownedSince: ownedSinceStr ? new Date(ownedSinceStr.toString()) : undefined,
+      species: formData.get("species") || null,
+      genus: formData.get("genus") || null,
+      commonName: formData.get("commonName") || null,
+      nickname: formData.get("nickname") || null,
+      description: formData.get("description") || null,
+      source: formData.get("source") || null,
+      ownedSince: ownedSinceStr ? new Date(ownedSinceStr.toString()) : null,
       lastRepotted: lastRepottedStr
         ? new Date(lastRepottedStr.toString())
-        : undefined,
-      ownedSince: formData.get("ownedSince"),
-      // lastRepotted: formData.get("lastRepotted"),
-      roomLocation: formData.get("roomLocation"),
-      isPetSafe: formData.get("isPetSafe"),
-      isHealthy: formData.get("isHealthy"),
-      windowDirection: formData.get("windowDirection"),
-      isBlooming: formData.get("isBlooming"),
-      isAirCleaning: formData.get("isAirCleaning"),
+        : null,
+      roomLocation: formData.get("roomLocation") || null,
+      isSafe: toOptionalBoolean(formData.get("isSafe")),
+      windowDirection: formData.get("windowDirection") || null,
+      isAirPurifying: toOptionalBoolean(formData.get("isAirPurifying")),
     });
 
-    console.log("WTF common name: ", validationResult.data?.commonName);
-    console.log("WTF isBlooming: ", validationResult.data?.isBlooming);
-    console.log("WTF ownedSince: ", validationResult.data?.ownedSince);
+    console.log("WTF all data: ", validationResult.data);
 
     if (!validationResult.success) {
       console.log(
@@ -80,27 +93,35 @@ const addPlant = async (state: AddPlantFormState, formData: FormData) => {
 
     const validData = validationResult.data;
 
-    const transformedData: Record<string, unknown> = {};
-
-    for (const [key, value] of Object.entries(validData)) {
-      let finalValue;
-
-      if (value === "" || value === "null") {
-        finalValue = null;
-      }
-
-      if (value === "true") {
-        finalValue = true;
-      }
-
-      if (value === "false") {
-        finalValue = false;
-      }
-
-      transformedData[key] = finalValue;
-    }
-
-    console.log("FORMULARZ: ", JSON.stringify(transformedData));
+    const created = await db.plant.create({
+      data: {
+        userId,
+        commonName: validData.commonName,
+        species: validData.species,
+        genus: validData.genus,
+        nickname: validData.nickname,
+        source: validData.source,
+        ownedSince: validData.ownedSince,
+        isSafe: validData.isSafe ?? undefined,
+        isAirPurifying: validData.isAirPurifying ?? undefined,
+        description: validData.description,
+        currentHeight: validData.currentHeight,
+        currentPotSize: validData.currentPotSize,
+        lastRepotted: validData.lastRepotted,
+        humidity: validData.humidity,
+        temperature: validData.temperature,
+        roomLocation: validData.roomLocation,
+        windowDirection: validData.windowDirection || undefined,
+        lightExposure: validData.lightExposure || undefined,
+        growingMedium: validData.growingMedium || undefined,
+        pottingMix: validData.pottingMix ?? undefined,
+        wateringNotes: validData.wateringNotes,
+        mistingNotes: validData.mistingNotes,
+        leafCleaningNotes: validData.leafCleaningNotes,
+        fertilizingNotes: validData.fertilizingNotes,
+        additionalNotes: validData.additionalNotes,
+      },
+    });
 
     return {
       success: true,

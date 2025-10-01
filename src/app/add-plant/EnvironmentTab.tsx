@@ -22,6 +22,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import {
+  EnvironmentFieldsEnum,
   LIGHT_EXPOSURE_OPTIONS,
   LightExposureEnum,
   WINDOW_DIRECTION_OPTIONS,
@@ -31,11 +32,13 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
+import { AddPlantFormState } from "./actions";
 import pottingComponents from "./potting";
+import { AddPlantForm } from "./schema";
 
 type EnvironmentTabProps = {
-  form: UseFormReturn<any>;
-  state?: any;
+  form: UseFormReturn<AddPlantForm>;
+  state?: AddPlantFormState;
 };
 
 const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
@@ -43,7 +46,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
     <>
       <FormField
         control={form.control}
-        name="currentHeight"
+        name={EnvironmentFieldsEnum.CurrentHeight}
         render={({ field }) => (
           <FormItem className="gap-3 self-start">
             <FormLabel>How tall is it?</FormLabel>
@@ -61,7 +64,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
 
       <FormField
         control={form.control}
-        name="currentPotSize"
+        name={EnvironmentFieldsEnum.CurrentPotSize}
         render={({ field }) => (
           <FormItem className="gap-3 self-start">
             <FormLabel>What’s the pot size? (Diameter)</FormLabel>
@@ -79,7 +82,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
 
       <FormField
         control={form.control}
-        name="lastRepotted"
+        name={EnvironmentFieldsEnum.LastRepotted}
         render={({ field }) => (
           <FormItem className="gap-3 w-full self-start">
             <FormLabel>Last repotting?</FormLabel>
@@ -124,7 +127,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
 
       <FormField
         control={form.control}
-        name="humidity"
+        name={EnvironmentFieldsEnum.Humidity}
         render={({ field }) => (
           <FormItem className="gap-3 self-start">
             <FormLabel>Air humidity around?</FormLabel>
@@ -142,7 +145,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
 
       <FormField
         control={form.control}
-        name="temperature"
+        name={EnvironmentFieldsEnum.Temperature}
         render={({ field }) => (
           <FormItem className="gap-3 self-start">
             <FormLabel>How’s the temperature there?</FormLabel>
@@ -160,7 +163,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
 
       <FormField
         control={form.control}
-        name="lightExposure"
+        name={EnvironmentFieldsEnum.LightExposure}
         render={({ field }) => (
           <FormItem className="gap-3 self-start">
             <FormLabel>What type of light does it get?</FormLabel>
@@ -207,7 +210,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
 
       <FormField
         control={form.control}
-        name="windowDirection"
+        name={EnvironmentFieldsEnum.WindowDirection}
         render={({ field }) => (
           <FormItem className="gap-3 self-start">
             <FormLabel>Which way’s the window?</FormLabel>
@@ -311,7 +314,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
 
       <FormField
         control={form.control}
-        name="roomLocation"
+        name={EnvironmentFieldsEnum.RoomLocation}
         render={({ field }) => (
           <FormItem className="gap-3 self-start">
             <FormLabel>Which room/place is it in?</FormLabel>
@@ -332,7 +335,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
 
       <FormField
         control={form.control}
-        name="growingMedium"
+        name={EnvironmentFieldsEnum.GrowingMedium}
         render={({ field }) => (
           <FormItem className="gap-3 self-start">
             <FormLabel>Roots: what’s the growing method?</FormLabel>
@@ -363,7 +366,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
 
       <FormField
         control={form.control}
-        name="pottingMix"
+        name={EnvironmentFieldsEnum.PottingMix}
         render={({ field }) => (
           <FormItem className="gap-3 self-start">
             <FormLabel>Roots: which components are the roots in?</FormLabel>
