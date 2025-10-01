@@ -1,5 +1,6 @@
 "use client";
 
+import { AddPlantForm } from "@/app/add-plant/schema";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,8 +12,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { LightExposure } from "@/lib/data/light-exposure";
-import { WindowDirection } from "@/lib/data/window-direction";
 import {
   AArrowDown,
   AArrowUp,
@@ -21,35 +20,13 @@ import {
   Filter,
   Plus,
   Search,
-  SlidersHorizontal
+  SlidersHorizontal,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import PlantCard from "./PlantCard";
 
-export type Plant = {
-  commonName: string;
-  description?: string | null;
-  genus?: string | null;
-  id: string;
-  isAirCleaning?: boolean | null;
-  isBlooming?: boolean | null;
-  isHealthy?: boolean | null;
-  isPetSafe?: boolean | null;
-  lastRepotted?: Date | null;
-  lightExposure?: `${LightExposure}` | null;
-  nickname?: string | null;
-  ownedSince?: Date | null;
-  pictures?: { url: string }[] | null;
-  pottingMix?: string[] | null;
-  roomLocation?: string | null;
-  soilType?: string | null;
-  source?: string | null;
-  species?: string | null;
-  windowDirection?: `${WindowDirection}` | null;
-};
-
 interface CollectionProps {
-  plants: Plant[];
+  plants?: AddPlantForm[];
 }
 
 const Collection = ({ plants = [] }: CollectionProps) => {
@@ -105,17 +82,17 @@ const Collection = ({ plants = [] }: CollectionProps) => {
       );
     }
 
-    if (filters.needsAttention) {
-      result = result.filter((plant) => !plant.isHealthy);
-    }
+    // if (filters.needsAttention) {
+    //   result = result.filter((plant) => !plant.isHealthy);
+    // }
     if (filters.petFriendly) {
-      result = result.filter((plant) => plant.isPetSafe === true);
+      result = result.filter((plant) => plant.isSafe === true);
     }
-    if (filters.blooming) {
-      result = result.filter((plant) => plant.isBlooming === true);
-    }
+    // if (filters.blooming) {
+    //   result = result.filter((plant) => plant.isBlooming === true);
+    // }
     if (filters.airCleaning) {
-      result = result.filter((plant) => plant.isAirCleaning === true);
+      result = result.filter((plant) => plant.isAirPurifying === true);
     }
 
     result = [...result].sort((a, b) => {
@@ -274,8 +251,11 @@ const Collection = ({ plants = [] }: CollectionProps) => {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filteredPlants.map((plant) => (
-            <div key={plant.id} className="animate-fade-in">
+          {filteredPlants.map((plant, index) => (
+            <div
+              key={`${plant.commonName}-${index}`}
+              className="animate-fade-in"
+            >
               <PlantCard plant={plant} />
             </div>
           ))}
