@@ -27,7 +27,7 @@ import createTimelineEventAction, {
   type CreateTimelineEventState,
 } from "@/lib/actions/createTimelineEventAction";
 import { updateTimelineEventAction } from "@/lib/actions/updateTimelineEventAction";
-import { predefinedEvents } from "@/lib/data/timeline-event-types";
+import { predefinedEvents } from "@/lib/data/timelineEventTypes";
 import { type TimelineEvent } from "@/lib/db/schema";
 import { cn } from "@/lib/utils";
 import {

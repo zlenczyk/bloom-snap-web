@@ -2,7 +2,7 @@ import {
   EventIcon,
   eventIconsMap,
   predefinedEvents,
-} from "@/lib/data/timeline-event-types";
+} from "@/lib/data/timelineEventTypes";
 import { CSSProperties } from "react";
 
 interface IconRendererProps {

@@ -1,4 +1,4 @@
-import { EventColorsEnum, EventIcon } from "@/lib/data/timeline-event-types";
+import { EventColorsEnum, EventIcon } from "@/lib/data/timelineEventTypes";
 import db from "../db";
 import { TimelineEvent } from "../schema";
 

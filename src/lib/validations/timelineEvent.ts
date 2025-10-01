@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { eventIconsTuple, EventColorsEnum } from "../data/timeline-event-types";
+import { eventIconsTuple, EventColorsEnum } from "../data/timelineEventTypes";
 
 export const timelineEventSchema = z.object({
   title: z

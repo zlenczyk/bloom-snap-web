@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UpdateTimelineEventState } from "@/lib/actions/updateTimelineEventAction";
-import { predefinedEvents } from "@/lib/data/timeline-event-types";
+import { predefinedEvents } from "@/lib/data/timelineEventTypes";
 import { TimelineEventFormData } from "@/lib/validations/timelineEvent";
 import { UseFormReturn } from "react-hook-form";
 import { EventStyleSelector } from "./EventStyleSelector";
