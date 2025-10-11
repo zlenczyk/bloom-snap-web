@@ -11,13 +11,14 @@ datasource db {
 
 model User {
   id            String    @id @default(cuid())
-  name          String?   @unique
+  name          String?   @db.VarChar(200)
   email         String    @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
   password      String?
+  plants        Plant[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -62,15 +63,101 @@ model VerificationToken {
   @@id([identifier, token])
 }
 
+enum GrowingMedium {
+  soil
+  semi_hydroponics
+  hydroponics
+}
+
+enum LightExposure {
+  morning_sun_light
+  afternoon_sun_light
+  full_day_sun_light
+  low_sun_light
+  indirect_sun_light
+  artificial_light
+}
+
+enum WindowDirection {
+  north_facing_northern_hemisphere
+  south_facing_northern_hemisphere
+  east_facing_northern_hemisphere
+  west_facing_northern_hemisphere
+  north_facing_southern_hemisphere
+  south_facing_southern_hemisphere
+  east_facing_southern_hemisphere
+  west_facing_southern_hemisphere
+  no_window
+}
+
+model Plant {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Overview tab
+  commonName     String    @db.VarChar(200)
+  species        String?   @db.VarChar(200)
+  genus          String?   @db.VarChar(200)
+  nickname       String?   @db.VarChar(200)
+  source         String?   @db.VarChar(200)
+  ownedSince     DateTime?
+  isSafe         Boolean?
+  isAirPurifying Boolean?
+  description    String?   @db.VarChar(300)
+
+  // Environment tab
+  currentHeight   String?          @db.VarChar(50)
+  currentPotSize  String?          @db.VarChar(50)
+  lastRepotted    DateTime?
+  humidity        String?          @db.VarChar(50)
+  temperature     String?          @db.VarChar(50)
+  roomLocation    String?          @db.VarChar(100)
+  windowDirection WindowDirection?
+  lightExposure   LightExposure?
+  growingMedium   GrowingMedium?
+  pottingMix      Json? // store ["peat", "perlite"] etc.
+
+  // Notes tab
+  wateringNotes     String? @db.VarChar(300)
+  mistingNotes      String? @db.VarChar(300)
+  leafCleaningNotes String? @db.VarChar(300)
+  fertilizingNotes  String? @db.VarChar(300)
+  additionalNotes   String? @db.VarChar(300)
+
+  // Media
+  photos PlantPhoto[]
+
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  TimelineEvent TimelineEvent[]
+
+  @@index([userId])
+}
+
+model PlantPhoto {
+  id      String @id @default(cuid())
+  plantId String
+  plant   Plant  @relation(fields: [plantId], references: [id], onDelete: Cascade)
+
+  url       String   @db.VarChar(500) // Supabase storage path/URL
+  caption   String?  @db.VarChar(300)
+  createdAt DateTime @default(now())
+}
+
 model TimelineEvent {
-  id          String   @id @default(cuid())
-  title       String
-  description String?
+  id      String @id @default(cuid())
+  plantId String
+  plant   Plant  @relation(fields: [plantId], references: [id], onDelete: Cascade)
+
+  title       String   @db.VarChar(200)
+  description String?  @db.VarChar(500)
   date        DateTime
   icon        String
-  color       String
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
 
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([plantId])
   @@map("timeline_event")
 }
