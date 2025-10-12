@@ -32,6 +32,9 @@ Issues:
 - https://www.reddit.com/r/nextjs/comments/1gl2wmv/strange_behavior_with_shadcn_ui_select_component/
 - https://github.com/radix-ui/primitives/issues/1569
 
+Idelogy of clean code:
+- how lond should be data fields? https://stackoverflow.com/questions/20958/list-of-standard-lengths-for-database-fields
+
 # Potential Features for an Expanded App Version
 
 ## Main Feed
