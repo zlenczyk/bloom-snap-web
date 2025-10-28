@@ -34,55 +34,50 @@ const getUser = async (email: string) => {
 export const authConfig = {
   pages: {
     signIn: "/sign-in",
+    newUser: "/complete-profile",
   },
   callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user;
-      const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
-      console.log("is logged in: ", isLoggedIn);
-      if (isOnDashboard) {
-        if (isLoggedIn) {
-          return true;
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.userName = user.userName;
+      }
+      return token;
+    },
+
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id as string;
+        session.user.email = token.email as string;
+        session.user.userName = token.userName as string;
+      }
+      return session;
+    },
+
+    async signIn({ user, account }) {
+      if (account?.provider === "google") {
+        // Google users must complete userName if still temporary
+        if (user.userName.startsWith("temp_")) {
+          return true; // NextAuth will redirect to /complete-profile
         }
-        return false; // Redirect unauthenticated users to login page
-      } else if (isLoggedIn) {
-        return Response.redirect(new URL("/dashboard", nextUrl));
       }
       return true;
     },
-    async jwt({ token, user, trigger, session }) {
-      if (trigger === "update") {
-        return { ...token, ...session.user };
-      }
-
-      if (user?.id) token.id = user.id;
-
-      return token;
-    },
-    // return !!auth;
-
-    // const isLoggedIn = !!auth?.user;
-    // const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
-    // const isOnAuth = nextUrl.pathname.startsWith("/sign-in");
-
-    // if (isOnDashboard) {
-    //   if (isLoggedIn) return true;
-    //   return Response.redirect(new URL("/sign-in", nextUrl));
-    // }
-
-    // if (isOnAuth) {
-    //   if (!isLoggedIn) return true;
-    //   return Response.redirect(new URL("/dashboard", nextUrl));
-    // }
-
-    // return true;
-    // }
   },
   secret: process.env.AUTH_SECRET ?? "",
   providers: [
     Google({
       clientId: process.env.AUTH_GOOGLE_ID ?? "",
       clientSecret: process.env.AUTH_GOOGLE_SECRET ?? "",
+      profile(profile) {
+        return {
+          id: profile.sub,
+          email: profile.email,
+          image: profile.picture ?? null,
+          userName: `temp_${profile.sub.slice(0, 8)}`,
+        };
+      },
     }),
     Credentials({
       credentials: {
@@ -117,7 +112,7 @@ export const authConfig = {
         return {
           id: user.id,
           email: user.email,
-          password: user.password,
+          userName: user.userName,
         };
       },
     }),

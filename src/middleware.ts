@@ -1,71 +1,34 @@
-// // export { auth as middleware } from "@/auth";
-// // import { NextRequest } from "next/server";
-// // import { authConfig } from "./auth.config";
-// // import NextAuth, { Session } from "next-auth";
+import { NextResponse } from "next/server";
+import { auth } from "./auth";
 
-// import NextAuth, { type Session } from "next-auth"; //  { type Session }
-// import { authConfig } from "@/auth.config";
-// import { NextRequest } from "next/server";
-// import { PUBLIC_ROUTES } from "./lib/routes";
-// // import { NextRequest } from "next/server";
+const PUBLIC_ROUTES = ["/contact", "/terms"];
+const GUEST_ROUTES = ["/sign-in", "/sign-up", "/complete-profile"];
 
-// export const config = {
-//   matcher: [
-//     "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
-//   ],
-// };
+export const config = {
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|assets/).*)"],
+};
 
-// const { auth } = NextAuth(authConfig);
+export default auth((req) => {
+  const { nextUrl } = req;
+  const user = req.auth?.user;
+  const path = nextUrl.pathname;
 
-// type NextAuthRequest = NextRequest & { auth: Session | null };
+  // Public pages → accessible for everyone
+  if (PUBLIC_ROUTES.includes(path)) return NextResponse.next();
 
-// export default auth((request: NextAuthRequest): Response | void => {
-//   const { auth, nextUrl } = request;
+  // Guest pages → accessible only if NOT logged in
+  if (GUEST_ROUTES.includes(path)) {
+    if (user) {
+      return NextResponse.redirect(new URL("/my-collection", nextUrl));
+    }
+    return NextResponse.next();
+  }
 
-//   const isLoggedIn = !!auth?.user;
+  // Protected pages → require login
+  if (!user) {
+    return NextResponse.redirect(new URL("/sign-in", nextUrl));
+  }
 
-//   const path = nextUrl.pathname;
-//   console.log("pahname: ", path);
-
-//   if (!isLoggedIn && !PUBLIC_ROUTES.includes(path)) {
-//     console.log("test");
-//     return Response.redirect(new URL("/sign-in", nextUrl));
-//   }
-
-//   console.log("pahname: ", path);
-
-//   console.log("public routes: ", PUBLIC_ROUTES);
-//     // Allow only access to sign-in and sign-up pages for unauthenticated users
-//     // if (!isLoggedIn && !PUBLIC_ROUTES.some(route => path.startsWith(route))) {
-//     //   console.log("test");
-//     //   return Response.redirect(new URL("/sign-in", nextUrl));
-//     // }
-
-//   // if (isLoggedIn && ["/sign-in", "/sign-up"].includes(nextUrl.pathname)) {
-//   //   return Response.redirect(new URL("/dashboard", nextUrl));
-//   // }
-
-//   // Prevent logged-in users from accessing sign-in or sign-up pages
-//   if (isLoggedIn && PUBLIC_ROUTES.some(route => path.startsWith(route))) {
-//     return Response.redirect(new URL("/dashboard", nextUrl));
-//   }
-
-//   return; // Allow access
-// });
-
-// import NextAuth from "next-auth";
-// import { authConfig } from "./auth.config";
-
-// export default NextAuth(authConfig).auth;
-
-// export const config = {
-//   // https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
-//   matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
-// };
-
-// export { auth as middleware } from "@/auth";
-
-import NextAuth from "next-auth";
-import { authConfig } from "./auth.config";
-
-export const { auth: middleware } = NextAuth(authConfig);
+  // Logged-in users can access protected pages
+  return NextResponse.next();
+});

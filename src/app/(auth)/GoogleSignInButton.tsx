@@ -14,7 +14,7 @@ const GoogleSignInButton = ({ children }: Props) => {
 
   return (
     <form action={formAction}>
-      <Button className="w-full my-2" type="submit">
+      <Button className="w-full" type="submit">
         {children}
       </Button>
     </form>
