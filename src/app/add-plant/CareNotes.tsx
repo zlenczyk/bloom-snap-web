@@ -32,6 +32,7 @@ const CareNotes = ({ form, state }: CareNotesProps) => {
                 placeholder="I usually water it every other morning, letting the soil dry in between. I avoid overwatering to keep the roots happy."
                 autoComplete="on"
                 {...field}
+                value={field.value || ""}
               />
             </FormControl>
 
@@ -57,6 +58,7 @@ const CareNotes = ({ form, state }: CareNotesProps) => {
                 placeholder="I lightly mist the leaves a few times a week, mostly in the afternoon. I avoid spraying directly on flowers."
                 autoComplete="on"
                 {...field}
+                value={field.value || ""}
               />
             </FormControl>
 
@@ -80,6 +82,7 @@ const CareNotes = ({ form, state }: CareNotesProps) => {
                 placeholder="I wipe the leaves gently with a soft cloth once a week. I try to keep it simple and avoid using any chemicals."
                 autoComplete="on"
                 {...field}
+                value={field.value || ""}
               />
             </FormControl>
 
@@ -103,6 +106,7 @@ const CareNotes = ({ form, state }: CareNotesProps) => {
                 placeholder="I fertilize once a month with a mild liquid fertilizer. During winter, I usually skip it and let the plant rest."
                 autoComplete="on"
                 {...field}
+                value={field.value || ""}
               />
             </FormControl>
 
@@ -126,6 +130,7 @@ const CareNotes = ({ form, state }: CareNotesProps) => {
                 placeholder="I usually rotate it every few days so it grows evenly. I also watch for pests during humid months and try to keep it near indirect sunlight."
                 autoComplete="on"
                 {...field}
+                value={field.value || ""}
               />
             </FormControl>
 
