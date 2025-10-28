@@ -1,8 +1,7 @@
-import Link from "next/link";
-import React from "react";
+import { auth } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { LogIn } from "lucide-react";
-import { auth } from "@/auth";
+import Link from "next/link";
 import Menu from "./Menu";
 
 const Header = async () => {
@@ -11,14 +10,17 @@ const Header = async () => {
   const user = session?.user;
 
   return (
-    <header className="bg-gradient-to-br from-green-200 to-emerald-100 shadow-md py-2 border-b border-s-zinc-200 fixed w-full top-0 h-header-height z-50 flex items-center">
-      <div className="flex item-center justify-between mx-auto w-full max-w-7xl px-6">
+    <header className="w-full h-header-height fixed top-0 z-50">
+      <div className="absolute inset-0 bg-white"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-green-500/40 to-green-100 shadow-md"></div>
+      <div className="relative flex items-center justify-between mx-auto w-full max-w-7xl px-6 py-2 h-full">
         <Link
           href="/"
-          className="flex items-center justify-center font-medium text-xl text-zinc-950"
+          className="flex items-center justify-center text-xl font-extrabold italic text-green-700"
         >
           BloomSnap
         </Link>
+
         {user ? (
           <Menu
             userImage="/assets/placeholder-profile.png"
