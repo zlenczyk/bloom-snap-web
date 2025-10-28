@@ -1,32 +1,27 @@
 "use server";
 
-import SignUpFormSchema from "./schema";
 import db from "@/lib/db/db";
 import { hash } from "bcryptjs";
 import { redirect } from "next/navigation";
+import z from "zod";
+import { SignUpFormSchema } from "./schema";
 
-type InputErrors = {
-  username?: string[];
+type Errors = {
+  userName?: string[];
   email?: string[];
   password?: string[];
   confirmPassword?: string[];
 };
 
-type SignUpFormErrorState = {
-  isError: true;
-  message: string;
-  inputErrors?: InputErrors;
+export type SignUpFormState = {
+  message?: string;
+  success?: boolean;
+  errors?: Errors;
 };
-
-export type SignUpFormInitialState = {
-  isError: false;
-};
-
-export type SignUpFormState = SignUpFormInitialState | SignUpFormErrorState;
 
 const signUp = async (state: SignUpFormState, formData: FormData) => {
   const validationResult = SignUpFormSchema.safeParse({
-    username: formData.get("username"),
+    userName: formData.get("userName"),
     email: formData.get("email"),
     password: formData.get("password"),
     confirmPassword: formData.get("confirmPassword"),
@@ -34,34 +29,34 @@ const signUp = async (state: SignUpFormState, formData: FormData) => {
 
   if (!validationResult.success) {
     return {
-      isError: true,
+      errors: z.flattenError(validationResult.error).fieldErrors,
       message: "Input validation failed. Please check your entries.",
-      inputErrors: validationResult.error.flatten().fieldErrors,
+      success: false,
     } as const;
   }
 
-  const { username, email, password } = validationResult.data;
+  const { userName, email, password } = validationResult.data;
 
   const existingUsername = await db.user.findUnique({
-    where: { username: username },
+    where: { userName: userName },
   });
 
   if (existingUsername) {
     return {
-      isError: true,
-      message: "User with this username already exist",
-      inputErrors: { username: ["User with this username already exist!"] },
-    } as SignUpFormErrorState;
+      errors: { userName: ["User with this userName already exist!"] },
+      message: "User with this userName already exist!",
+      success: false,
+    };
   }
 
   const existingEmail = await db.user.findUnique({ where: { email: email } });
 
   if (existingEmail) {
     return {
-      isError: true,
-      message: "User with this email already exist",
-      inputErrors: { email: ["User with this email already exist!"] },
-    } as SignUpFormErrorState;
+      errors: { userName: ["User with this email already exist!"] },
+      message: "User with this email already exist!",
+      success: false,
+    };
   }
 
   const hashedPassword = await hash(password, 10);
@@ -69,16 +64,16 @@ const signUp = async (state: SignUpFormState, formData: FormData) => {
   try {
     await db.user.create({
       data: {
-        username,
+        userName,
         email,
         password: hashedPassword,
       },
     });
   } catch {
     return {
-      isError: true,
-      message: "An error occurred and user creation failed. Please try again.",
-    } as const;
+      message: "Failed to submit form. Please try again later.",
+      success: false,
+    };
   }
 
   redirect("/sign-in");

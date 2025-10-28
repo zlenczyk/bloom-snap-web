@@ -18,10 +18,12 @@ import { z } from "zod";
 import ErrorMessage from "./ErrorMessage";
 import GoogleSignInButton from "./GoogleSignInButton";
 import signUp, { type SignUpFormState } from "./sign-up/actions";
-import SignUpFormSchema from "./sign-up/schema";
+import { SignUpFormSchema } from "./sign-up/schema";
 
 const initialState: SignUpFormState = {
-  isError: false,
+  errors: {},
+  message: "",
+  success: false,
 };
 
 const SignUpForm = () => {
@@ -33,120 +35,126 @@ const SignUpForm = () => {
   const form = useForm<z.infer<typeof SignUpFormSchema>>({
     resolver: zodResolver(SignUpFormSchema),
     defaultValues: {
-      username: "",
+      userName: "",
       email: "",
       password: "",
       confirmPassword: "",
     },
   });
 
-  type ErrorMessageTypeProps = {
-    inputName: "username" | "email" | "password" | "confirmPassword";
-  };
-
-  const FormInputErrorMessage = ({ inputName }: ErrorMessageTypeProps) => {
-    const messages =
-      state.isError && state.inputErrors && state.inputErrors[inputName];
-
-    if (!messages) {
-      return null;
-    }
-
-    return <ErrorMessage messages={messages} />;
-  };
-
-  const FormSubmitErrorMessage = () => {
-    const message = state.isError && !state.inputErrors && state.message;
-
-    if (!message) {
-      return null;
-    }
-
-    return <ErrorMessage messages={[message]} />;
-  };
-
   return (
     <Form {...form}>
-      <div className="bg-slate-200 p-10 rounded-lg max-w-80 w-full">
-        <form action={formAction}>
-          <div className="space-y-2">
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="SucculentSage99"
-                      autoComplete="on"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormInputErrorMessage inputName="username" />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="cactus.caretaker@example.com"
-                      type="email"
-                      autoComplete="on"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormInputErrorMessage inputName="email" />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" {...field} autoComplete="off" />
-                  </FormControl>
-                  <FormInputErrorMessage inputName="password" />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirm password</FormLabel>
-                  <FormControl>
-                    <Input type="password" {...field} autoComplete="off" />
-                  </FormControl>
-                  <FormInputErrorMessage inputName="confirmPassword" />
-                </FormItem>
-              )}
-            />
-          </div>
-          <FormSubmitErrorMessage />
-          <Button className="w-full mb-2 mt-4" type="submit">
+      <div
+        className="bg-white p-8 sm:p-10 sm:pb-4 sm:rounded-xl overflow-y-auto shadow-xl
+             bg-gradient-to-br from-green-500/40 to-white
+             w-full sm:max-h-[40rem] sm:max-w-md sm:mx-auto mobile-full-h"
+      >
+        <div className="text-3xl sm:text-4xl font-extrabold text-green-700 italic mb-8">
+          BloomSnap
+        </div>
+
+        <form action={formAction} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="userName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="SucculentSage99"
+                    autoComplete="on"
+                    className="w-full bg-white"
+                    {...field}
+                  />
+                </FormControl>
+                <ErrorMessage messages={state?.errors?.userName || []} />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="cactus.caretaker@example.com"
+                    type="email"
+                    autoComplete="on"
+                    className="w-full bg-white"
+                    {...field}
+                  />
+                </FormControl>
+                <ErrorMessage messages={state?.errors?.email || []} />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="********"
+                    {...field}
+                    autoComplete="off"
+                    className="w-full bg-white"
+                  />
+                </FormControl>
+                <ErrorMessage messages={state?.errors?.password || []} />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    {...field}
+                    autoComplete="off"
+                    className="w-full bg-white"
+                    placeholder="********"
+                  />
+                </FormControl>
+                <ErrorMessage messages={state?.errors?.confirmPassword || []} />
+              </FormItem>
+            )}
+          />
+          {!state?.errors && state.message && (
+            <ErrorMessage messages={[state.message]} />
+          )}
+
+          <Button
+            type="submit"
+            className="w-full py-3 text-white mt-6"
+            aria-disabled={isPending}
+          >
             {isPending ? "Submitting" : "Sign up"}
           </Button>
         </form>
-        <div className="flex items-center">
-          <Separator className="my-4 mr-4 bg-slate-400" decorative={true} />
-          or
-          <Separator className="my-4 ml-4 bg-slate-400" decorative={true} />
+
+        <div className="flex items-center my-3">
+          <Separator className="flex-1 bg-gray-300" decorative />
+          <span className="mx-2 text-gray-400">or</span>
+          <Separator className="flex-1 bg-gray-300" decorative />
         </div>
+
         <GoogleSignInButton>Sign up with Google</GoogleSignInButton>
-        <p className="text-sm text-gray-500 mt-2 text-center">
+
+        <p className="text-sm text-gray-500 mt-6 mb-2 text-center">
           Already a member?{" "}
           <Link
-            className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
+            className="underline text-emerald-600 hover:text-emerald-500"
             href="/sign-in"
           >
             Sign in

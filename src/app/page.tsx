@@ -1,5 +1,5 @@
-const Home = () => {
-  return <h1 className="text-xxl">Home</h1>;
-};
+import { redirect } from "next/navigation";
 
-export default Home;
+export default function Page() {
+  redirect("/my-collection");
+}

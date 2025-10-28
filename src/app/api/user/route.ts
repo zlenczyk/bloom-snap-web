@@ -1,19 +1,15 @@
-import db from "@/lib/db";
+import db from "@/lib/db/db";
 import { hash } from "bcryptjs";
 import { z } from "zod";
 
 const userSchema = z.object({
-  username: z
+  userName: z
     .string()
     .min(1, "Username is required")
-    .min(3, "Username must have at least 3 characters")
-    .max(50, { message: "Username too long. Use up to 50 characters." }),
-  email: z
-    .string()
-    .min(1, {
-      message: "Email is required",
-    })
-    .email("Invalid email"),
+    .max(255, { message: "Username too long. Use up to 255 characters." }),
+  email: z.email("Invalid email address").min(1, {
+    message: "Email is required",
+  }),
   password: z
     .string()
     .min(1, "Password confirmation is required")
@@ -23,9 +19,10 @@ const userSchema = z.object({
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { email, username, password } = userSchema.parse(body);
+    const { email, userName, password } = userSchema.parse(body);
 
     const existingEmail = await db.user.findUnique({ where: { email: email } });
+
     if (existingEmail) {
       return Response.json(
         {
@@ -37,13 +34,14 @@ export async function POST(req: Request) {
     }
 
     const existingUsername = await db.user.findUnique({
-      where: { username: username },
+      where: { userName: userName },
     });
+
     if (existingUsername) {
       return Response.json(
         {
           user: null,
-          message: "User with this username already exist",
+          message: "User with this userName already exist",
         },
         { status: 409 }
       );
@@ -53,7 +51,7 @@ export async function POST(req: Request) {
 
     const newUser = await db.user.create({
       data: {
-        username,
+        userName,
         email,
         password: hashedPassword,
       },
