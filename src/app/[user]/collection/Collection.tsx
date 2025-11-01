@@ -1,268 +1,221 @@
 "use client";
 
-import { AddPlantForm } from "@/app/add-plant/schema";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import {
+  Search,
+  SlidersHorizontal,
+  Filter,
   AArrowDown,
   AArrowUp,
   CalendarArrowDown,
   CalendarArrowUp,
-  Filter,
-  Plus,
-  Search,
-  SlidersHorizontal,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 import PlantCard from "./PlantCard";
+import { AddPlantForm } from "@/app/add-plant/schema";
+import { Plant } from "@prisma/client";
+import Link from "next/link";
 
 interface CollectionProps {
-  plants?: AddPlantForm[];
+  plants: Plant[];
+  totalPages: number;
 }
 
-const Collection = ({ plants = [] }: CollectionProps) => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<
-    | "name-asc"
-    | "name-desc"
-    | "date-oldest"
-    | "date-newest"
-    | "repotted-oldest"
-    | "repotted-newest"
-  >("name-asc");
+export default function Collection({ plants, totalPages }: CollectionProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const [filters, setFilters] = useState({
-    needsAttention: false,
-    petFriendly: false,
-    blooming: false,
-    airCleaning: false,
-  });
+  const [search, setSearch] = useState(searchParams.get("search") || "");
+  const [sortBy, setSortBy] = useState(
+    searchParams.get("sortBy") || "createdAt"
+  );
+  const [sortOrder, setSortOrder] = useState(
+    searchParams.get("sortOrder") || "desc"
+  );
+  const [petFriendly, setPetFriendly] = useState(
+    searchParams.get("petFriendly") === "true"
+  );
+  const [airCleaning, setAirCleaning] = useState(
+    searchParams.get("airCleaning") === "true"
+  );
 
-  // const filteredPlants = plants.filter(
-  //   (plant) =>
-  //     plant.commonName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //     plant.nickname?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //     plant.species?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //     plant.genus?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //     plant.roomLocation?.toLowerCase().includes(searchQuery.toLowerCase())
-  // );
+  const page = Number(searchParams.get("page")) || 1;
 
-  const toggleFilter = (
-    key: "needsAttention" | "petFriendly" | "blooming" | "airCleaning"
+  // Update URL params
+  const updateParams = (
+    newParams: Record<string, string | number | boolean | null>
   ) => {
-    setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
+    const params = new URLSearchParams(searchParams);
 
-  // Apply search + filter + sort
-  const filteredPlants = useMemo(() => {
-    let result = plants;
-
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-
-      result = result.filter(
-        (plant) =>
-          plant.commonName.toLowerCase().includes(q) ||
-          plant.nickname?.toLowerCase().includes(q) ||
-          plant.genus?.toLowerCase().includes(q) ||
-          plant.species?.toLowerCase().includes(q) ||
-          plant.roomLocation?.toLowerCase().includes(q) ||
-          plant.description?.toLowerCase().includes(q) ||
-          plant.windowDirection?.toLowerCase().includes(q) ||
-          plant.lightExposure?.toLowerCase().includes(q)
-      );
-    }
-
-    // if (filters.needsAttention) {
-    //   result = result.filter((plant) => !plant.isHealthy);
-    // }
-    if (filters.petFriendly) {
-      result = result.filter((plant) => plant.isSafe === true);
-    }
-    // if (filters.blooming) {
-    //   result = result.filter((plant) => plant.isBlooming === true);
-    // }
-    if (filters.airCleaning) {
-      result = result.filter((plant) => plant.isAirPurifying === true);
-    }
-
-    result = [...result].sort((a, b) => {
-      switch (sortBy) {
-        case "name-asc":
-          return a.commonName.localeCompare(b.commonName);
-        case "name-desc":
-          return b.commonName.localeCompare(a.commonName);
-
-        case "date-oldest":
-          return (
-            (a.ownedSince?.getTime() || 0) - (b.ownedSince?.getTime() || 0)
-          );
-        case "date-newest":
-          return (
-            (b.ownedSince?.getTime() || 0) - (a.ownedSince?.getTime() || 0)
-          );
-
-        case "repotted-oldest":
-          return (
-            (a.lastRepotted?.getTime() || 0) - (b.lastRepotted?.getTime() || 0)
-          );
-        case "repotted-newest":
-          return (
-            (b.lastRepotted?.getTime() || 0) - (a.lastRepotted?.getTime() || 0)
-          );
-
-        default:
-          return 0;
-      }
+    Object.entries(newParams).forEach(([key, value]) => {
+      if (value === null || value === false || value === "") params.delete(key);
+      else params.set(key, String(value));
     });
 
-    return result;
-  }, [plants, searchQuery, filters, sortBy]);
+    router.push(`/?${params.toString()}`);
+  };
+
+  // Handle search typing with debounce
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      updateParams({ search, page: 1 }); // reset to page 1 when searching
+    }, 400);
+    return () => clearTimeout(timeout);
+  }, [search]);
+
+  const toggleFilter = (key: "petFriendly" | "airCleaning") => {
+    if (key === "petFriendly") {
+      setPetFriendly((v) => !v);
+      updateParams({ petFriendly: !petFriendly, page: 1 });
+    } else {
+      setAirCleaning((v) => !v);
+      updateParams({ airCleaning: !airCleaning, page: 1 });
+    }
+  };
+
+  const changeSort = (sort: string, order: string) => {
+    setSortBy(sort);
+    setSortOrder(order);
+    updateParams({ sortBy: sort, sortOrder: order });
+  };
+
+  const changePage = (newPage: number) => {
+    updateParams({ page: newPage });
+  };
 
   return (
     <div className="space-y-6">
+      {/* <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="text-2xl font-bold">My Plant Collection</h2>
+        <Button>Add New Plant</Button>
+      </div> */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="flex items-center text-2xl font-bold">
-          My Plant Collection
-        </h2>
-        <Button className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
-          Add New Plant
+        <h2 className="text-2xl font-bold">My Plant Collection</h2>
+        <Button asChild>
+          <Link href="/add-plant">Add New Plant</Link>
         </Button>
       </div>
 
+      {/* Search + Filters */}
       <div className="flex flex-col gap-4 sm:flex-row">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search plants by name, nickname, genus, species, location, description, window direction, or light exposure..."
+            placeholder="Search your plants..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             className="pl-10"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="flex items-center gap-2">
               <SlidersHorizontal className="h-4 w-4" />
-              <span>Sort & Filter</span>
+              Sort & Filter
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">
-            <DropdownMenuLabel>Sort By</DropdownMenuLabel>
+            <DropdownMenuLabel>Sort</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem
-                className={sortBy === "name-asc" ? "bg-muted" : ""}
-                onClick={() => setSortBy("name-asc")}
-              >
-                <AArrowUp size={16} className="mr-1 inline" /> Name (A – Z)
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className={sortBy === "name-desc" ? "bg-muted" : ""}
-                onClick={() => setSortBy("name-desc")}
-              >
-                <AArrowDown size={16} className="mr-1 inline" /> Name (Z – A)
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className={sortBy === "date-oldest" ? "bg-muted" : ""}
-                onClick={() => setSortBy("date-oldest")}
-              >
-                <CalendarArrowUp size={16} className="mr-1 inline" /> Acquired
-                (newest)
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className={sortBy === "date-newest" ? "bg-muted" : ""}
-                onClick={() => setSortBy("date-newest")}
-              >
-                <CalendarArrowDown size={16} className="mr-1 inline" /> Acquired
-                (oldest)
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className={sortBy === "repotted-oldest" ? "bg-muted" : ""}
-                onClick={() => setSortBy("repotted-oldest")}
-              >
-                <CalendarArrowUp size={16} className="mr-1 inline" /> Repotted
-                (newest)
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className={sortBy === "repotted-newest" ? "bg-muted" : ""}
-                onClick={() => setSortBy("repotted-newest")}
-              >
-                <CalendarArrowDown size={16} className="mr-1 inline" /> Repotted
-                (oldest)
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuLabel>Filter</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-
             <DropdownMenuItem
-              className={filters.needsAttention ? "bg-muted" : ""}
-              onClick={() => toggleFilter("needsAttention")}
+              onClick={() =>
+                changeSort("commonName", sortOrder === "asc" ? "desc" : "asc")
+              }
             >
-              <Filter className="mr-2 h-4 w-4" />
-              <span>Needs Attention</span>
+              <AArrowUp size={16} className="mr-1 inline" /> Name
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                changeSort("createdAt", sortOrder === "asc" ? "desc" : "asc")
+              }
+            >
+              <CalendarArrowDown size={16} className="mr-1 inline" /> Created
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                changeSort("lastRepotted", sortOrder === "asc" ? "desc" : "asc")
+              }
+            >
+              <CalendarArrowUp size={16} className="mr-1 inline" /> Last
+              Repotted
             </DropdownMenuItem>
 
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel>Filter</DropdownMenuLabel>
             <DropdownMenuItem
-              className={filters.petFriendly ? "bg-muted" : ""}
+              className={petFriendly ? "bg-muted" : ""}
               onClick={() => toggleFilter("petFriendly")}
             >
               <Filter className="mr-2 h-4 w-4" />
-              <span>Pet Friendly</span>
+              Pet Friendly
             </DropdownMenuItem>
-
             <DropdownMenuItem
-              className={filters.blooming ? "bg-muted" : ""}
-              onClick={() => toggleFilter("blooming")}
-            >
-              <Filter className="mr-2 h-4 w-4" />
-              <span>Blooming</span>
-            </DropdownMenuItem>
-
-            <DropdownMenuItem
-              className={filters.airCleaning ? "bg-muted" : ""}
+              className={airCleaning ? "bg-muted" : ""}
               onClick={() => toggleFilter("airCleaning")}
             >
               <Filter className="mr-2 h-4 w-4" />
-              <span>Air Cleaning</span>
+              Air Cleaning
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
 
-      {filteredPlants.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-8 text-center">
-          <h3 className="text-lg font-medium">No plants found</h3>
-          <p className="text-sm text-muted-foreground">
-            Try adjusting your search or add a new plant to your collection.
-          </p>
-          <Button className="mt-4">Add Plant</Button>
-        </div>
+      {/* Results */}
+      {plants.length === 0 ? (
+        <p className="text-center text-muted-foreground py-10">
+          No plants found.
+        </p>
       ) : (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filteredPlants.map((plant, index) => (
-            <div
-              key={`${plant.commonName}-${index}`}
-              className="animate-fade-in"
-            >
-              <PlantCard plant={plant} />
-            </div>
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {plants.map((plant) => (
+              <PlantCard key={plant.id} plant={plant} />
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <Pagination className="mt-6">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() => page > 1 && changePage(page - 1)}
+                    aria-disabled={page <= 1}
+                  />
+                </PaginationItem>
+                <PaginationItem>
+                  <span className="text-sm text-muted-foreground">
+                    Page {page} of {totalPages}
+                  </span>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() => page < totalPages && changePage(page + 1)}
+                    aria-disabled={page >= totalPages}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
+        </>
       )}
     </div>
   );
-};
-
-export default Collection;
+}

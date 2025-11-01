@@ -3,7 +3,6 @@
 import CarouselArrows from "@/components/CarouselArrows";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { WINDOW_DIRECTION_OPTIONS } from "@/lib/data/window-direction";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import {
@@ -13,12 +12,14 @@ import {
   MapPin,
   PawPrint,
   ShoppingCart,
-  Wind
+  Wind,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Plant } from "./Collection";
+// import { Plant } from "./Collection";
+import { WINDOW_DIRECTION_OPTIONS } from "@/lib/data/plantDetailsTypes";
+import { Plant } from "@prisma/client";
 
 interface PlantCardProps {
   plant: Plant;
@@ -35,7 +36,31 @@ const PlantCard = ({ plant }: PlantCardProps) => {
     ? formatDate(plant.ownedSince)
     : null;
 
-  const images = plant.pictures?.map((pic) => pic.url) ?? [];
+  // const images = plant.pictures?.map((pic) => pic.url) ?? [];
+
+  const images = [
+    "/assets/monstera-1.webp",
+    "/assets/snake-plant-3.jpg",
+    "/assets/pothos-1.webp",
+    "/assets/spider-plant-1.jpg",
+    "/assets/fiddle-leaf-fig-2.jpg",
+  ];
+
+  const isSingleImageView = Boolean(
+    plant.roomLocation ||
+      formattedOwnedSince ||
+      plant.windowDirection ||
+      plant.isSafe ||
+      plant.isAirPurifying
+  );
+
+  const isFirstPageMultiImageView = Boolean(
+    plant.roomLocation || formattedOwnedSince
+  );
+
+  const isSecondPageMultiImageView = Boolean(
+    plant.windowDirection || plant.isSafe || plant.isAirPurifying
+  );
 
   return (
     <Card className="group relative h-[450px] overflow-hidden transition-all hover:shadow-lg">
@@ -77,7 +102,7 @@ const PlantCard = ({ plant }: PlantCardProps) => {
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
 
-        <div className="absolute left-0 right-0 top-0 z-10 flex justify-end p-3 ">
+        {/* <div className="absolute left-0 right-0 top-0 z-10 flex justify-end p-3 ">
           {!plant.isHealthy ? (
             <Badge
               variant="secondary"
@@ -87,7 +112,7 @@ const PlantCard = ({ plant }: PlantCardProps) => {
               Needs attention
             </Badge>
           ) : null}
-        </div>
+        </div> */}
 
         <div className="absolute bottom-0 left-0 right-0 z-10 p-4">
           <h3 className="text-xl font-bold text-white mb-1">
@@ -104,38 +129,40 @@ const PlantCard = ({ plant }: PlantCardProps) => {
                 </p>
               )}
 
-              <div className="mt-2 mb-2 flex flex-wrap gap-2">
-                {plant.roomLocation && (
-                  <Badge className="flex items-center gap-1 bg-white/20 backdrop-blur-xl text-white">
-                    <MapPin className="h-3 w-3" />
-                    {plant.roomLocation}
-                  </Badge>
-                )}
-                {formattedOwnedSince && (
-                  <Badge className="flex items-center gap-1 bg-white/20 backdrop-blur-xl text-white">
-                    <ShoppingCart className="h-3 w-3" />
-                    {formattedOwnedSince}
-                  </Badge>
-                )}
-                {plant.windowDirection && (
-                  <Badge className="flex items-center gap-1 bg-white/20 backdrop-blur-xl text-white">
-                    <Compass className="h-3 w-3" />
-                    {WINDOW_DIRECTION_OPTIONS[plant.windowDirection].short}
-                  </Badge>
-                )}
-                {plant.isPetSafe && (
-                  <Badge className="flex items-center gap-1 bg-green-600/50 backdrop-blur-xl text-white">
-                    <PawPrint className="h-4 w-4" />
-                    Pet friendly
-                  </Badge>
-                )}
-                {plant.isAirCleaning && (
-                  <Badge className="flex items-center gap-1 bg-blue-400/50 backdrop-blur-xl text-white">
-                    <Wind className="h-3 w-3" />
-                    Air purifying
-                  </Badge>
-                )}
-              </div>
+              {isSingleImageView && (
+                <div className="mt-2 mb-2 flex flex-wrap gap-2">
+                  {plant.roomLocation && (
+                    <Badge className="flex items-center gap-1 bg-white/20 backdrop-blur-xl text-white">
+                      <MapPin className="h-3 w-3" />
+                      {plant.roomLocation}
+                    </Badge>
+                  )}
+                  {formattedOwnedSince && (
+                    <Badge className="flex items-center gap-1 bg-white/20 backdrop-blur-xl text-white">
+                      <ShoppingCart className="h-3 w-3" />
+                      {formattedOwnedSince}
+                    </Badge>
+                  )}
+                  {plant.windowDirection && (
+                    <Badge className="flex items-center gap-1 bg-white/20 backdrop-blur-xl text-white">
+                      <Compass className="h-3 w-3" />
+                      {WINDOW_DIRECTION_OPTIONS[plant.windowDirection].short}
+                    </Badge>
+                  )}
+                  {plant.isSafe && (
+                    <Badge className="flex items-center gap-1 bg-green-600/50 backdrop-blur-xl text-white">
+                      <PawPrint className="h-4 w-4" />
+                      Pet friendly
+                    </Badge>
+                  )}
+                  {plant.isAirPurifying && (
+                    <Badge className="flex items-center gap-1 bg-blue-400/50 backdrop-blur-xl text-white">
+                      <Wind className="h-3 w-3" />
+                      Air purifying
+                    </Badge>
+                  )}
+                </div>
+              )}
             </>
           )}
 
@@ -151,24 +178,26 @@ const PlantCard = ({ plant }: PlantCardProps) => {
                       {plant.genus}, {plant.species}
                     </p>
                   )}
-                  <div className="mt-2 mb-2 flex flex-wrap gap-2">
-                    {plant.roomLocation && (
-                      <Badge className="flex items-center gap-1 bg-white/20 backdrop-blur-xl text-white">
-                        <MapPin className="h-3 w-3" />
-                        {plant.roomLocation}
-                      </Badge>
-                    )}
-                    {formattedOwnedSince && (
-                      <Badge className="flex items-center gap-1 bg-white/20 backdrop-blur-xl text-white">
-                        <ShoppingCart className="h-3 w-3" />
-                        {formattedOwnedSince}
-                      </Badge>
-                    )}
-                  </div>
+                  {isFirstPageMultiImageView && (
+                    <div className="mt-2 mb-2 flex flex-wrap gap-2">
+                      {plant.roomLocation && (
+                        <Badge className="flex items-center gap-1 bg-white/20 backdrop-blur-xl text-white">
+                          <MapPin className="h-3 w-3" />
+                          {plant.roomLocation}
+                        </Badge>
+                      )}
+                      {formattedOwnedSince && (
+                        <Badge className="flex items-center gap-1 bg-white/20 backdrop-blur-xl text-white">
+                          <ShoppingCart className="h-3 w-3" />
+                          {formattedOwnedSince}
+                        </Badge>
+                      )}
+                    </div>
+                  )}
                 </>
               )}
 
-              {currentImageIndex === 1 && (
+              {currentImageIndex === 1 && isSecondPageMultiImageView && (
                 <div className="mt-2 mb-2 flex flex-wrap gap-2">
                   {plant.windowDirection && (
                     <Badge className="flex items-center gap-1 bg-white/20 backdrop-blur-xl text-white">
@@ -176,13 +205,13 @@ const PlantCard = ({ plant }: PlantCardProps) => {
                       {WINDOW_DIRECTION_OPTIONS[plant.windowDirection].short}
                     </Badge>
                   )}
-                  {plant.isPetSafe && (
+                  {plant.isSafe && (
                     <Badge className="flex items-center gap-1 bg-green-600/50 backdrop-blur-xl text-white">
                       <PawPrint className="h-4 w-4" />
                       Pet friendly
                     </Badge>
                   )}
-                  {plant.isAirCleaning && (
+                  {plant.isAirPurifying && (
                     <Badge className="flex items-center gap-1 bg-blue-400/50 backdrop-blur-xl text-white">
                       <Wind className="h-3 w-3" />
                       Air purifying
