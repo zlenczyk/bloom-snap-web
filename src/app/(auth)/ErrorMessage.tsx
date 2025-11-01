@@ -7,8 +7,8 @@ type Props = {
 };
 
 const ErrorMessage = ({ messages }: Props) => {
-  return (
-    <div className="pt-2">
+  return messages ? (
+    <div>
       {messages.map((message, index) => (
         <div className="text-destructive flex gap-1" key={`message-index`}>
           <CircleAlert size={20} className="shrink-0" />
@@ -18,7 +18,7 @@ const ErrorMessage = ({ messages }: Props) => {
         </div>
       ))}
     </div>
-  );
+  ) : null;
 };
 
 export default ErrorMessage;
