@@ -100,18 +100,6 @@ const PlantCard = ({ plant }: PlantCardProps) => {
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
 
-        {/* <div className="absolute left-0 right-0 top-0 z-10 flex justify-end p-3 ">
-          {!plant.isHealthy ? (
-            <Badge
-              variant="secondary"
-              className="flex items-center gap-1 px-2 py-1 text-white bg-red-700/70 backdrop-blur-xl mb-6"
-            >
-              <HeartCrack className="h-4 w-4" />
-              Needs attention
-            </Badge>
-          ) : null}
-        </div> */}
-
         <div className="absolute bottom-0 left-0 right-0 z-10 p-4">
           <h3 className="text-xl font-bold text-white mb-1">
             {plant.commonName}
