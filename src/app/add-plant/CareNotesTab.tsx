@@ -6,10 +6,9 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import { UseFormReturn } from "react-hook-form";
-import React from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { NotesFieldsEnum } from "@/lib/data/plantDetailsTypes";
+import { UseFormReturn } from "react-hook-form";
 import { AddPlantFormState } from "./actions";
 import { AddPlantForm } from "./schema";
 
@@ -18,7 +17,7 @@ type CareNotesProps = {
   state?: AddPlantFormState;
 };
 
-const CareNotes = ({ form, state }: CareNotesProps) => {
+const CareNotesTab = ({ form, state }: CareNotesProps) => {
   return (
     <div className="flex flex-col gap-6">
       <FormField
@@ -123,7 +122,7 @@ const CareNotes = ({ form, state }: CareNotesProps) => {
         control={form.control}
         name={NotesFieldsEnum.AdditionalNotes}
         render={({ field }) => (
-          <FormItem className="gap-3 w-full">
+          <FormItem className="gap-3 w-full pb-6">
             <FormLabel>Any additional care notes or instructions?</FormLabel>
             <FormControl>
               <Textarea
@@ -146,4 +145,4 @@ const CareNotes = ({ form, state }: CareNotesProps) => {
   );
 };
 
-export default CareNotes;
+export default CareNotesTab;

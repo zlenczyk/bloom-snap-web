@@ -25,7 +25,7 @@ import { startTransition, useActionState, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { getCurrentIsoDate } from "../utils";
 import addPlant, { AddPlantFormState } from "./actions";
-import CareNotes from "./CareNotes";
+import CareNotesTab from "./CareNotesTab";
 import EnvironmentTab from "./EnvironmentTab";
 import OverviewTab from "./OverviewTab";
 import { AddPlantForm, AddPlantFormSchema } from "./schema";
@@ -118,6 +118,11 @@ const AddPlant = () => {
         return;
       }
 
+      if (Array.isArray(value)) {
+        value.forEach((item) => formData.append(key, item));
+        return;
+      }
+
       formData.append(key, value.toString());
     });
 
@@ -129,31 +134,36 @@ const AddPlant = () => {
   };
 
   return (
-    <div className="container mx-auto px-4">
-      <Form {...form}>
-        <form
-          action={formAction}
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6"
-        >
-          <Card className="max-w-3xl mx-auto">
-            <CardHeader className="space-y-1 rounded-t-lg border-b">
-              <div className="flex items-center gap-2">
-                <Sprout className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
-                <CardTitle className="text-2xl">Add New Plant</CardTitle>
-              </div>
-              <CardDescription>
-                Track your plant's details and care information
-              </CardDescription>
-            </CardHeader>
+    <div
+      className="max-w-3xl mx-auto p-4 flex justify-center items-center w-full h-screen"
+      style={{
+        maxHeight: "calc(100dvh - var(--header-height))",
+      }}
+    >
+      <Card className="max-h-[720px] flex flex-col h-full">
+        <CardHeader className="space-y-1 rounded-t-lg border-b shrink-0">
+          <div className="flex items-center gap-2">
+            <Sprout className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+            <CardTitle className="text-2xl">Add New Plant</CardTitle>
+          </div>
+          <CardDescription>
+            Track your plant's details and care information
+          </CardDescription>
+        </CardHeader>
 
-            <CardContent className="p-6">
+        <Form {...form}>
+          <form
+            action={formAction}
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col"
+          >
+            <CardContent className="flex-1 flex p-0">
               <Tabs
                 value={activeTab}
                 onValueChange={setActiveTab}
-                className="w-full gap-6"
+                className="w-full gap-6 overflow-y-auto px-6 pt-6"
               >
-                <TabsList className="grid grid-cols-3 w-full">
+                <TabsList className="grid grid-cols-3 w-full shrink-0">
                   <TabsTrigger
                     value={TabEnum.Overview}
                     className={cn(
@@ -205,7 +215,7 @@ const AddPlant = () => {
                 <TabsContent
                   value="overview"
                   forceMount
-                  className="data-[state=inactive]:hidden"
+                  className="data-[state=inactive]:hidden p-1"
                 >
                   <OverviewTab form={form} state={state} />
                 </TabsContent>
@@ -213,26 +223,22 @@ const AddPlant = () => {
                 <TabsContent
                   value="environment"
                   forceMount
-                  className="data-[state=inactive]:hidden"
+                  className="data-[state=inactive]:hidden p-1"
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <EnvironmentTab form={form} state={state} />
-                  </div>
+                  <EnvironmentTab form={form} state={state} />
                 </TabsContent>
 
                 <TabsContent
                   value="notes"
                   forceMount
-                  className="data-[state=inactive]:hidden"
+                  className="data-[state=inactive]:hidden p-1"
                 >
-                  <div className="grid grid-cols-1 gap-6">
-                    <CareNotes form={form} state={state} />
-                  </div>
+                  <CareNotesTab form={form} state={state} />
                 </TabsContent>
               </Tabs>
             </CardContent>
 
-            <CardFooter className="flex justify-end gap-2 border-t bg-muted/20 p-6">
+            <CardFooter className="flex justify-end gap-2 border-t bg-muted/20 p-6 shrink-0">
               <Button variant="outline">Cancel</Button>
               <Button
                 type="submit"
@@ -242,9 +248,9 @@ const AddPlant = () => {
                 Add Plant
               </Button>
             </CardFooter>
-          </Card>
-        </form>
-      </Form>
+          </form>
+        </Form>
+      </Card>
     </div>
   );
 };

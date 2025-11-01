@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import {
   EnvironmentFieldsEnum,
+  GrowingMediumEnum,
   LIGHT_EXPOSURE_OPTIONS,
   LightExposureEnum,
   WINDOW_DIRECTION_OPTIONS,
@@ -43,7 +44,7 @@ type EnvironmentTabProps = {
 
 const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
   return (
-    <>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <FormField
         control={form.control}
         name={EnvironmentFieldsEnum.CurrentHeight}
@@ -51,7 +52,11 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
           <FormItem className="gap-3 self-start">
             <FormLabel>How tall is it?</FormLabel>
             <FormControl>
-              <Input placeholder="15 cm, 8 in, 1 m, etc." {...field} />
+              <Input
+                placeholder="15 cm, 8 in, 1 m, etc."
+                {...field}
+                value={field.value || ""}
+              />
             </FormControl>
             {state?.errors?.currentHeight && (
               <p className="text-sm text-destructive">
@@ -69,7 +74,11 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
           <FormItem className="gap-3 self-start">
             <FormLabel>What’s the pot size? (Diameter)</FormLabel>
             <FormControl>
-              <Input placeholder="9 cm, 11 cm, 12 cm, etc." {...field} />
+              <Input
+                placeholder="9 cm, 11 cm, 12 cm, etc."
+                {...field}
+                value={field.value || ""}
+              />
             </FormControl>
             {state?.errors?.currentPotSize && (
               <p className="text-sm text-destructive">
@@ -107,7 +116,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
                 <PopoverContent className="w-auto p-0">
                   <Calendar
                     mode="single"
-                    selected={form.getValues("lastRepotted")}
+                    selected={field.value || undefined}
                     onSelect={field.onChange}
                     startMonth={new Date(1950, 0, 1)}
                     endMonth={new Date()}
@@ -132,7 +141,11 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
           <FormItem className="gap-3 self-start">
             <FormLabel>Air humidity around?</FormLabel>
             <FormControl>
-              <Input placeholder="60%, 80%, high, etc." {...field} />
+              <Input
+                placeholder="60%, 80%, high, etc."
+                {...field}
+                value={field.value || ""}
+              />
             </FormControl>
             {state?.errors?.humidity && (
               <p className="text-sm text-destructive">
@@ -150,7 +163,11 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
           <FormItem className="gap-3 self-start">
             <FormLabel>How’s the temperature there?</FormLabel>
             <FormControl>
-              <Input placeholder="18°C, 22°C, 75°F, etc." {...field} />
+              <Input
+                placeholder="18°C, 22°C, 75°F, etc."
+                {...field}
+                value={field.value || ""}
+              />
             </FormControl>
             {state?.errors?.temperature && (
               <p className="text-sm text-destructive">
@@ -169,7 +186,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
             <FormLabel>What type of light does it get?</FormLabel>
             <FormControl className="w-full">
               <Select
-                value={field.value}
+                value={field.value || undefined}
                 onValueChange={field.onChange}
                 key={field.value}
               >
@@ -216,7 +233,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
             <FormLabel>Which way’s the window?</FormLabel>
             <FormControl className="w-full">
               <Select
-                value={field.value}
+                value={field.value || undefined}
                 onValueChange={field.onChange}
                 key={field.value}
               >
@@ -322,6 +339,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
               <Input
                 placeholder="Living room, bedroom, balcony, etc."
                 {...field}
+                value={field.value || ""}
               />
             </FormControl>
             {state?.errors?.roomLocation && (
@@ -341,7 +359,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
             <FormLabel>Roots: what’s the growing method?</FormLabel>
             <FormControl className="w-full">
               <Select
-                value={field.value}
+                value={field.value || undefined}
                 onValueChange={field.onChange}
                 key={field.value}
               >
@@ -352,11 +370,13 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
                 />
 
                 <SelectContent>
-                  <SelectItem value="soil">Soil</SelectItem>
-                  <SelectItem value="semi-hydroponics">
+                  <SelectItem value={GrowingMediumEnum.Soil}>Soil</SelectItem>
+                  <SelectItem value={GrowingMediumEnum.SemiHydroponics}>
                     Semi-hydroponics
                   </SelectItem>
-                  <SelectItem value="hydroponics">Hydroponics</SelectItem>
+                  <SelectItem value={GrowingMediumEnum.Hydroponics}>
+                    Hydroponics
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </FormControl>
@@ -368,7 +388,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
         control={form.control}
         name={EnvironmentFieldsEnum.PottingMix}
         render={({ field }) => (
-          <FormItem className="gap-3 self-start">
+          <FormItem className="gap-3 self-start pb-6">
             <FormLabel>Roots: which components are the roots in?</FormLabel>
             <FormControl>
               <MultiSelectTagInput
@@ -380,7 +400,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
           </FormItem>
         )}
       />
-    </>
+    </div>
   );
 };
 

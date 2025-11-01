@@ -5,7 +5,7 @@ import {
 } from "@/lib/data/plantDetailsTypes";
 import z from "zod";
 
-const dateOrNull = z.date().min(new Date("1900-01-01")).max(new Date());
+const pastDate = z.date().min(new Date("1900-01-01")).max(new Date());
 
 export const AddPlantFormSchema = z.object({
   // Overview tab
@@ -16,72 +16,72 @@ export const AddPlantFormSchema = z.object({
   species: z
     .string()
     .max(200, { message: "Species cannot exceed 200 characters." })
-    .optional(),
+    .nullish(),
   genus: z
     .string()
     .max(200, { message: "Genus cannot exceed 200 characters." })
-    .optional(),
+    .nullish(),
   nickname: z
     .string()
     .max(200, { message: "Nickname cannot exceed 200 characters." })
-    .optional(),
+    .nullish(),
   source: z
     .string()
     .max(200, { message: "Source cannot exceed 200 characters." })
-    .optional(),
-  ownedSince: dateOrNull.optional(),
-  isSafe: z.boolean().optional(),
-  isAirPurifying: z.boolean().optional(),
+    .nullish(),
+  ownedSince: pastDate.nullish(),
+  isSafe: z.boolean().nullish(),
+  isAirPurifying: z.boolean().nullish(),
   description: z
     .string()
     .max(300, { message: "Description cannot exceed 300 characters." })
-    .optional(),
+    .nullish(),
 
   // Environment tab
   currentHeight: z
     .string()
     .max(50, { message: "Current height cannot exceed 50 characters." })
-    .optional(),
+    .nullish(),
   currentPotSize: z
     .string()
     .max(50, { message: "Current pot size cannot exceed 50 characters." })
-    .optional(),
-  lastRepotted: dateOrNull.optional(),
+    .nullish(),
+  lastRepotted: pastDate.nullish(),
   humidity: z
     .string()
     .max(50, { message: "Humidity cannot exceed 50 characters." })
-    .optional(),
+    .nullish(),
   temperature: z
     .string()
     .max(50, { message: "Temperature cannot exceed 50 characters." })
-    .optional(),
-  roomLocation: z.string().optional(),
-  windowDirection: z.enum(WindowDirectionEnum).optional(),
-  lightExposure: z.enum(LightExposureEnum).optional(),
-  growingMedium: z.enum(GrowingMediumEnum).optional(),
-  pottingMix: z.array(z.string()).nullable().optional(),
+    .nullish(),
+  roomLocation: z.string().nullish(),
+  windowDirection: z.enum(WindowDirectionEnum).nullish(),
+  lightExposure: z.enum(LightExposureEnum).nullish(),
+  growingMedium: z.enum(GrowingMediumEnum).nullish(),
+  pottingMix: z.array(z.string()).nullish(),
 
   // Notes tab
   wateringNotes: z
     .string()
     .max(300, { message: "Watering notes cannot exceed 300 characters." })
-    .optional(),
+    .nullish(),
   mistingNotes: z
     .string()
     .max(300, { message: "Misting notes cannot exceed 300 characters." })
-    .optional(),
+    .nullish(),
   leafCleaningNotes: z
     .string()
     .max(300, { message: "Leaf cleaning notes cannot exceed 300 characters." })
-    .optional(),
+    .nullish(),
   fertilizingNotes: z
     .string()
     .max(300, { message: "Fertilizing notes cannot exceed 300 characters." })
-    .optional(),
+    .nullish(),
   additionalNotes: z
     .string()
     .max(300, { message: "Additional notes cannot exceed 300 characters." })
-    .optional(),
+    .nullish(),
 });
 
 export type AddPlantForm = z.infer<typeof AddPlantFormSchema>;

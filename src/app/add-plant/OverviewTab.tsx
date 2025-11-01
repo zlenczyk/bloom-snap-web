@@ -80,6 +80,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
                   placeholder="Philodendron"
                   autoComplete="on"
                   {...field}
+                  value={field.value || ""}
                 />
               </FormControl>
               {state?.errors?.species && (
@@ -101,6 +102,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
                   placeholder="P. erubescens 'Pink Princess'"
                   autoComplete="on"
                   {...field}
+                  value={field.value || ""}
                 />
               </FormControl>
               {state?.errors?.genus && (
@@ -122,6 +124,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
                   placeholder="Sorceress of the Pink Grove"
                   autoComplete="on"
                   {...field}
+                  value={field.value || ""}
                 />
               </FormControl>
               {state?.errors?.nickname && (
@@ -143,6 +146,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
                   placeholder="Shop name, gift, or special find"
                   autoComplete="on"
                   {...field}
+                  value={field.value || ""}
                 />
               </FormControl>
               {state?.errors?.source && (
@@ -182,7 +186,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
                 <PopoverContent className="w-auto p-0">
                   <Calendar
                     mode="single"
-                    selected={field.value}
+                    selected={field.value || undefined}
                     onSelect={field.onChange}
                     captionLayout="dropdown"
                     disabled={(date) =>
@@ -276,7 +280,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
         control={form.control}
         name={OverviewFieldsEnum.Description}
         render={({ field }) => (
-          <FormItem className="gap-3 self-start">
+          <FormItem className="gap-3 self-start pb-6">
             <FormLabel>
               Share the Plant’s Story (Origins, History, Fun Facts)
             </FormLabel>
@@ -286,6 +290,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
                 placeholder="Tell us how you got this plant, why you chose it, its natural origins or habitat, and any fun stories or history. Up to 250 characters."
                 autoComplete="on"
                 {...field}
+                value={field.value || ""}
               />
             </FormControl>
 
