@@ -4,9 +4,9 @@ import CarouselArrows from "@/components/CarouselArrows";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { Plant } from "@prisma/client";
 import { format } from "date-fns";
 import {
-  Compass,
   Info,
   MapPin,
   PawPrint,
@@ -16,8 +16,6 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { WINDOW_DIRECTION_OPTIONS } from "@/lib/data/plantDetailsTypes";
-import { Plant } from "@prisma/client";
 
 interface PlantCardProps {
   plant: Plant;
@@ -44,21 +42,7 @@ const PlantCard = ({ plant }: PlantCardProps) => {
     "/assets/fiddle-leaf-fig-2.jpg",
   ];
 
-  const isSingleImageView = Boolean(
-    plant.roomLocation ||
-      formattedOwnedSince ||
-      plant.windowDirection ||
-      plant.isSafe ||
-      plant.isAirPurifying
-  );
-
-  const isFirstPageMultiImageView = Boolean(
-    plant.roomLocation || formattedOwnedSince
-  );
-
-  const isSecondPageMultiImageView = Boolean(
-    plant.windowDirection || plant.isSafe || plant.isAirPurifying
-  );
+  const isSingleImageView = Boolean(plant.roomLocation || formattedOwnedSince);
 
   return (
     <Card className="group relative h-[450px] overflow-hidden transition-all hover:shadow-lg">
@@ -100,6 +84,62 @@ const PlantCard = ({ plant }: PlantCardProps) => {
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
 
+        <div className="absolute right-3 top-3 flex gap-2">
+          {plant.isSafe && (
+            <div
+              className="
+        group/badge relative flex items-center justify-center
+        h-8 w-8 rounded-full bg-emerald-500/90 backdrop-blur-sm overflow-hidden
+        transition-all duration-300 ease-in-out
+        hover:w-[6.5rem]
+      "
+              title="Pet friendly"
+            >
+              <PawPrint
+                className="h-4 w-4 text-white flex-shrink-0 transition-transform duration-300 ease-in-out group-hover/badge:scale-110"
+                strokeWidth={2.5}
+              />
+              <span
+                className="
+          text-xs font-medium text-white whitespace-nowrap
+          opacity-0 max-w-0 overflow-hidden
+          transition-all duration-300 ease-in-out
+          group-hover/badge:opacity-100 group-hover/badge:max-w-[4rem] group-hover/badge:ml-1.5
+        "
+              >
+                Pet Safe
+              </span>
+            </div>
+          )}
+
+          {plant.isAirPurifying && (
+            <div
+              className="
+        group/badge relative flex items-center justify-center
+        h-8 w-8 rounded-full bg-sky-500/90 backdrop-blur-sm overflow-hidden
+        transition-all duration-300 ease-in-out
+        hover:w-[6.5rem]
+      "
+              title="Air purifying"
+            >
+              <Wind
+                className="h-4 w-4 text-white flex-shrink-0 transition-transform duration-300 ease-in-out group-hover/badge:scale-110"
+                strokeWidth={2.5}
+              />
+              <span
+                className="
+          text-xs font-medium text-white whitespace-nowrap
+          opacity-0 max-w-0 overflow-hidden
+          transition-all duration-300 ease-in-out
+          group-hover/badge:opacity-100 group-hover/badge:max-w-[4rem] group-hover/badge:ml-1.5
+        "
+              >
+                Air Pure
+              </span>
+            </div>
+          )}
+        </div>
+
         <div className="absolute bottom-0 left-0 right-0 z-10 p-4">
           <h3 className="text-xl font-bold text-white mb-1">
             {plant.commonName}
@@ -129,24 +169,6 @@ const PlantCard = ({ plant }: PlantCardProps) => {
                       {formattedOwnedSince}
                     </Badge>
                   )}
-                  {plant.windowDirection && (
-                    <Badge className="flex items-center gap-1 bg-white/20 backdrop-blur-xl text-white">
-                      <Compass className="h-3 w-3" />
-                      {WINDOW_DIRECTION_OPTIONS[plant.windowDirection].short}
-                    </Badge>
-                  )}
-                  {plant.isSafe && (
-                    <Badge className="flex items-center gap-1 bg-green-600/50 backdrop-blur-xl text-white">
-                      <PawPrint className="h-4 w-4" />
-                      Pet friendly
-                    </Badge>
-                  )}
-                  {plant.isAirPurifying && (
-                    <Badge className="flex items-center gap-1 bg-blue-400/50 backdrop-blur-xl text-white">
-                      <Wind className="h-3 w-3" />
-                      Air purifying
-                    </Badge>
-                  )}
                 </div>
               )}
             </>
@@ -154,8 +176,18 @@ const PlantCard = ({ plant }: PlantCardProps) => {
 
           {images.length >= 2 && (
             <>
-              {currentImageIndex === 0 && (
-                <>
+              <div
+                className={cn(
+                  "overflow-hidden transition-[max-height,transform] duration-400 ease-in-out",
+                  currentImageIndex === 0 ? "max-h-40" : "max-h-0"
+                )}
+              >
+                <div
+                  className={cn(
+                    "transition-opacity duration-400 ease-in-out",
+                    currentImageIndex === 0 ? "opacity-100" : "opacity-0"
+                  )}
+                >
                   {plant.nickname && (
                     <p className="text-sm text-white/80">"{plant.nickname}"</p>
                   )}
@@ -164,47 +196,32 @@ const PlantCard = ({ plant }: PlantCardProps) => {
                       {plant.genus}, {plant.species}
                     </p>
                   )}
-                  {isFirstPageMultiImageView && (
-                    <div className="mt-2 mb-2 flex flex-wrap gap-2">
-                      {plant.roomLocation && (
-                        <Badge className="flex items-center gap-1 bg-white/20 backdrop-blur-xl text-white">
-                          <MapPin className="h-3 w-3" />
-                          {plant.roomLocation}
-                        </Badge>
-                      )}
-                      {formattedOwnedSince && (
-                        <Badge className="flex items-center gap-1 bg-white/20 backdrop-blur-xl text-white">
-                          <ShoppingCart className="h-3 w-3" />
-                          {formattedOwnedSince}
-                        </Badge>
-                      )}
-                    </div>
-                  )}
-                </>
-              )}
-
-              {currentImageIndex === 1 && isSecondPageMultiImageView && (
-                <div className="mt-2 mb-2 flex flex-wrap gap-2">
-                  {plant.windowDirection && (
-                    <Badge className="flex items-center gap-1 bg-white/20 backdrop-blur-xl text-white">
-                      <Compass className="h-3 w-3" />
-                      {WINDOW_DIRECTION_OPTIONS[plant.windowDirection].short}
-                    </Badge>
-                  )}
-                  {plant.isSafe && (
-                    <Badge className="flex items-center gap-1 bg-green-600/50 backdrop-blur-xl text-white">
-                      <PawPrint className="h-4 w-4" />
-                      Pet friendly
-                    </Badge>
-                  )}
-                  {plant.isAirPurifying && (
-                    <Badge className="flex items-center gap-1 bg-blue-400/50 backdrop-blur-xl text-white">
-                      <Wind className="h-3 w-3" />
-                      Air purifying
-                    </Badge>
-                  )}
                 </div>
-              )}
+
+                {plant.roomLocation && (
+                  <Badge
+                    className={cn(
+                      "flex-inline items-center gap-1 text-white backdrop-blur-xl transition-colors duration-400 my-2 mr-2",
+                      currentImageIndex === 0 ? "bg-white/20" : "bg-white/0"
+                    )}
+                  >
+                    <MapPin className="h-3 w-3" />
+                    {plant.roomLocation}
+                  </Badge>
+                )}
+
+                {formattedOwnedSince && (
+                  <Badge
+                    className={cn(
+                      "flex-inline items-center gap-1 text-white backdrop-blur-xl transition-colors duration-400",
+                      currentImageIndex === 0 ? "bg-white/20" : "bg-white/0"
+                    )}
+                  >
+                    <ShoppingCart className="h-3 w-3" />
+                    {formattedOwnedSince}
+                  </Badge>
+                )}
+              </div>
             </>
           )}
 
