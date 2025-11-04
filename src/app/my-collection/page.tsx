@@ -1,4 +1,4 @@
-import { getPlants } from "../actions/getPlants";
+import { getCollection } from "./actions";
 import Collection from "./Collection";
 import { SortBy, SortOrder } from "./types";
 
@@ -24,7 +24,7 @@ export default async function Home({
   const petFriendly = searchParams.petFriendly === "true";
   const airCleaning = searchParams.airCleaning === "true";
 
-  const { plants, totalPages } = await getPlants({
+  const { plants, totalPages } = await getCollection({
     page,
     search,
     sortBy,

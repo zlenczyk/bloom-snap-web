@@ -1,36 +1,16 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import { Plant } from "@prisma/client";
-import {
-  AArrowUp,
-  CalendarArrowDown,
-  CalendarArrowUp,
-  Filter,
-  Search,
-  SlidersHorizontal,
-} from "lucide-react";
+import { Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Pager from "./Pager";
 import PlantCard from "./PlantCard";
-import { SortBy, SortOrder } from "./types";
+import SortFilterDropdown from "./SortFilterDropdown";
+import { Filters, SortBy, SortOrder } from "./types";
 
 interface CollectionProps {
   plants: Plant[];
@@ -42,56 +22,104 @@ export default function Collection({ plants, totalPages }: CollectionProps) {
   const searchParams = useSearchParams();
 
   const [search, setSearch] = useState(searchParams.get("search") || "");
-  const [sortBy, setSortBy] = useState<SortBy>(
-    (searchParams.get("sortBy") as SortBy) || "createdAt"
-  );
-  const [sortOrder, setSortOrder] = useState<SortOrder>(
-    (searchParams.get("sortOrder") as SortOrder) || "desc"
-  );
-  const [petFriendly, setPetFriendly] = useState(
-    searchParams.get("petFriendly") === "true"
-  );
-  const [airCleaning, setAirCleaning] = useState(
-    searchParams.get("airCleaning") === "true"
-  );
+  const [isHydrated, setIsHydrated] = useState(false);
+  const firstSearchRun = useRef(true); //skip first debounce run
+
+  const sorting = {
+    sortBy: (searchParams.get("sortBy") as SortBy) || "createdAt",
+    sortOrder: (searchParams.get("sortOrder") as SortOrder) || "desc",
+  };
+
+  const filters = {
+    petFriendly: searchParams.get("petFriendly") === "true",
+    airCleaning: searchParams.get("airCleaning") === "true",
+  };
 
   const page = Number(searchParams.get("page")) || 1;
 
   const updateParams = (
-    newParams: Record<string, string | number | boolean | null>
+    newParams: Record<string, string | number | boolean | null>,
+    { replace = false }: { replace?: boolean } = {}
   ) => {
-    const params = new URLSearchParams(searchParams);
+    if (!isHydrated) return;
+
+    const params = new URLSearchParams(searchParams.toString());
 
     Object.entries(newParams).forEach(([key, value]) => {
-      if (value === null || value === false || value === "") params.delete(key);
-      else params.set(key, String(value));
+      if (value === null || value === false || value === "") {
+        params.delete(key);
+
+        return;
+      }
+
+      params.set(key, String(value));
     });
 
-    router.push(`/my-collection?${params.toString()}`);
-  };
+    const qs = params.toString();
+    const newUrl = `/my-collection${qs ? `?${qs}` : ""}`;
+    const currentUrl = window.location.pathname + window.location.search;
 
-  // Handle search typing with debounce
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      updateParams({ search, page: 1 }); // reset to page 1 when searching
-    }, 400);
-    return () => clearTimeout(timeout);
-  }, [search]);
-
-  const toggleFilter = (key: "petFriendly" | "airCleaning") => {
-    if (key === "petFriendly") {
-      setPetFriendly((v) => !v);
-      updateParams({ petFriendly: !petFriendly, page: 1 });
-    } else {
-      setAirCleaning((v) => !v);
-      updateParams({ airCleaning: !airCleaning, page: 1 });
+    if (newUrl !== currentUrl) {
+      replace ? router.replace(newUrl) : router.push(newUrl);
     }
   };
 
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isHydrated) {
+      return;
+    }
+
+    const hasSortBy = searchParams.has("sortBy");
+    const hasSortOrder = searchParams.has("sortOrder");
+    const hasPage = searchParams.has("page");
+
+    if (!hasSortBy || !hasSortOrder || !hasPage) {
+      updateParams(
+        {
+          sortBy: hasSortBy
+            ? (searchParams.get("sortBy") as SortBy)
+            : "createdAt",
+          sortOrder: hasSortOrder
+            ? (searchParams.get("sortOrder") as SortOrder)
+            : "desc",
+          page: hasPage ? searchParams.get("page") || 1 : 1,
+        },
+        { replace: true }
+      );
+    }
+  }, [isHydrated]);
+
+  useEffect(() => {
+    const urlSearch = searchParams.get("search") || "";
+
+    if (urlSearch !== search) {
+      setSearch(urlSearch);
+    }
+  }, [searchParams.toString()]);
+
+  useEffect(() => {
+    if (firstSearchRun.current) {
+      firstSearchRun.current = false;
+
+      return;
+    }
+
+    const t = setTimeout(() => {
+      updateParams({ search: search === "" ? null : search, page: 1 });
+    }, 400);
+    return () => clearTimeout(t);
+  }, [search]);
+
+  const toggleFilter = (filterName: Filters) => {
+    updateParams({ [filterName]: !filters[filterName], page: 1 });
+  };
+
   const changeSort = (sort: SortBy, order: SortOrder) => {
-    setSortBy(sort);
-    setSortOrder(order);
-    updateParams({ sortBy: sort, sortOrder: order });
+    updateParams({ sortBy: sort, sortOrder: order, page: 1 });
   };
 
   const changePage = (newPage: number) => {
@@ -118,60 +146,12 @@ export default function Collection({ plants, totalPages }: CollectionProps) {
           />
         </div>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="flex items-center gap-2">
-              <SlidersHorizontal className="h-4 w-4" />
-              Sort & Filter
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
-            <DropdownMenuLabel>Sort</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className={sortBy === "commonName" ? "bg-muted" : ""}
-              onClick={() =>
-                changeSort("commonName", sortOrder === "asc" ? "desc" : "asc")
-              }
-            >
-              <AArrowUp size={16} className="mr-1 inline" /> Name
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className={sortBy === "createdAt" ? "bg-muted" : ""}
-              onClick={() =>
-                changeSort("createdAt", sortOrder === "asc" ? "desc" : "asc")
-              }
-            >
-              <CalendarArrowDown size={16} className="mr-1 inline" /> Created
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className={sortBy === "lastRepotted" ? "bg-muted" : ""}
-              onClick={() =>
-                changeSort("lastRepotted", sortOrder === "asc" ? "desc" : "asc")
-              }
-            >
-              <CalendarArrowUp size={16} className="mr-1 inline" /> Last
-              Repotted
-            </DropdownMenuItem>
-
-            <DropdownMenuSeparator />
-            <DropdownMenuLabel>Filter</DropdownMenuLabel>
-            <DropdownMenuItem
-              className={petFriendly ? "bg-muted" : ""}
-              onClick={() => toggleFilter("petFriendly")}
-            >
-              <Filter className="mr-2 h-4 w-4" />
-              Pet Friendly
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className={airCleaning ? "bg-muted" : ""}
-              onClick={() => toggleFilter("airCleaning")}
-            >
-              <Filter className="mr-2 h-4 w-4" />
-              Air Cleaning
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <SortFilterDropdown
+          sorting={sorting}
+          filters={filters}
+          onChangeSort={changeSort}
+          onToggleFilter={toggleFilter}
+        />
       </div>
 
       {plants.length === 0 ? (
@@ -187,27 +167,11 @@ export default function Collection({ plants, totalPages }: CollectionProps) {
           </div>
 
           {totalPages > 1 && (
-            <Pagination className="mt-6">
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    onClick={() => page > 1 && changePage(page - 1)}
-                    aria-disabled={page <= 1}
-                  />
-                </PaginationItem>
-                <PaginationItem>
-                  <span className="text-sm text-muted-foreground">
-                    Page {page} of {totalPages}
-                  </span>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationNext
-                    onClick={() => page < totalPages && changePage(page + 1)}
-                    aria-disabled={page >= totalPages}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
+            <Pager
+              page={page}
+              totalPages={totalPages}
+              onChangePage={changePage}
+            />
           )}
         </>
       )}

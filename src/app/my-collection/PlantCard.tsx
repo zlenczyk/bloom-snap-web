@@ -6,13 +6,7 @@ import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Plant } from "@prisma/client";
 import { format } from "date-fns";
-import {
-  Info,
-  MapPin,
-  PawPrint,
-  ShoppingCart,
-  Wind
-} from "lucide-react";
+import { Info, MapPin, PawPrint, ShoppingCart, Wind } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -89,7 +83,7 @@ const PlantCard = ({ plant }: PlantCardProps) => {
             <div
               className="
         group/badge relative flex items-center justify-center
-        h-8 w-8 rounded-full bg-emerald-500/90 backdrop-blur-sm overflow-hidden
+        h-8 w-8 rounded-full bg-emerald-500/70 backdrop-blur-xl overflow-hidden
         transition-all duration-300 ease-in-out
         hover:w-[6.5rem]
       "
@@ -116,7 +110,7 @@ const PlantCard = ({ plant }: PlantCardProps) => {
             <div
               className="
         group/badge relative flex items-center justify-center
-        h-8 w-8 rounded-full bg-sky-500/90 backdrop-blur-sm overflow-hidden
+        h-8 w-8 rounded-full bg-sky-500/70 backdrop-blur-xl overflow-hidden
         transition-all duration-300 ease-in-out
         hover:w-[6.5rem]
       "
@@ -144,86 +138,54 @@ const PlantCard = ({ plant }: PlantCardProps) => {
           <h3 className="text-xl font-bold text-white mb-1">
             {plant.commonName}
           </h3>
-          {images.length < 2 && (
-            <>
+          <div
+            className={cn(
+              "overflow-hidden transition-[max-height,transform] duration-400 ease-in-out",
+              currentImageIndex === 0 ? "max-h-40" : "max-h-0"
+            )}
+          >
+            <div
+              className={cn(
+                "transition-opacity duration-400 ease-in-out",
+                currentImageIndex === 0 ? "opacity-100" : "opacity-0"
+              )}
+            >
               {plant.nickname && (
                 <p className="text-sm text-white/80">"{plant.nickname}"</p>
               )}
               {(plant.genus || plant.species) && (
-                <p className="mt-1 text-sm italic text-white/70">
-                  {plant.genus}, {plant.species}
+                <p className="mt-1 text-sm italic text-white/70 whitespace-normal break-words">
+                  {plant.genus}
+                  {plant.genus && plant.species && ", "}
+                  {plant.species}
                 </p>
               )}
+            </div>
 
-              {isSingleImageView && (
-                <div className="mt-2 mb-2 flex flex-wrap gap-2">
-                  {plant.roomLocation && (
-                    <Badge className="flex items-center gap-1 bg-white/20 backdrop-blur-xl text-white">
-                      <MapPin className="h-3 w-3" />
-                      {plant.roomLocation}
-                    </Badge>
-                  )}
-                  {formattedOwnedSince && (
-                    <Badge className="flex items-center gap-1 bg-white/20 backdrop-blur-xl text-white">
-                      <ShoppingCart className="h-3 w-3" />
-                      {formattedOwnedSince}
-                    </Badge>
-                  )}
-                </div>
-              )}
-            </>
-          )}
-
-          {images.length >= 2 && (
-            <>
-              <div
+            {plant.roomLocation && (
+              <Badge
                 className={cn(
-                  "overflow-hidden transition-[max-height,transform] duration-400 ease-in-out",
-                  currentImageIndex === 0 ? "max-h-40" : "max-h-0"
+                  "flex-inline items-center gap-1 text-white backdrop-blur-xl transition-colors duration-400 my-2 mr-2",
+                  currentImageIndex === 0 ? "bg-white/20" : "bg-white/0"
                 )}
               >
-                <div
-                  className={cn(
-                    "transition-opacity duration-400 ease-in-out",
-                    currentImageIndex === 0 ? "opacity-100" : "opacity-0"
-                  )}
-                >
-                  {plant.nickname && (
-                    <p className="text-sm text-white/80">"{plant.nickname}"</p>
-                  )}
-                  {(plant.genus || plant.species) && (
-                    <p className="mt-1 text-sm italic text-white/70">
-                      {plant.genus}, {plant.species}
-                    </p>
-                  )}
-                </div>
+                <MapPin className="h-3 w-3" />
+                {plant.roomLocation}
+              </Badge>
+            )}
 
-                {plant.roomLocation && (
-                  <Badge
-                    className={cn(
-                      "flex-inline items-center gap-1 text-white backdrop-blur-xl transition-colors duration-400 my-2 mr-2",
-                      currentImageIndex === 0 ? "bg-white/20" : "bg-white/0"
-                    )}
-                  >
-                    <MapPin className="h-3 w-3" />
-                    {plant.roomLocation}
-                  </Badge>
+            {formattedOwnedSince && (
+              <Badge
+                className={cn(
+                  "flex-inline items-center gap-1 text-white backdrop-blur-xl transition-colors duration-400",
+                  currentImageIndex === 0 ? "bg-white/20" : "bg-white/0"
                 )}
-
-                {formattedOwnedSince && (
-                  <Badge
-                    className={cn(
-                      "flex-inline items-center gap-1 text-white backdrop-blur-xl transition-colors duration-400",
-                      currentImageIndex === 0 ? "bg-white/20" : "bg-white/0"
-                    )}
-                  >
-                    <ShoppingCart className="h-3 w-3" />
-                    {formattedOwnedSince}
-                  </Badge>
-                )}
-              </div>
-            </>
-          )}
+              >
+                <ShoppingCart className="h-3 w-3" />
+                {formattedOwnedSince}
+              </Badge>
+            )}
+          </div>
 
           <div className="flex justify-center gap-1">
             {images.length > 1 &&
