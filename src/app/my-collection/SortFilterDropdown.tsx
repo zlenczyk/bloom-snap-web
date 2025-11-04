@@ -15,23 +15,20 @@ import {
   Filter,
   SlidersHorizontal,
 } from "lucide-react";
-import { Filters, SortBy, SortOrder } from "./types";
+import { Filters, SortBy } from "./types";
 
 interface SortFilterDropdownProps {
-  sorting: {
-    sortBy: SortBy;
-    sortOrder: SortOrder;
-  };
+  sortBy: SortBy;
   filters: {
     petFriendly: boolean;
     airCleaning: boolean;
   };
-  onChangeSort: (sortBy: SortBy, sortOrder: SortOrder) => void;
+  onChangeSort: (sort: SortBy) => void;
   onToggleFilter: (filterName: Filters) => void;
 }
 
 const SortFilterDropdown = ({
-  sorting,
+  sortBy,
   filters,
   onChangeSort,
   onToggleFilter,
@@ -51,52 +48,40 @@ const SortFilterDropdown = ({
         <DropdownMenuLabel>Sort</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          className={
-            sorting.sortBy === "commonName" && sorting.sortOrder === "asc" ? "bg-muted" : ""
-          }
-          onClick={() => onChangeSort("commonName", "asc")}
+          className={sortBy === "commonNameAsc" ? "bg-muted" : ""}
+          onClick={() => onChangeSort("commonNameAsc")}
         >
           <AArrowUp size={16} className="mr-1 inline" /> Name (A→Z)
         </DropdownMenuItem>
         <DropdownMenuItem
-          className={
-            sorting.sortBy === "commonName" && sorting.sortOrder === "desc" ? "bg-muted" : ""
-          }
-          onClick={() => onChangeSort("commonName", "desc")}
+          className={sortBy === "commonNameDesc" ? "bg-muted" : ""}
+          onClick={() => onChangeSort("commonNameDesc")}
         >
           <AArrowDown size={16} className="mr-1 inline" /> Name (Z→A)
         </DropdownMenuItem>
         <DropdownMenuItem
-          className={
-            sorting.sortBy === "createdAt" && sorting.sortOrder === "asc" ? "bg-muted" : ""
-          }
-          onClick={() => onChangeSort("createdAt", "asc")}
+          className={sortBy === "createdAtOldest" ? "bg-muted" : ""}
+          onClick={() => onChangeSort("createdAtOldest")}
         >
           <CalendarArrowUp size={16} className="mr-1 inline" /> Created (Oldest)
         </DropdownMenuItem>
         <DropdownMenuItem
-          className={
-            sorting.sortBy === "createdAt" && sorting.sortOrder === "desc" ? "bg-muted" : ""
-          }
-          onClick={() => onChangeSort("createdAt", "desc")}
+          className={sortBy === "createdAtNewest" ? "bg-muted" : ""}
+          onClick={() => onChangeSort("createdAtNewest")}
         >
           <CalendarArrowDown size={16} className="mr-1 inline" /> Created
           (Newest)
         </DropdownMenuItem>
         <DropdownMenuItem
-          className={
-            sorting.sortBy === "lastRepotted" && sorting.sortOrder === "asc" ? "bg-muted" : ""
-          }
-          onClick={() => onChangeSort("lastRepotted", "asc")}
+          className={sortBy === "lastRepottedOldest" ? "bg-muted" : ""}
+          onClick={() => onChangeSort("lastRepottedOldest")}
         >
           <CalendarArrowUp size={16} className="mr-1 inline" /> Last Repotted
           (Oldest)
         </DropdownMenuItem>
         <DropdownMenuItem
-          className={
-            sorting.sortBy === "lastRepotted" && sorting.sortOrder === "desc" ? "bg-muted" : ""
-          }
-          onClick={() => onChangeSort("lastRepotted", "desc")}
+          className={sortBy === "lastRepottedNewest" ? "bg-muted" : ""}
+          onClick={() => onChangeSort("lastRepottedNewest")}
         >
           <CalendarArrowDown size={16} className="mr-1 inline" /> Last Repotted
           (Newest)

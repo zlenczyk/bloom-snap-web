@@ -10,7 +10,7 @@ import { useEffect, useRef, useState } from "react";
 import Pager from "./Pager";
 import PlantCard from "./PlantCard";
 import SortFilterDropdown from "./SortFilterDropdown";
-import { Filters, SortBy, SortOrder } from "./types";
+import { Filters, SortBy } from "./types";
 
 interface CollectionProps {
   plants: Plant[];
@@ -23,12 +23,9 @@ export default function Collection({ plants, totalPages }: CollectionProps) {
 
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [isHydrated, setIsHydrated] = useState(false);
-  const firstSearchRun = useRef(true); //skip first debounce run
+  const firstSearchRun = useRef(true); // skip first debounce run
 
-  const sorting = {
-    sortBy: (searchParams.get("sortBy") as SortBy) || "createdAt",
-    sortOrder: (searchParams.get("sortOrder") as SortOrder) || "desc",
-  };
+  const sortBy = (searchParams.get("sortBy") as SortBy) || "createdAtNewest";
 
   const filters = {
     petFriendly: searchParams.get("petFriendly") === "true",
@@ -48,11 +45,9 @@ export default function Collection({ plants, totalPages }: CollectionProps) {
     Object.entries(newParams).forEach(([key, value]) => {
       if (value === null || value === false || value === "") {
         params.delete(key);
-
-        return;
+      } else {
+        params.set(key, String(value));
       }
-
-      params.set(key, String(value));
     });
 
     const qs = params.toString();
@@ -69,23 +64,17 @@ export default function Collection({ plants, totalPages }: CollectionProps) {
   }, []);
 
   useEffect(() => {
-    if (!isHydrated) {
-      return;
-    }
+    if (!isHydrated) return;
 
     const hasSortBy = searchParams.has("sortBy");
-    const hasSortOrder = searchParams.has("sortOrder");
     const hasPage = searchParams.has("page");
 
-    if (!hasSortBy || !hasSortOrder || !hasPage) {
+    if (!hasSortBy || !hasPage) {
       updateParams(
         {
           sortBy: hasSortBy
             ? (searchParams.get("sortBy") as SortBy)
-            : "createdAt",
-          sortOrder: hasSortOrder
-            ? (searchParams.get("sortOrder") as SortOrder)
-            : "desc",
+            : "createdAtNewest",
           page: hasPage ? searchParams.get("page") || 1 : 1,
         },
         { replace: true }
@@ -111,6 +100,7 @@ export default function Collection({ plants, totalPages }: CollectionProps) {
     const t = setTimeout(() => {
       updateParams({ search: search === "" ? null : search, page: 1 });
     }, 400);
+
     return () => clearTimeout(t);
   }, [search]);
 
@@ -118,8 +108,8 @@ export default function Collection({ plants, totalPages }: CollectionProps) {
     updateParams({ [filterName]: !filters[filterName], page: 1 });
   };
 
-  const changeSort = (sort: SortBy, order: SortOrder) => {
-    updateParams({ sortBy: sort, sortOrder: order, page: 1 });
+  const changeSort = (sort: SortBy) => {
+    updateParams({ sortBy: sort, page: 1 });
   };
 
   const changePage = (newPage: number) => {
@@ -147,7 +137,7 @@ export default function Collection({ plants, totalPages }: CollectionProps) {
         </div>
 
         <SortFilterDropdown
-          sorting={sorting}
+          sortBy={sortBy}
           filters={filters}
           onChangeSort={changeSort}
           onToggleFilter={toggleFilter}
