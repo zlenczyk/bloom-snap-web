@@ -31,6 +31,7 @@ Issues:
 6. Problem with clearing shadcn Select component. When using custom clear buttom, form data is updated, but UI not. For example, when choosing "No" and then clicking clear button - user still see "No". First solution was just not to try to show placeholder again as no value, but have one more value always, e.g. "null" that will be choosen on clear. This way user could see "Do not specify", "Yes", and "No", when option "Do not specify" was set with custom clear button. Final solution is a little bit hacky, but very simple - give the <Select> component the key prop. In react - when key is updated, component must rerender. This way clearing button works perfectly without additional "Do not specify" option!
 - https://www.reddit.com/r/nextjs/comments/1gl2wmv/strange_behavior_with_shadcn_ui_select_component/
 - https://github.com/radix-ui/primitives/issues/1569
+7. problem with redirecting hell - proper handling of middleware logic and proper order of checks, trying to protect routes for specific cases, problem with complete-profile page
 
 Idelogy of clean code:
 - how lond should be data fields? https://stackoverflow.com/questions/20958/list-of-standard-lengths-for-database-fields
