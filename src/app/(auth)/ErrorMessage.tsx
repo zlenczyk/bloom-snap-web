@@ -7,7 +7,7 @@ type Props = {
 };
 
 const ErrorMessage = ({ messages }: Props) => {
-  return messages ? (
+  return messages.length > 0 ? (
     <div>
       {messages.map((message, index) => (
         <div className="text-destructive flex gap-1" key={`message-index`}>

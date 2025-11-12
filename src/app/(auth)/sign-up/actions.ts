@@ -67,6 +67,7 @@ const signUp = async (state: SignUpFormState, formData: FormData) => {
         userName,
         email,
         password: hashedPassword,
+        profileCompleted: true,
       },
     });
   } catch {

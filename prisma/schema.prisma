@@ -10,15 +10,16 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  userName      String    @unique @db.VarChar(255)
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  password      String?
-  plants        Plant[]
+  id               String    @id @default(cuid())
+  userName         String    @unique @db.VarChar(255)
+  email            String    @unique
+  emailVerified    DateTime?
+  image            String?
+  accounts         Account[]
+  sessions         Session[]
+  password         String?
+  plants           Plant[]
+  profileCompleted Boolean   @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -154,6 +155,7 @@ model TimelineEvent {
   description String?  @db.VarChar(500)
   date        DateTime
   icon        String
+  color       String
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

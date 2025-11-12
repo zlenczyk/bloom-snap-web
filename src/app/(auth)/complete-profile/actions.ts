@@ -48,9 +48,12 @@ export async function completeProfile(
 
   await db.user.update({
     where: { id: session.user.id },
-    data: { userName: validData.userName },
+    data: {
+      userName: validData.userName,
+      profileCompleted: true,
+    },
   });
 
-  revalidatePath("/my-collection");
-  redirect("/my-collection");
+  revalidatePath("/sign-in");
+  redirect("/sign-in");
 }

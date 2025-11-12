@@ -42,15 +42,17 @@ export const authConfig = {
         token.id = user.id;
         token.email = user.email;
         token.userName = user.userName;
+        token.profileCompleted = user.profileCompleted ?? false;
       }
       return token;
     },
-
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id as string;
         session.user.email = token.email as string;
         session.user.userName = token.userName as string;
+        session.user.profileCompleted =
+          (token.profileCompleted as boolean) ?? false;
       }
       return session;
     },
@@ -76,6 +78,7 @@ export const authConfig = {
           email: profile.email,
           image: profile.picture ?? null,
           userName: `temp_${profile.sub.slice(0, 8)}`,
+          profileCompleted: false,
         };
       },
     }),
@@ -84,8 +87,6 @@ export const authConfig = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      //TODO: consider augmenting the User Interface
-      // https://authjs.dev/getting-started/typescript#module-augmentation
       authorize: async (credentials) => {
         //TODO: check parseAsync?
         const parsedCredentials = credentialsSchema.safeParse(credentials);
@@ -113,6 +114,7 @@ export const authConfig = {
           id: user.id,
           email: user.email,
           userName: user.userName,
+          profileCompleted: user.profileCompleted,
         };
       },
     }),
