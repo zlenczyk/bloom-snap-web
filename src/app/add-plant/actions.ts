@@ -148,9 +148,9 @@ const addPlant = async (state: AddPlantFormState, formData: FormData) => {
     };
   }
 
-  revalidatePath("/");
+  revalidatePath("/my-collection");
 
-  redirect("/");
+  redirect("/my-collection");
 };
 
 export default addPlant;
