@@ -1,16 +1,16 @@
 export enum GrowingMediumEnum {
   Soil = "soil",
-  SemiHydroponics = "semi-hydroponics",
+  SemiHydroponics = "semi_hydroponics",
   Hydroponics = "hydroponics",
 }
 
 export enum LightExposureEnum {
-  MorningSun = "morning-sun-light",
-  AfternoonSun = "afternoon-sun-light",
-  FullDaySun = "full-day-sun-light",
-  LowSun = "low-sun-light",
-  Indirect = "indirect-sun-light",
-  Artificial = "artificial-light",
+  MorningSun = "morning_sun_light",
+  AfternoonSun = "afternoon_sun_light",
+  FullDaySun = "full_day_sun_light",
+  LowSun = "low_sun_light",
+  Indirect = "indirect_sun_light",
+  Artificial = "artificial_light",
 }
 
 export const LIGHT_EXPOSURE_OPTIONS = {
@@ -41,15 +41,15 @@ export const LIGHT_EXPOSURE_OPTIONS = {
 } as const;
 
 export enum WindowDirectionEnum {
-  NorthFacingNorthernHemisphere = "north-facing-northern-hemisphere",
-  SouthFacingNorthernHemisphere = "south-facing-northern-hemisphere",
-  EastFacingNorthernHemisphere = "east-facing-northern-hemisphere",
-  WestFacingNorthernHemisphere = "west-facing-northern-hemisphere",
-  NorthFacingSouthernHemisphere = "north-facing-southern-hemisphere",
-  SouthFacingSouthernHemisphere = "south-facing-southern-hemisphere",
-  EastFacingSouthernHemisphere = "east-facing-southern-hemisphere",
-  WestFacingSouthernHemisphere = "west-facing-southern-hemisphere",
-  NoWindow = "no-window",
+  NorthFacingNorthernHemisphere = "north_facing_northern_hemisphere",
+  SouthFacingNorthernHemisphere = "south_facing_northern_hemisphere",
+  EastFacingNorthernHemisphere = "east_facing_northern_hemisphere",
+  WestFacingNorthernHemisphere = "west_facing_northern_hemisphere",
+  NorthFacingSouthernHemisphere = "north_facing_southern_hemisphere",
+  SouthFacingSouthernHemisphere = "south_facing_southern_hemisphere",
+  EastFacingSouthernHemisphere = "east_facing_southern_hemisphere",
+  WestFacingSouthernHemisphere = "west_facing_southern_hemisphere",
+  NoWindow = "no_window",
 }
 
 export const WINDOW_DIRECTION_OPTIONS = {
