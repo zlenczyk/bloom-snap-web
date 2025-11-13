@@ -130,7 +130,7 @@ const addPlant = async (state: AddPlantFormState, formData: FormData) => {
         mistingNotes: validData.mistingNotes,
         nickname: validData.nickname,
         ownedSince: validData.ownedSince,
-        pottingMix: validData.pottingMix ?? undefined,
+        pottingMix: validData.pottingMix || [],
         roomLocation: validData.roomLocation,
         source: validData.source,
         species: validData.species,
