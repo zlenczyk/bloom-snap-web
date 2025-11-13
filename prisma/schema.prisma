@@ -117,7 +117,7 @@ model Plant {
   windowDirection WindowDirection?
   lightExposure   LightExposure?
   growingMedium   GrowingMedium?
-  pottingMix      Json? // store ["peat", "perlite"] etc.
+  pottingMix      String[] // store ["peat", "perlite"] etc.
 
   // Notes tab
   wateringNotes     String? @db.VarChar(300)
