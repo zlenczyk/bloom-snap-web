@@ -8,8 +8,36 @@ import {
   User,
   Wind,
 } from "lucide-react";
+import ValueDisplay from "./ValueDisplay";
 
-const Characteristics = () => {
+interface CharacteristicProps {
+  characteristics: {
+    commonName: string;
+    nickname: string | null;
+    genus: string | null;
+    species: string | null;
+    isSafe: boolean | null;
+    isAirPurifying: boolean | null;
+  };
+}
+
+const Status = ({ value }: { value: boolean | null }) => {
+  if (value === null) {
+    return <p className="text-lg text-gray-400 italic">-</p>;
+  }
+
+  return value ? (
+    <div className="flex items-center justify-center w-16 py-1 rounded-full bg-gradient-to-br from-green-200 to-green-50 shadow-sm">
+      <p className="text-sm font-medium text-green-700">Yes</p>
+    </div>
+  ) : (
+    <div className="flex items-center justify-center w-16 py-1 rounded-full bg-gradient-to-br from-red-200 to-red-50 shadow-sm">
+      <p className="text-sm font-medium text-red-700">No</p>
+    </div>
+  );
+};
+
+const Characteristics = ({ characteristics }: CharacteristicProps) => {
   return (
     <section
       id="plant-characteristics"
@@ -30,7 +58,7 @@ const Characteristics = () => {
               Common Name
             </label>
           </div>
-          <p className="text-lg font-semibold text-gray-900">Fiddle Leaf Fig</p>
+          <ValueDisplay value={characteristics.commonName} variant="info" />
         </div>
 
         <div className="flex justify-between items-center mb-2">
@@ -38,7 +66,7 @@ const Characteristics = () => {
             <Trees className="h-4 w-4 text-gray-400" />
             <label className="text-sm font-medium text-gray-500">Genus</label>
           </div>
-          <p className="text-lg text-gray-900">Ficus</p>
+          <ValueDisplay value={characteristics.genus} variant="info" />
         </div>
 
         <div className="flex justify-between items-center mb-2">
@@ -46,7 +74,7 @@ const Characteristics = () => {
             <TreeDeciduous className="h-4 w-4 text-gray-400" />
             <label className="text-sm font-medium text-gray-500">Species</label>
           </div>
-          <p className="text-lg text-gray-700">Ficus lyrata</p>
+          <ValueDisplay value={characteristics.species} variant="info" />
         </div>
 
         <div className="flex justify-between items-center mb-2">
@@ -56,7 +84,7 @@ const Characteristics = () => {
               Nickname
             </label>
           </div>
-          <p className="text-lg text-gray-900">"Figgy"</p>
+          <ValueDisplay value={characteristics.nickname} variant="info" />
         </div>
 
         <Separator className="my-3" />
@@ -68,21 +96,17 @@ const Characteristics = () => {
               Safe for Pets
             </label>
           </div>
-          <div className="flex items-center justify-center w-16 py-1 rounded-full bg-gradient-to-br from-green-200 to-green-50 shadow-sm">
-            <p className="text-sm font-medium text-green-700">Yes</p>
-          </div>
+          <Status value={characteristics.isSafe} />
         </div>
 
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Wind className="h-4 w-4 text-gray-400" />
             <label className="text-sm font-medium text-gray-500">
-              Air-cleaning
+              Air-purifying
             </label>
           </div>
-          <div className="flex items-center justify-center w-16 py-1 rounded-full bg-gradient-to-br from-red-200 to-red-50 shadow-sm">
-            <p className="text-sm font-medium text-red-700">No</p>
-          </div>
+          <Status value={characteristics.isAirPurifying} />
         </div>
       </div>
     </section>

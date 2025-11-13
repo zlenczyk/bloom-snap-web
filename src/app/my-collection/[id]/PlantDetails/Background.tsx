@@ -1,7 +1,16 @@
 import { Separator } from "@/components/ui/separator";
 import { BookOpenText, Calendar, MapPin, ShoppingBag } from "lucide-react";
+import ValueDisplay from "./ValueDisplay";
 
-const Background = () => {
+interface BackgroundProps {
+  background: {
+    source: string | null;
+    ownedSince: Date | null;
+    description: string | null;
+  };
+}
+
+const Background = ({ background }: BackgroundProps) => {
   return (
     <section
       id="plant-identity"
@@ -19,7 +28,7 @@ const Background = () => {
           <MapPin className="h-4 w-4 text-gray-500" />
           <label className="text-sm font-medium text-gray-500">Source</label>
         </div>
-        <p className="text-lg text-gray-900">Local nursery</p>
+        <ValueDisplay value={background.source} variant="info" />
       </div>
 
       <div className="flex justify-between items-center mb-2">
@@ -29,7 +38,14 @@ const Background = () => {
             Owned Since
           </label>
         </div>
-        <p className="text-lg text-gray-600">22/02/2020</p>
+        <ValueDisplay
+          value={
+            background.ownedSince
+              ? background.ownedSince.toLocaleDateString()
+              : null
+          }
+          variant="info"
+        />
       </div>
 
       <Separator className="my-3" />
@@ -38,13 +54,7 @@ const Background = () => {
         <BookOpenText className="h-4 w-4 text-gray-500" />
         <label className="text-sm font-medium text-gray-500">Description</label>
       </div>
-
-      <p className="text-base text-gray-700">
-        Wiped with a damp cloth every couple of weeks; occasional neem oil for
-        shine. This plant was sourced from a local nursery and has been cared
-        for since 2020. It thrives in bright, indirect light and requires
-        moderate watering.
-      </p>
+      <ValueDisplay value={background.description} variant="info" />
     </section>
   );
 };

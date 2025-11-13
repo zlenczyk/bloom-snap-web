@@ -1,7 +1,8 @@
 import { Grip } from "lucide-react";
+import ValueDisplay from "./ValueDisplay";
 
 interface GrowingMediumProps {
-  mediumType: string;
+  mediumType: string | null;
   items?: string[];
 }
 
@@ -11,7 +12,7 @@ const GrowingMedium = ({ mediumType, items = [] }: GrowingMediumProps) => {
       <div className="flex flex-col items-center text-center mb-3">
         <Grip className="h-5 w-5 mb-1 text-teal-800" />
         <p className="text-sm text-gray-600">Growing Medium</p>
-        <p className="text-lg font-semibold text-gray-900">{mediumType}</p>
+        <ValueDisplay value={mediumType} variant="stats" />
       </div>
 
       <div className="flex flex-wrap gap-2">

@@ -7,8 +7,19 @@ import {
   Sprout,
   StickyNote,
 } from "lucide-react";
+import ValueDisplay from "./ValueDisplay";
 
-const CareNotes = () => {
+interface CareNotesProps {
+  careNotes: {
+    wateringNotes: string | null;
+    mistingNotes: string | null;
+    leafCleaningNotes: string | null;
+    fertilizingNotes: string | null;
+    additionalNotes: string | null;
+  };
+}
+
+const CareNotes = ({ careNotes }: CareNotesProps) => {
   return (
     <section
       id="care-notes"
@@ -26,10 +37,7 @@ const CareNotes = () => {
           <Droplet className="h-4 w-4 text-blue-500" />
           <label className="text-sm font-medium text-blue-500">Watering</label>
         </div>
-        <p className="text-base text-gray-700">
-          Filtered water at room temperature, about once a week when the top
-          soil feels dry.
-        </p>
+        <ValueDisplay value={careNotes.wateringNotes} variant="notes" />
         <Pin
           className="h-8 w-8 text-blue-200 absolute top-[-12px] right-[12px] rotate-12"
           strokeWidth={1.5}
@@ -43,10 +51,7 @@ const CareNotes = () => {
             Misting / Spraying
           </label>
         </div>
-        <p className="text-base text-gray-700">
-          Light misting 2–3 times per week, mainly in drier months to boost
-          humidity.
-        </p>
+        <ValueDisplay value={careNotes.mistingNotes} variant="notes" />
         <Pin
           className="h-8 w-8 text-teal-200 absolute top-[-12px] right-[12px] rotate-12"
           strokeWidth={1.5}
@@ -60,10 +65,7 @@ const CareNotes = () => {
             Leaf Cleaning
           </label>
         </div>
-        <p className="text-base text-gray-700">
-          Wiped with a damp cloth every couple of weeks; occasional neem oil for
-          shine.
-        </p>
+        <ValueDisplay value={careNotes.leafCleaningNotes} variant="notes" />
         <Pin
           className="h-8 w-8 text-yellow-400/40 absolute top-[-12px] right-[12px] rotate-12"
           strokeWidth={1.5}
@@ -77,10 +79,7 @@ const CareNotes = () => {
             Fertilizing
           </label>
         </div>
-        <p className="text-base text-gray-700">
-          Liquid fertilizer once a month in spring and summer; skipped in
-          winter.
-        </p>
+        <ValueDisplay value={careNotes.fertilizingNotes} variant="notes" />
         <Pin
           className="h-8 w-8 text-purple-200 absolute top-[-12px] right-[12px] rotate-12"
           strokeWidth={1.5}
@@ -94,10 +93,7 @@ const CareNotes = () => {
             Additional Notes
           </label>
         </div>
-        <p className="text-base text-gray-700">
-          Rotated weekly for even light. Kept near bright, indirect sun; checked
-          for pests.
-        </p>
+        <ValueDisplay value={careNotes.additionalNotes} variant="notes" />
         <Pin
           className="h-8 w-8 text-gray-200 absolute top-[-12px] right-[12px] rotate-12"
           strokeWidth={1.5}
