@@ -10,12 +10,12 @@ const ValueDisplay = ({ value, variant = "info" }: ValueDisplayProps) => {
     case "info":
       classes = `text-lg ${
         value ? "text-gray-900" : "text-gray-400"
-      } text-right`;
+      } text-right break-words whitespace-pre-wrap`;
       break;
     case "stats":
       classes = `text-lg font-semibold ${
         value ? "text-gray-900" : "text-gray-400"
-      }`;
+      } break-words whitespace-pre-wrap`;
       break;
     case "notes":
       classes = `
