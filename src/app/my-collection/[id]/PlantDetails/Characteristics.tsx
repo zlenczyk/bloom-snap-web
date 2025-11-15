@@ -49,63 +49,70 @@ const Characteristics = ({ characteristics }: CharacteristicProps) => {
         </div>
         <h2 className="text-xl font-semibold text-gray-900">Characteristics</h2>
       </div>
-
-      <div>
-        <div className="flex justify-between items-center mb-2">
-          <div className="flex items-center gap-2">
-            <User className="h-4 w-4 text-gray-400" />
-            <label className="text-sm font-medium text-gray-500">
-              Common Name
-            </label>
-          </div>
+      <div
+        className="
+          grid
+          grid-cols-[max-content,1fr]
+          gap-x-6
+          gap-y-3
+          items-start
+        "
+      >
+        <div className="flex items-center gap-2">
+          <User className="h-4 w-4 text-gray-400" />
+          <label className="text-sm font-medium text-gray-500">
+            Common Name
+          </label>
+        </div>
+        <div className="min-w-0 break-words">
           <ValueDisplay value={characteristics.commonName} variant="info" />
         </div>
 
-        <div className="flex justify-between items-center mb-2">
-          <div className="flex items-center gap-2">
-            <Trees className="h-4 w-4 text-gray-400" />
-            <label className="text-sm font-medium text-gray-500">Genus</label>
-          </div>
+        <div className="flex items-center gap-2">
+          <Trees className="h-4 w-4 text-gray-400" />
+          <label className="text-sm font-medium text-gray-500">Genus</label>
+        </div>
+        <div className="min-w-0 break-words">
           <ValueDisplay value={characteristics.genus} variant="info" />
         </div>
 
-        <div className="flex justify-between items-center mb-2">
-          <div className="flex items-center gap-2">
-            <TreeDeciduous className="h-4 w-4 text-gray-400" />
-            <label className="text-sm font-medium text-gray-500">Species</label>
-          </div>
+        <div className="flex items-center gap-2">
+          <TreeDeciduous className="h-4 w-4 text-gray-400" />
+          <label className="text-sm font-medium text-gray-500">Species</label>
+        </div>
+        <div className="min-w-0 break-words">
           <ValueDisplay value={characteristics.species} variant="info" />
         </div>
 
-        <div className="flex justify-between items-center mb-2">
-          <div className="flex items-center gap-2">
-            <Smile className="h-4 w-4 text-gray-400" />
-            <label className="text-sm font-medium text-gray-500">
-              Nickname
-            </label>
-          </div>
+        <div className="flex items-center gap-2">
+          <Smile className="h-4 w-4 text-gray-400" />
+          <label className="text-sm font-medium text-gray-500">Nickname</label>
+        </div>
+        <div className="min-w-0 break-words">
           <ValueDisplay value={characteristics.nickname} variant="info" />
         </div>
 
-        <Separator className="my-3" />
+        <div className="col-span-2 my-2">
+          <Separator />
+        </div>
 
-        <div className="flex justify-between items-center mb-2">
-          <div className="flex items-center gap-2">
-            <PawPrint className="h-4 w-4 text-gray-400" />
-            <label className="text-sm font-medium text-gray-500">
-              Safe for Pets
-            </label>
-          </div>
+        <div className="flex items-center gap-2">
+          <PawPrint className="h-4 w-4 text-gray-400" />
+          <label className="text-sm font-medium text-gray-500">
+            Safe for Pets
+          </label>
+        </div>
+        <div className="justify-self-end">
           <Status value={characteristics.isSafe} />
         </div>
 
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Wind className="h-4 w-4 text-gray-400" />
-            <label className="text-sm font-medium text-gray-500">
-              Air-purifying
-            </label>
-          </div>
+        <div className="flex items-center gap-2">
+          <Wind className="h-4 w-4 text-gray-400" />
+          <label className="text-sm font-medium text-gray-500">
+            Air-purifying
+          </label>
+        </div>
+        <div className="justify-self-end">
           <Status value={characteristics.isAirPurifying} />
         </div>
       </div>

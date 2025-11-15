@@ -23,38 +23,55 @@ const Background = ({ background }: BackgroundProps) => {
         <h2 className="text-xl font-semibold text-gray-900">Background</h2>
       </div>
 
-      <div className="flex justify-between items-center mb-2">
+      <div
+        className="
+          grid
+          grid-cols-[max-content,1fr]
+          gap-y-3
+          gap-x-6
+          items-start
+        "
+      >
         <div className="flex items-center gap-2">
           <MapPin className="h-4 w-4 text-gray-500" />
           <label className="text-sm font-medium text-gray-500">Source</label>
         </div>
-        <ValueDisplay value={background.source} variant="info" />
-      </div>
+        <div className="min-w-0 break-words">
+          <ValueDisplay value={background.source} variant="info" />
+        </div>
 
-      <div className="flex justify-between items-center mb-2">
         <div className="flex items-center gap-2">
           <Calendar className="h-4 w-4 text-gray-500" />
           <label className="text-sm font-medium text-gray-500">
             Owned Since
           </label>
         </div>
-        <ValueDisplay
-          value={
-            background.ownedSince
-              ? background.ownedSince.toLocaleDateString()
-              : null
-          }
-          variant="info"
-        />
-      </div>
+        <div className="min-w-0 break-words">
+          <ValueDisplay
+            value={
+              background.ownedSince
+                ? background.ownedSince.toLocaleDateString()
+                : null
+            }
+            variant="info"
+          />
+        </div>
 
-      <Separator className="my-3" />
+        <div className="col-span-2 my-2">
+          <Separator />
+        </div>
 
-      <div className="flex items-center gap-2 mb-2">
-        <BookOpenText className="h-4 w-4 text-gray-500" />
-        <label className="text-sm font-medium text-gray-500">Description</label>
+        <div className="flex items-center gap-2 col-span-2">
+          <BookOpenText className="h-4 w-4 text-gray-500" />
+          <label className="text-sm font-medium text-gray-500">
+            Description
+          </label>
+        </div>
+
+        <div className="col-span-2 min-w-0 break-words">
+          <ValueDisplay value={background.description} variant="info" />
+        </div>
       </div>
-      <ValueDisplay value={background.description} variant="info" />
     </section>
   );
 };
