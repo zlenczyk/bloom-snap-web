@@ -18,7 +18,11 @@ const ValueDisplay = ({ value, variant = "info" }: ValueDisplayProps) => {
       }`;
       break;
     case "notes":
-      classes = `text-base ${value ? "text-gray-700" : "text-gray-400 ml-1"}`;
+      classes = `
+        text-base 
+        ${value ? "text-gray-700" : "text-gray-400 ml-1"} 
+        break-words whitespace-pre-wrap
+      `;
       break;
   }
 
