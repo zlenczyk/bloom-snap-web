@@ -1,5 +1,13 @@
 "use client";
 
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Plant } from "@prisma/client";
 import { Edit } from "lucide-react";
@@ -57,6 +65,21 @@ const PlantDetails = ({ plant }: PlantProps) => {
   return (
     <div className="flex min-h-screen bg-zinc-100">
       <div className="mx-auto px-6 py-8 max-w-7xl w-full">
+        <Breadcrumb className="mb-4">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/my-collection">
+                My Collection
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage className="capitalize">
+                {plant.commonName}
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold text-gray-900 capitalize">
