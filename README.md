@@ -35,6 +35,7 @@ Issues:
 
 Idelogy of clean code:
 - how lond should be data fields? https://stackoverflow.com/questions/20958/list-of-standard-lengths-for-database-fields
+- uploading images - when choosing files vs on form submit, architecture and consequences. I chosen 2 version.
 
 # Potential Features for an Expanded App Version
 
