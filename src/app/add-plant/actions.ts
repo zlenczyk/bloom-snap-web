@@ -2,6 +2,7 @@
 
 import { auth } from "@/auth";
 import db from "@/lib/db/db";
+import { supabaseAdmin } from "@/lib/subabaseAdmin";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import z from "zod";
@@ -32,6 +33,7 @@ type Errors = {
   lightExposure?: string[];
   growingMedium?: string[];
   pottingMix?: string[];
+  photos?: string[];
 };
 
 export type AddPlantFormState = {
@@ -46,8 +48,28 @@ const toOptionalBoolean = (value: unknown): boolean | null => {
   return null;
 };
 
+const handleUpload = async (
+  file: File,
+  userId: string
+): Promise<string | null> => {
+  const path = `${userId}/${crypto.randomUUID()}-${file.name}`;
+
+  const { data, error } = await supabaseAdmin.storage
+    .from("bloomsnap-plant-photos")
+    .upload(path, file, { upsert: false });
+
+  if (error) {
+    console.error("Supabase upload error:", error);
+
+    return null;
+  }
+
+  return path;
+};
+
 const addPlant = async (state: AddPlantFormState, formData: FormData) => {
   const session = await auth();
+
   if (!session?.user?.id) {
     redirect("/sign-in");
   }
@@ -57,15 +79,11 @@ const addPlant = async (state: AddPlantFormState, formData: FormData) => {
   const ownedSinceStr = formData.get("ownedSince");
   const lastRepottedStr = formData.get("lastRepotted");
 
-  console.log("xdddd: ", formData.get("lastRepotted"));
-
-  for (const [key, value] of formData.entries()) {
-    console.log(key + ": " + value);
-  }
-
   const pottingMixValues = (formData.getAll("pottingMix") as string[])
     .map((v) => v.trim())
     .filter((v) => v !== "");
+
+  const photoFiles = (formData.getAll("photos") as File[]).slice(0, 5);
 
   const validationResult = AddPlantFormSchema.safeParse({
     additionalNotes: formData.get("additionalNotes") || null,
@@ -92,6 +110,7 @@ const addPlant = async (state: AddPlantFormState, formData: FormData) => {
     isSafe: toOptionalBoolean(formData.get("isSafe")),
     windowDirection: formData.get("windowDirection") || null,
     isAirPurifying: toOptionalBoolean(formData.get("isAirPurifying")),
+    photos: photoFiles,
   });
 
   console.log("WTF all data: ", validationResult.data);
@@ -111,7 +130,7 @@ const addPlant = async (state: AddPlantFormState, formData: FormData) => {
   const validData = validationResult.data;
 
   try {
-    await db.plant.create({
+    const newPlant = await db.plant.create({
       data: {
         additionalNotes: validData.additionalNotes,
         commonName: validData.commonName,
@@ -140,6 +159,23 @@ const addPlant = async (state: AddPlantFormState, formData: FormData) => {
         windowDirection: validData.windowDirection || undefined,
       },
     });
+
+    const photoFiles = formData.getAll("photos") as File[];
+    const photoPaths: string[] = [];
+
+    for (const file of photoFiles) {
+      const path = await handleUpload(file, userId);
+      if (path) photoPaths.push(path);
+    }
+
+    if (photoPaths.length > 0) {
+      await db.plantPhoto.createMany({
+        data: photoPaths.map((url) => ({
+          plantId: newPlant.id,
+          url,
+        })),
+      });
+    }
   } catch (error) {
     console.error("Database error:", error);
     return {
