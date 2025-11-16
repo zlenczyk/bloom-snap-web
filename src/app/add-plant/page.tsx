@@ -28,6 +28,7 @@ import addPlant, { AddPlantFormState } from "./actions";
 import CareNotesTab from "./CareNotesTab";
 import EnvironmentTab from "./EnvironmentTab";
 import OverviewTab from "./OverviewTab";
+import PhotosTab from "./PhotosTab";
 import { AddPlantForm, AddPlantFormSchema } from "./schema";
 
 const initialState: AddPlantFormState = {
@@ -163,7 +164,7 @@ const AddPlant = () => {
                 onValueChange={setActiveTab}
                 className="w-full gap-6 overflow-y-auto px-6 pt-6"
               >
-                <TabsList className="grid grid-cols-3 w-full shrink-0">
+                <TabsList className="grid grid-cols-4 w-full shrink-0">
                   <TabsTrigger
                     value={TabEnum.Overview}
                     className={cn(
@@ -210,6 +211,7 @@ const AddPlant = () => {
                       <span className="text-destructive">●</span>
                     )}
                   </TabsTrigger>
+                  <TabsTrigger value="photos">Photos</TabsTrigger>
                 </TabsList>
 
                 <TabsContent
@@ -234,6 +236,14 @@ const AddPlant = () => {
                   className="data-[state=inactive]:hidden p-1"
                 >
                   <CareNotesTab form={form} state={state} />
+                </TabsContent>
+
+                <TabsContent
+                  value="photos"
+                  forceMount
+                  className="data-[state=inactive]:hidden p-1"
+                >
+                  <PhotosTab form={form} state={state} />
                 </TabsContent>
               </Tabs>
             </CardContent>
