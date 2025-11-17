@@ -2,19 +2,25 @@
 
 import { Button } from "@/components/ui/button";
 import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
 } from "@/components/ui/form";
 import { ChangeEvent, useEffect, useState } from "react";
-import { useFormContext } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
+import { AddPlantFormState } from "./actions";
 import { AddPlantForm } from "./schema";
+
+type PhotosTabProps = {
+  form: UseFormReturn<AddPlantForm>;
+  state?: AddPlantFormState;
+};
 
 const MAX_IMAGES = 5;
 
-const PhotosTab: React.FC = () => {
-  const { control, setValue, watch } = useFormContext<AddPlantForm>();
+const PhotosTab = ({ form, state }: PhotosTabProps) => {
+  const { control, setValue, watch } = form;
   const files: File[] = watch("photos") || [];
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
 
@@ -29,9 +35,14 @@ const PhotosTab: React.FC = () => {
     const selected = e.target.files;
     if (!selected) return;
 
-    const newFiles = Array.from(selected).slice(0, MAX_IMAGES);
-    const combinedFiles = [...files, ...newFiles].slice(0, MAX_IMAGES);
+    const remainingSlots = MAX_IMAGES - files.length;
+    if (remainingSlots <= 0) return;
+
+    const newFiles = Array.from(selected).slice(0, remainingSlots);
+    const combinedFiles = [...files, ...newFiles];
     setValue("photos", combinedFiles, { shouldValidate: true });
+
+    e.target.value = "";
   };
 
   const handleRemoveFile = (index: number) => {
