@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth";
 import db from "@/lib/db/db";
-import { supabaseAdmin } from "@/lib/subabaseAdmin";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import z from "zod";
@@ -83,8 +83,6 @@ const addPlant = async (state: AddPlantFormState, formData: FormData) => {
     .map((v) => v.trim())
     .filter((v) => v !== "");
 
-  const photoFiles = (formData.getAll("photos") as File[]).slice(0, 5);
-
   const validationResult = AddPlantFormSchema.safeParse({
     additionalNotes: formData.get("additionalNotes") || null,
     currentHeight: formData.get("currentHeight") || null,
@@ -100,7 +98,7 @@ const addPlant = async (state: AddPlantFormState, formData: FormData) => {
     pottingMix: pottingMixValues,
     temperature: formData.get("temperature") || null,
     wateringNotes: formData.get("wateringNotes") || null,
-    commonName: formData.get("commonName") || null,
+    commonName: formData.get("commonName") || "",
     nickname: formData.get("nickname") || null,
     description: formData.get("description") || null,
     source: formData.get("source") || null,
@@ -110,16 +108,17 @@ const addPlant = async (state: AddPlantFormState, formData: FormData) => {
     isSafe: toOptionalBoolean(formData.get("isSafe")),
     windowDirection: formData.get("windowDirection") || null,
     isAirPurifying: toOptionalBoolean(formData.get("isAirPurifying")),
-    photos: photoFiles,
+    photos: (formData.getAll("photos") as File[]).slice(0, 5) || [],
   });
 
-  console.log("WTF all data: ", validationResult.data);
+  console.log("Validation result:", validationResult);
 
   if (!validationResult.success) {
     console.log(
-      "emmmmmm: ",
+      "zod flattened errors with field errors:",
       z.flattenError(validationResult.error).fieldErrors
     );
+
     return {
       errors: z.flattenError(validationResult.error).fieldErrors,
       message: "Input validation failed. Please check your entries.",
@@ -128,6 +127,8 @@ const addPlant = async (state: AddPlantFormState, formData: FormData) => {
   }
 
   const validData = validationResult.data;
+
+  let newPlantId: string;
 
   try {
     const newPlant = await db.plant.create({
@@ -160,27 +161,65 @@ const addPlant = async (state: AddPlantFormState, formData: FormData) => {
       },
     });
 
-    const photoFiles = formData.getAll("photos") as File[];
-    const photoPaths: string[] = [];
-
-    for (const file of photoFiles) {
-      const path = await handleUpload(file, userId);
-      if (path) photoPaths.push(path);
-    }
-
-    if (photoPaths.length > 0) {
-      await db.plantPhoto.createMany({
-        data: photoPaths.map((url) => ({
-          plantId: newPlant.id,
-          url,
-        })),
-      });
-    }
+    newPlantId = newPlant.id;
   } catch (error) {
     console.error("Database error:", error);
     return {
       message: "Failed to submit form. Please try again later.",
       success: false,
+    };
+  }
+
+  const uploadedPhotoPaths: string[] = [];
+  const failedPhotos: string[] = []; // both for not uploaded and not saved to db
+
+  for (const file of validData.photos || []) {
+    const path = await handleUpload(file, userId);
+
+    if (!path) {
+      failedPhotos.push(file.name);
+    } else {
+      uploadedPhotoPaths.push(path);
+    }
+  }
+
+  if (uploadedPhotoPaths.length > 0) {
+    let attempt = 0;
+    let success = false;
+
+    while (attempt < 3) {
+      try {
+        await db.plantPhoto.createMany({
+          data: uploadedPhotoPaths.map((url) => ({ plantId: newPlantId, url })),
+        });
+
+        success = true;
+
+        break;
+      } catch (error) {
+        console.error(`Bulk insert attempt ${attempt + 1} failed:`, error);
+
+        attempt++;
+      }
+    }
+
+    // we try to save already uploaded photos on the storage to the DB 3 times, but it failed. At this point storage will have some orphaned files.
+    if (!success) {
+      console.error("Failed to save uploaded photos to DB after 3 attempts.");
+
+      // add only the filename, not the full path
+      failedPhotos.push(
+        ...uploadedPhotoPaths.map((p) => p.split("/").pop() || p)
+      );
+    }
+  }
+
+  if (failedPhotos.length > 0) {
+    console.log("Some photos failed to upload or save to DB:", failedPhotos);
+
+    return {
+      message: `Plant added successfully, but some photo(s) failed to upload.`,
+      success: true,
     };
   }
 
