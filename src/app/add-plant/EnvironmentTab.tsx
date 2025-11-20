@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import {
   EnvironmentFieldsEnum,
+  GROWING_MEDIUM_OPTIONS,
   GrowingMediumEnum,
   LIGHT_EXPOSURE_OPTIONS,
   LightExposureEnum,
@@ -56,6 +57,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
                 placeholder="15 cm, 8 in, 1 m, etc."
                 {...field}
                 value={field.value || ""}
+                aria-invalid={!!state?.errors?.[field.name]}
               />
             </FormControl>
             {state?.errors?.currentHeight && (
@@ -78,6 +80,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
                 placeholder="9 cm, 11 cm, 12 cm, etc."
                 {...field}
                 value={field.value || ""}
+                aria-invalid={!!state?.errors?.[field.name]}
               />
             </FormControl>
             {state?.errors?.currentPotSize && (
@@ -104,6 +107,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
                       "justify-start text-left font-normal",
                       !field.value && "text-muted-foreground"
                     )}
+                    aria-invalid={!!state?.errors?.[field.name]}
                   >
                     <CalendarIcon />
                     {field.value ? (
@@ -145,6 +149,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
                 placeholder="60%, 80%, high, etc."
                 {...field}
                 value={field.value || ""}
+                aria-invalid={!!state?.errors?.[field.name]}
               />
             </FormControl>
             {state?.errors?.humidity && (
@@ -167,6 +172,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
                 placeholder="18°C, 22°C, 75°F, etc."
                 {...field}
                 value={field.value || ""}
+                aria-invalid={!!state?.errors?.[field.name]}
               />
             </FormControl>
             {state?.errors?.temperature && (
@@ -194,6 +200,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
                   value={field.value}
                   placeholder="Select type of light"
                   onClear={() => field.onChange(undefined)}
+                  aria-invalid={!!state?.errors?.[field.name]}
                 />
 
                 <SelectContent>
@@ -241,6 +248,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
                   value={field.value}
                   placeholder="Select window direction"
                   onClear={() => field.onChange(undefined)}
+                  aria-invalid={!!state?.errors?.[field.name]}
                 />
 
                 <SelectContent>
@@ -340,6 +348,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
                 placeholder="Living room, bedroom, balcony, etc."
                 {...field}
                 value={field.value || ""}
+                aria-invalid={!!state?.errors?.[field.name]}
               />
             </FormControl>
             {state?.errors?.roomLocation && (
@@ -367,15 +376,24 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
                   value={field.value}
                   placeholder="Select growing method"
                   onClear={() => field.onChange(undefined)}
+                  aria-invalid={!!state?.errors?.[field.name]}
                 />
 
                 <SelectContent>
-                  <SelectItem value={GrowingMediumEnum.Soil}>Soil</SelectItem>
+                  <SelectItem value={GrowingMediumEnum.Soil}>
+                    {GROWING_MEDIUM_OPTIONS[GrowingMediumEnum.Soil].label}
+                  </SelectItem>
                   <SelectItem value={GrowingMediumEnum.SemiHydroponics}>
-                    Semi-hydroponics
+                    {
+                      GROWING_MEDIUM_OPTIONS[GrowingMediumEnum.SemiHydroponics]
+                        .label
+                    }
                   </SelectItem>
                   <SelectItem value={GrowingMediumEnum.Hydroponics}>
-                    Hydroponics
+                    {
+                      GROWING_MEDIUM_OPTIONS[GrowingMediumEnum.Hydroponics]
+                        .label
+                    }
                   </SelectItem>
                 </SelectContent>
               </Select>

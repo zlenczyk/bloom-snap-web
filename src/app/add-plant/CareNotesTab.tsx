@@ -32,6 +32,7 @@ const CareNotesTab = ({ form, state }: CareNotesProps) => {
                 autoComplete="on"
                 {...field}
                 value={field.value || ""}
+                aria-invalid={!!state?.errors?.[field.name]}
               />
             </FormControl>
 
@@ -58,6 +59,7 @@ const CareNotesTab = ({ form, state }: CareNotesProps) => {
                 autoComplete="on"
                 {...field}
                 value={field.value || ""}
+                aria-invalid={!!state?.errors?.[field.name]}
               />
             </FormControl>
 
@@ -82,6 +84,7 @@ const CareNotesTab = ({ form, state }: CareNotesProps) => {
                 autoComplete="on"
                 {...field}
                 value={field.value || ""}
+                aria-invalid={!!state?.errors?.[field.name]}
               />
             </FormControl>
 
@@ -106,6 +109,7 @@ const CareNotesTab = ({ form, state }: CareNotesProps) => {
                 autoComplete="on"
                 {...field}
                 value={field.value || ""}
+                aria-invalid={!!state?.errors?.[field.name]}
               />
             </FormControl>
 
@@ -130,6 +134,7 @@ const CareNotesTab = ({ form, state }: CareNotesProps) => {
                 autoComplete="on"
                 {...field}
                 value={field.value || ""}
+                aria-invalid={!!state?.errors?.[field.name]}
               />
             </FormControl>
 

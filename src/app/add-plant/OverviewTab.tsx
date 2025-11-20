@@ -59,6 +59,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
                   placeholder="Philodendron pink princess"
                   autoComplete="on"
                   {...field}
+                  aria-invalid={!!state?.errors?.[field.name]}
                 />
               </FormControl>
               {state?.errors?.commonName && (
@@ -81,6 +82,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
                   autoComplete="on"
                   {...field}
                   value={field.value || ""}
+                  aria-invalid={!!state?.errors?.[field.name]}
                 />
               </FormControl>
               {state?.errors?.species && (
@@ -103,6 +105,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
                   autoComplete="on"
                   {...field}
                   value={field.value || ""}
+                  aria-invalid={!!state?.errors?.[field.name]}
                 />
               </FormControl>
               {state?.errors?.genus && (
@@ -125,6 +128,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
                   autoComplete="on"
                   {...field}
                   value={field.value || ""}
+                  aria-invalid={!!state?.errors?.[field.name]}
                 />
               </FormControl>
               {state?.errors?.nickname && (
@@ -147,6 +151,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
                   autoComplete="on"
                   {...field}
                   value={field.value || ""}
+                  aria-invalid={!!state?.errors?.[field.name]}
                 />
               </FormControl>
               {state?.errors?.source && (
@@ -173,6 +178,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
                         "justify-start text-left font-normal",
                         !field.value && "text-muted-foreground"
                       )}
+                      aria-invalid={!!state?.errors?.[field.name]}
                     >
                       <CalendarIcon />
                       {field.value ? (
@@ -225,6 +231,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
                       value={selectValue}
                       placeholder="Select an option"
                       onClear={() => field.onChange(undefined)}
+                      aria-invalid={!!state?.errors?.[field.name]}
                     />
 
                     <SelectContent>
@@ -263,6 +270,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
                       value={selectValue}
                       placeholder="Select an option"
                       onClear={() => field.onChange(undefined)}
+                      aria-invalid={!!state?.errors?.[field.name]}
                     />
 
                     <SelectContent>
@@ -291,6 +299,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
                 autoComplete="on"
                 {...field}
                 value={field.value || ""}
+                aria-invalid={!!state?.errors?.[field.name]}
               />
             </FormControl>
 

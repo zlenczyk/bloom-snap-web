@@ -15,11 +15,11 @@ import {
   EnvironmentFieldsEnum,
   NotesFieldsEnum,
   OverviewFieldsEnum,
+  PhotosFieldsEnum,
   TabEnum,
   tabFieldInputs,
 } from "@/lib/data/plantDetailsTypes";
 import { cn } from "@/lib/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Leaf, Sprout } from "lucide-react";
 import { startTransition, useActionState, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -29,7 +29,7 @@ import CareNotesTab from "./CareNotesTab";
 import EnvironmentTab from "./EnvironmentTab";
 import OverviewTab from "./OverviewTab";
 import PhotosTab from "./PhotosTab";
-import { AddPlantForm, AddPlantFormSchema } from "./schema";
+import { AddPlantForm } from "./schema";
 
 const initialState: AddPlantFormState = {
   errors: {},
@@ -38,7 +38,6 @@ const initialState: AddPlantFormState = {
 };
 
 const AddPlant = () => {
-  const [images, setImages] = useState<(File | null)[]>(Array(5).fill(null));
   const [activeTab, setActiveTab] = useState("overview");
 
   const [state, formAction, isPending] = useActionState<
@@ -47,7 +46,6 @@ const AddPlant = () => {
   >(addPlant, initialState);
 
   const form = useForm<AddPlantForm>({
-    resolver: zodResolver(AddPlantFormSchema),
     defaultValues: {
       [OverviewFieldsEnum.CommonName]: "",
       [OverviewFieldsEnum.Species]: "",
@@ -73,14 +71,12 @@ const AddPlant = () => {
       [EnvironmentFieldsEnum.LightExposure]: undefined,
       [EnvironmentFieldsEnum.GrowingMedium]: undefined,
       [EnvironmentFieldsEnum.PottingMix]: [],
-      // pictures: undefined,
+      [PhotosFieldsEnum.Photos]: [],
     },
   });
 
   const getTabsWithErrors = () => {
-    const errors = form.formState.errors;
-    const errorFields = Object.keys(errors);
-
+    const errorFields = Object.keys(state.errors ?? {});
     const tabsWithErrors = [];
 
     for (const [tabName, fields] of Object.entries(tabFieldInputs)) {
@@ -97,7 +93,7 @@ const AddPlant = () => {
     if (tabsWithErrors.length > 0) {
       setActiveTab(tabsWithErrors[0]);
     }
-  }, [form.formState.errors]);
+  }, [state.errors]);
 
   const tabsWithErrors = getTabsWithErrors();
 
@@ -211,7 +207,21 @@ const AddPlant = () => {
                       <span className="text-destructive">●</span>
                     )}
                   </TabsTrigger>
-                  <TabsTrigger value="photos">Photos</TabsTrigger>
+                  <TabsTrigger
+                    value={TabEnum.Photos}
+                    className={cn(
+                      tabsWithErrors.includes(TabEnum.Photos) &&
+                        "text-destructive",
+                      activeTab === TabEnum.Photos &&
+                        tabsWithErrors.includes(TabEnum.Photos) &&
+                        "outline-1 outline-destructive outline-offset-[-1px] bg-destructive/10 hover:bg-destructive/20"
+                    )}
+                  >
+                    Photos
+                    {tabsWithErrors.includes(TabEnum.Photos) && (
+                      <span className="text-destructive">●</span>
+                    )}
+                  </TabsTrigger>
                 </TabsList>
 
                 <TabsContent
@@ -255,7 +265,7 @@ const AddPlant = () => {
                 className="bg-emerald-600 hover:bg-emerald-700 text-white"
               >
                 <Leaf className="mr-2 h-4 w-4" />
-                Add Plant
+                {isPending ? "Adding Plant..." : "Add Plant"}
               </Button>
             </CardFooter>
           </form>
