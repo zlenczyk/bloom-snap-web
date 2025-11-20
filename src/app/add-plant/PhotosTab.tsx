@@ -113,6 +113,7 @@ const PhotosTab = ({ form, state }: PhotosTabProps) => {
                   className="object-cover w-full h-full"
                 />
                 <Button
+                  type="button"
                   className="absolute h-8 w-8 top-1 right-1 p-1 rounded-full bg-red-600 hover:bg-red-700"
                   onClick={() => handleRemoveFile(idx)}
                 >
