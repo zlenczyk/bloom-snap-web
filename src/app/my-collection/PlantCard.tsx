@@ -4,7 +4,7 @@ import CarouselArrows from "@/components/CarouselArrows";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { Plant } from "@prisma/client";
+import { Plant, PlantPhoto } from "@prisma/client";
 import { format } from "date-fns";
 import { Info, MapPin, PawPrint, ShoppingCart, Wind } from "lucide-react";
 import Image from "next/image";
@@ -12,7 +12,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 interface PlantCardProps {
-  plant: Plant;
+  plant: Plant & { photos: PlantPhoto[] };
 }
 
 const formatDate = (date: string | Date) => {
@@ -26,17 +26,8 @@ const PlantCard = ({ plant }: PlantCardProps) => {
     ? formatDate(plant.ownedSince)
     : null;
 
-  // const images = plant.pictures?.map((pic) => pic.url) ?? [];
+  const photos = plant.photos?.map((photo) => ({ url: photo.url })) ?? [];
 
-  const images = [
-    "/assets/monstera-1.webp",
-    "/assets/snake-plant-3.jpg",
-    "/assets/pothos-1.webp",
-    "/assets/spider-plant-1.jpg",
-    "/assets/fiddle-leaf-fig-2.jpg",
-  ];
-
-  const isSingleImageView = Boolean(plant.roomLocation || formattedOwnedSince);
 
   return (
     <Card className="group relative h-[450px] overflow-hidden transition-all hover:shadow-lg">
@@ -46,14 +37,14 @@ const PlantCard = ({ plant }: PlantCardProps) => {
             className="flex h-full transition-transform duration-300 ease-in-out"
             style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
           >
-            {images.length > 0
-              ? images.map((image, index) => (
+            {photos.length > 0
+              ? photos.map((photo, index) => (
                   <div
                     key={index}
                     className="h-full w-full flex-shrink-0 relative"
                   >
                     <Image
-                      src={image}
+                      src={photo.url}
                       alt={`${plant.commonName} - image ${index + 1}`}
                       layout="fill"
                       objectFit="cover"
@@ -64,13 +55,13 @@ const PlantCard = ({ plant }: PlantCardProps) => {
                 ))
               : null}
 
-            {images.length === 0 && <div className="h-full w-full bg-black" />}
+            {photos.length === 0 && <div className="h-full w-full bg-black" />}
           </div>
         </div>
 
-        {images.length > 1 && (
+        {photos.length > 1 && (
           <CarouselArrows
-            length={images.length}
+            length={photos.length}
             onIndexChange={(index) => setCurrentImageIndex(index)}
             currentIndex={currentImageIndex}
           />
@@ -188,8 +179,8 @@ const PlantCard = ({ plant }: PlantCardProps) => {
           </div>
 
           <div className="flex justify-center gap-1">
-            {images.length > 1 &&
-              images.map((_, index) => (
+            {photos.length > 1 &&
+              photos.map((_, index) => (
                 <div
                   key={`image-indicator-${index}`}
                   className={cn(
