@@ -9,7 +9,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { Plant } from "@prisma/client";
+import { Plant, PlantPhoto } from "@prisma/client";
 import { Edit } from "lucide-react";
 import Background from "./Background";
 import CareNotes from "./CareNotes";
@@ -19,7 +19,7 @@ import Gallery from "./Gallery";
 import Growth from "./Growth";
 
 interface PlantProps {
-  plant: Plant;
+  plant: Plant & { photos: PlantPhoto[] };
 }
 
 const PlantDetails = ({ plant }: PlantProps) => {
@@ -95,7 +95,7 @@ const PlantDetails = ({ plant }: PlantProps) => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="col-span-1 lg:col-span-12 grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div className="col-span-1 lg:col-span-6">
-              <Gallery />
+              <Gallery photos={plant.photos} />
             </div>
 
             <div className="col-span-1 lg:col-span-6 flex flex-col gap-8">

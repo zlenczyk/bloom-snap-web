@@ -1,8 +1,13 @@
 import CarouselArrows from "@/components/CarouselArrows";
+import { PlantPhoto } from "@prisma/client";
 import Image from "next/image";
 import { useLayoutEffect, useRef, useState } from "react";
 
-const Gallery = () => {
+interface GalleryProps {
+  photos?: PlantPhoto[];
+}
+
+const Gallery = ({ photos }: GalleryProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const thumbnailsRef = useRef<HTMLDivElement>(null);
@@ -38,13 +43,6 @@ const Gallery = () => {
     }
   }, [currentImageIndex]);
 
-  const plantImages = [
-    "/assets/spider-plant-1.jpg",
-    "/assets/spider-plant-2.webp",
-    "/assets/fiddle-leaf-fig-1.webp",
-    "/assets/fiddle-leaf-fig-2.jpg",
-    "/assets/fiddle-leaf-fig-3.webp",
-  ];
 
   return (
     <section id="image-gallery" className="flex flex-col">
@@ -53,14 +51,14 @@ const Gallery = () => {
           className="flex h-full w-full transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
         >
-          {plantImages.map((image, index) => (
+          {photos?.map((photo, index) => (
             <div
               key={index}
               className="relative h-full w-full flex-shrink-0 p-6"
             >
               <div className="relative w-full h-full">
                 <Image
-                  src={image}
+                  src={photo.url}
                   alt={`Plant image ${index + 1}`}
                   fill
                   className="object-contain"
@@ -71,16 +69,16 @@ const Gallery = () => {
           ))}
         </div>
 
-        {plantImages.length > 1 && (
+        {photos && photos.length > 1 && (
           <CarouselArrows
-            length={plantImages.length}
+            length={photos.length}
             currentIndex={currentImageIndex}
             onIndexChange={setCurrentImageIndex}
           />
         )}
 
         <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-black/60 text-white text-sm font-medium z-20">
-          {currentImageIndex + 1} / {plantImages.length}
+          {currentImageIndex + 1} / {photos?.length}
         </div>
       </div>
     </section>

@@ -1,7 +1,7 @@
 import { getTimelineEvents } from "@/lib/db/queries/getTimelineEvents";
+import { getPlantDetails } from "./PlantDetails/actions";
 import PlantDetails from "./PlantDetails/PlantDetails";
 import Timeline from "./Timeline/Timeline";
-import { getPlantDetails } from "./PlantDetails/actions";
 
 interface PageProps {
   params: Promise<{ id: string }>;

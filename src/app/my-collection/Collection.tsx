@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plant } from "@prisma/client";
+import { Plant, PlantPhoto } from "@prisma/client";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -13,7 +13,7 @@ import SortFilterDropdown from "./SortFilterDropdown";
 import { Filters, SortBy } from "./types";
 
 interface CollectionProps {
-  plants: Plant[];
+  plants: (Plant & { photos: PlantPhoto[] })[];
   totalPages: number;
 }
 

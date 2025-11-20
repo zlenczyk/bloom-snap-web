@@ -4,6 +4,18 @@ export enum GrowingMediumEnum {
   Hydroponics = "hydroponics",
 }
 
+export const GROWING_MEDIUM_OPTIONS = {
+  [GrowingMediumEnum.Soil]: {
+    label: "Soil",
+  },
+  [GrowingMediumEnum.SemiHydroponics]: {
+    label: "Semi-Hydroponics",
+  },
+  [GrowingMediumEnum.Hydroponics]: {
+    label: "Hydroponics",
+  },
+} as const;
+
 export enum LightExposureEnum {
   MorningSun = "morning_sun_light",
   AfternoonSun = "afternoon_sun_light",
@@ -106,6 +118,7 @@ export enum TabEnum {
   Overview = "overview",
   Environment = "environment",
   Notes = "notes",
+  Photos = "photos",
 }
 
 // Enum for fields (optional, for strong typing)
@@ -142,9 +155,14 @@ export enum NotesFieldsEnum {
   AdditionalNotes = "additionalNotes",
 }
 
+export enum PhotosFieldsEnum {
+  Photos = "photos",
+}
+
 // Mapping object for easier access
 export const tabFieldInputs = Object.freeze({
   [TabEnum.Overview]: Object.values(OverviewFieldsEnum),
   [TabEnum.Environment]: Object.values(EnvironmentFieldsEnum),
   [TabEnum.Notes]: Object.values(NotesFieldsEnum),
+  [TabEnum.Photos]: Object.values(PhotosFieldsEnum),
 });
