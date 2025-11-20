@@ -19,8 +19,7 @@ export default async function Home({
   const searchParams = await searchParamsPromise;
   const page = searchParams.page ? Number(searchParams.page) : 1;
   const search = searchParams.search || "";
-  const sortBy: SortBy = searchParams.sortBy || "createdAt";
-  const sortOrder: SortOrder = searchParams.sortOrder || "desc";
+  const sortBy: SortBy = searchParams.sortBy || "createdAtNewest";
   const petFriendly = searchParams.petFriendly === "true";
   const airCleaning = searchParams.airCleaning === "true";
 
@@ -28,7 +27,6 @@ export default async function Home({
     page,
     search,
     sortBy,
-    sortOrder,
     filters: {
       petFriendly,
       airCleaning,
