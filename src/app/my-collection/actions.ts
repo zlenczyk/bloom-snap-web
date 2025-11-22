@@ -1,8 +1,10 @@
+"use server";
 
 import { auth } from "@/auth";
 import db from "@/lib/db/db";
 import { Prisma } from "@prisma/client";
 import { redirect } from "next/navigation";
+import createPlantPhotoAbsoluteUrls from "./[id]/createPlantPhotoAbsoluteUrls";
 import { SortBy, SortByField, SortOrder } from "./types";
 
 const sortMap: Record<
@@ -70,14 +72,20 @@ export async function getCollection({
       take: limit,
       orderBy: { [sort.field]: sort.order },
       include: {
-        photos: { take: 1 },
+        photos: true,
       },
     }),
     db.plant.count({ where }),
   ]);
 
+  const plantsWithPhotoLinks = await Promise.all(
+    plants.map(async (plant) => {
+      return await createPlantPhotoAbsoluteUrls(plant);
+    })
+  );
+
   return {
-    plants,
+    plants: plantsWithPhotoLinks,
     totalCount,
     totalPages: Math.ceil(totalCount / limit),
     page,

@@ -1,25 +1,27 @@
+"use server";
+
 import { auth } from "@/auth";
 import db from "@/lib/db/db";
-import { Plant } from "@prisma/client";
 import { redirect } from "next/navigation";
+import { PlantWithPhotos } from "../../types";
+import createPlantPhotoAbsoluteUrls from "../createPlantPhotoAbsoluteUrls";
 
-export async function getPlantDetails(plantId: string): Promise<Plant> {
+export async function getPlantDetails(
+  plantId: string
+): Promise<PlantWithPhotos> {
   const session = await auth();
-
   if (!session?.user) redirect("/sign-in");
 
   const userId = session.user.id;
 
   const plant = await db.plant.findFirst({
-    where: {
-      id: plantId,
-      userId,
-    },
+    where: { id: plantId, userId },
+    include: { photos: true },
   });
 
-  if (!plant) {
-    redirect("/my-collection");
-  }
+  if (!plant) redirect("/my-collection");
 
-  return plant;
+  const plantWithPhotoLinks = await createPlantPhotoAbsoluteUrls(plant);
+
+  return plantWithPhotoLinks;
 }

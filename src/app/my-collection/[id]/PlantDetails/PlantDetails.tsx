@@ -9,8 +9,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { Plant, PlantPhoto } from "@prisma/client";
 import { Edit } from "lucide-react";
+import { PlantWithPhotos } from "../../types";
 import Background from "./Background";
 import CareNotes from "./CareNotes";
 import Characteristics from "./Characteristics";
@@ -19,7 +19,7 @@ import Gallery from "./Gallery";
 import Growth from "./Growth";
 
 interface PlantProps {
-  plant: Plant & { photos: PlantPhoto[] };
+  plant: PlantWithPhotos;
 }
 
 const PlantDetails = ({ plant }: PlantProps) => {

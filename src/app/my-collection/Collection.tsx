@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plant, PlantPhoto } from "@prisma/client";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -10,10 +9,10 @@ import { useEffect, useRef, useState } from "react";
 import Pager from "./Pager";
 import PlantCard from "./PlantCard";
 import SortFilterDropdown from "./SortFilterDropdown";
-import { Filters, SortBy } from "./types";
+import { Filters, PlantWithPhotos, SortBy } from "./types";
 
 interface CollectionProps {
-  plants: (Plant & { photos: PlantPhoto[] })[];
+  plants: PlantWithPhotos[];
   totalPages: number;
 }
 

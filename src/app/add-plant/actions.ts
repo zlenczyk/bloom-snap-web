@@ -54,7 +54,7 @@ const handleUpload = async (
 ): Promise<string | null> => {
   const path = `${userId}/${crypto.randomUUID()}-${file.name}`;
 
-  const { data, error } = await supabaseAdmin.storage
+  const { error } = await supabaseAdmin.storage
     .from("bloomsnap-plant-photos")
     .upload(path, file, { upsert: false });
 

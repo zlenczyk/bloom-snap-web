@@ -4,15 +4,15 @@ import CarouselArrows from "@/components/CarouselArrows";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { Plant, PlantPhoto } from "@prisma/client";
 import { format } from "date-fns";
 import { Info, MapPin, PawPrint, ShoppingCart, Wind } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { PlantWithPhotos } from "./types";
 
 interface PlantCardProps {
-  plant: Plant & { photos: PlantPhoto[] };
+  plant: PlantWithPhotos;
 }
 
 const formatDate = (date: string | Date) => {
@@ -27,7 +27,6 @@ const PlantCard = ({ plant }: PlantCardProps) => {
     : null;
 
   const photos = plant.photos?.map((photo) => ({ url: photo.url })) ?? [];
-
 
   return (
     <Card className="group relative h-[450px] overflow-hidden transition-all hover:shadow-lg">
