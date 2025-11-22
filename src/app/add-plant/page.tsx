@@ -9,6 +9,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -21,7 +29,13 @@ import {
 } from "@/lib/data/plantDetailsTypes";
 import { cn } from "@/lib/utils";
 import { Leaf, Sprout } from "lucide-react";
-import { startTransition, useActionState, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  startTransition,
+  useActionState,
+  useEffect,
+  useState
+} from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { getCurrentIsoDate } from "../utils";
 import addPlant, { AddPlantFormState } from "./actions";
@@ -37,6 +51,34 @@ const initialState: AddPlantFormState = {
   success: false,
 };
 
+const defaultValues: AddPlantForm = {
+  [OverviewFieldsEnum.CommonName]: "",
+  [OverviewFieldsEnum.Species]: "",
+  [OverviewFieldsEnum.Genus]: "",
+  [OverviewFieldsEnum.Nickname]: "",
+  [OverviewFieldsEnum.Description]: "",
+  [OverviewFieldsEnum.Source]: "",
+  [OverviewFieldsEnum.OwnedSince]: undefined,
+  [OverviewFieldsEnum.IsSafe]: undefined,
+  [OverviewFieldsEnum.IsAirPurifying]: undefined,
+  [EnvironmentFieldsEnum.CurrentHeight]: "",
+  [EnvironmentFieldsEnum.CurrentPotSize]: "",
+  [NotesFieldsEnum.WateringNotes]: "",
+  [NotesFieldsEnum.MistingNotes]: "",
+  [NotesFieldsEnum.LeafCleaningNotes]: "",
+  [NotesFieldsEnum.FertilizingNotes]: "",
+  [NotesFieldsEnum.AdditionalNotes]: "",
+  [EnvironmentFieldsEnum.Humidity]: "",
+  [EnvironmentFieldsEnum.Temperature]: "",
+  [EnvironmentFieldsEnum.LastRepotted]: undefined,
+  [EnvironmentFieldsEnum.RoomLocation]: "",
+  [EnvironmentFieldsEnum.WindowDirection]: undefined,
+  [EnvironmentFieldsEnum.LightExposure]: undefined,
+  [EnvironmentFieldsEnum.GrowingMedium]: undefined,
+  [EnvironmentFieldsEnum.PottingMix]: [],
+  [PhotosFieldsEnum.Photos]: [],
+};
+
 const AddPlant = () => {
   const [activeTab, setActiveTab] = useState("overview");
 
@@ -45,35 +87,15 @@ const AddPlant = () => {
     FormData
   >(addPlant, initialState);
 
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
+
+  const router = useRouter();
+
   const form = useForm<AddPlantForm>({
-    defaultValues: {
-      [OverviewFieldsEnum.CommonName]: "",
-      [OverviewFieldsEnum.Species]: "",
-      [OverviewFieldsEnum.Genus]: "",
-      [OverviewFieldsEnum.Nickname]: "",
-      [OverviewFieldsEnum.Description]: "",
-      [OverviewFieldsEnum.Source]: "",
-      [OverviewFieldsEnum.OwnedSince]: undefined,
-      [OverviewFieldsEnum.IsSafe]: undefined,
-      [OverviewFieldsEnum.IsAirPurifying]: undefined,
-      [EnvironmentFieldsEnum.CurrentHeight]: "",
-      [EnvironmentFieldsEnum.CurrentPotSize]: "",
-      [NotesFieldsEnum.WateringNotes]: "",
-      [NotesFieldsEnum.MistingNotes]: "",
-      [NotesFieldsEnum.LeafCleaningNotes]: "",
-      [NotesFieldsEnum.FertilizingNotes]: "",
-      [NotesFieldsEnum.AdditionalNotes]: "",
-      [EnvironmentFieldsEnum.Humidity]: "",
-      [EnvironmentFieldsEnum.Temperature]: "",
-      [EnvironmentFieldsEnum.LastRepotted]: undefined,
-      [EnvironmentFieldsEnum.RoomLocation]: "",
-      [EnvironmentFieldsEnum.WindowDirection]: undefined,
-      [EnvironmentFieldsEnum.LightExposure]: undefined,
-      [EnvironmentFieldsEnum.GrowingMedium]: undefined,
-      [EnvironmentFieldsEnum.PottingMix]: [],
-      [PhotosFieldsEnum.Photos]: [],
-    },
+    defaultValues: defaultValues,
   });
+
+  const { isDirty } = form.formState;
 
   const getTabsWithErrors = () => {
     const errorFields = Object.keys(state.errors ?? {});
@@ -130,6 +152,14 @@ const AddPlant = () => {
     startTransition(() => formAction(formData));
   };
 
+  const handleCancel = () => {
+    if (isDirty) {
+      setShowCancelDialog(true);
+    } else {
+      router.push("/my-collection");
+    }
+  };
+
   return (
     <div
       className="max-w-3xl mx-auto p-4 flex justify-center items-center w-full h-screen"
@@ -150,7 +180,6 @@ const AddPlant = () => {
 
         <Form {...form}>
           <form
-            action={formAction}
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col"
           >
@@ -259,7 +288,10 @@ const AddPlant = () => {
             </CardContent>
 
             <CardFooter className="flex justify-end gap-2 border-t bg-muted/20 p-6 shrink-0">
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline" type="button" onClick={handleCancel}>
+                Cancel
+              </Button>
+
               <Button
                 type="submit"
                 className="bg-emerald-600 hover:bg-emerald-700 text-white"
@@ -271,6 +303,36 @@ const AddPlant = () => {
           </form>
         </Form>
       </Card>
+      <Dialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Abandon this plant?</DialogTitle>
+            <DialogDescription>
+              You haven’t saved your changes. Leaving now means your plant won’t
+              join the collection.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowCancelDialog(false)}
+            >
+              Keep Editing
+            </Button>
+
+            <Button
+              className="bg-red-600 hover:bg-red-700 text-white"
+              onClick={() => {
+                setShowCancelDialog(false);
+                router.push("/my-collection");
+              }}
+            >
+              Discard changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
