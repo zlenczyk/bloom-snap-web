@@ -105,26 +105,26 @@ model Plant {
   ownedSince     DateTime?
   isSafe         Boolean?
   isAirPurifying Boolean?
-  description    String?   @db.VarChar(300)
+  description    String?   @db.VarChar(1000)
 
   // Environment tab
-  currentHeight   String?          @db.VarChar(50)
-  currentPotSize  String?          @db.VarChar(50)
+  currentHeight   String?          @db.VarChar(200)
+  currentPotSize  String?          @db.VarChar(200)
   lastRepotted    DateTime?
-  humidity        String?          @db.VarChar(50)
-  temperature     String?          @db.VarChar(50)
-  roomLocation    String?          @db.VarChar(100)
+  humidity        String?          @db.VarChar(200)
+  temperature     String?          @db.VarChar(200)
+  roomLocation    String?          @db.VarChar(200)
   windowDirection WindowDirection?
   lightExposure   LightExposure?
   growingMedium   GrowingMedium?
   pottingMix      String[] // store ["peat", "perlite"] etc.
 
   // Notes tab
-  wateringNotes     String? @db.VarChar(300)
-  mistingNotes      String? @db.VarChar(300)
-  leafCleaningNotes String? @db.VarChar(300)
-  fertilizingNotes  String? @db.VarChar(300)
-  additionalNotes   String? @db.VarChar(300)
+  wateringNotes     String? @db.VarChar(1000)
+  mistingNotes      String? @db.VarChar(1000)
+  leafCleaningNotes String? @db.VarChar(1000)
+  fertilizingNotes  String? @db.VarChar(1000)
+  additionalNotes   String? @db.VarChar(1000)
 
   // Media
   photos PlantPhoto[]

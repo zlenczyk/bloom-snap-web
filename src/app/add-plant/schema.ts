@@ -5,8 +5,6 @@ import {
 } from "@/lib/data/plantDetailsTypes";
 import z from "zod";
 
-const pastDate = z.date().min(new Date("1900-01-01")).max(new Date());
-
 export const AddPlantFormSchema = z.object({
   // Overview tab
   commonName: z
@@ -29,33 +27,36 @@ export const AddPlantFormSchema = z.object({
     .string()
     .max(200, { message: "Source cannot exceed 200 characters." })
     .nullish(),
-  ownedSince: pastDate.nullish(),
+  ownedSince: z.date().nullish(),
   isSafe: z.boolean().nullish(),
   isAirPurifying: z.boolean().nullish(),
   description: z
     .string()
-    .max(300, { message: "Description cannot exceed 300 characters." })
+    .max(1000, { message: "Description cannot exceed 1000 characters." })
     .nullish(),
 
   // Environment tab
   currentHeight: z
     .string()
-    .max(50, { message: "Current height cannot exceed 50 characters." })
+    .max(200, { message: "Current height cannot exceed 200 characters." })
     .nullish(),
   currentPotSize: z
     .string()
-    .max(50, { message: "Current pot size cannot exceed 50 characters." })
+    .max(200, { message: "Current pot size cannot exceed 200 characters." })
     .nullish(),
-  lastRepotted: pastDate.nullish(),
+  lastRepotted: z.date().nullish(),
   humidity: z
     .string()
-    .max(50, { message: "Humidity cannot exceed 50 characters." })
+    .max(200, { message: "Humidity cannot exceed 200 characters." })
     .nullish(),
   temperature: z
     .string()
-    .max(50, { message: "Temperature cannot exceed 50 characters." })
+    .max(200, { message: "Temperature cannot exceed 200 characters." })
     .nullish(),
-  roomLocation: z.string().nullish(),
+  roomLocation: z
+    .string()
+    .max(200, { message: "Room location cannot exceed 200 characters." })
+    .nullish(),
   windowDirection: z.enum(WindowDirectionEnum).nullish(),
   lightExposure: z.enum(LightExposureEnum).nullish(),
   growingMedium: z.enum(GrowingMediumEnum).nullish(),
@@ -64,24 +65,48 @@ export const AddPlantFormSchema = z.object({
   // Notes tab
   wateringNotes: z
     .string()
-    .max(300, { message: "Watering notes cannot exceed 300 characters." })
+    .max(1000, { message: "Watering notes cannot exceed 1000 characters." })
     .nullish(),
   mistingNotes: z
     .string()
-    .max(300, { message: "Misting notes cannot exceed 300 characters." })
+    .max(1000, { message: "Misting notes cannot exceed 1000 characters." })
     .nullish(),
   leafCleaningNotes: z
     .string()
-    .max(300, { message: "Leaf cleaning notes cannot exceed 300 characters." })
+    .max(1000, {
+      message: "Leaf cleaning notes cannot exceed 1000 characters.",
+    })
     .nullish(),
   fertilizingNotes: z
     .string()
-    .max(300, { message: "Fertilizing notes cannot exceed 300 characters." })
+    .max(1000, { message: "Fertilizing notes cannot exceed 1000 characters." })
     .nullish(),
   additionalNotes: z
     .string()
-    .max(300, { message: "Additional notes cannot exceed 300 characters." })
+    .max(1000, { message: "Additional notes cannot exceed 1000 characters." })
     .nullish(),
+  photos: z
+    .array(z.instanceof(File))
+    .max(5)
+    .optional()
+    .superRefine((files, ctx) => {
+      if (!files) return;
+
+      const allowedExtensions = /\.(jpe?g|png|webp|avif|heic|heif)$/i;
+
+      files.forEach((file, index) => {
+        const isInvalid =
+          !file.type.startsWith("image/") || !allowedExtensions.test(file.name);
+
+        if (isInvalid) {
+          ctx.addIssue({
+            code: "custom",
+            message: `Unsupported format: ${file.name}`,
+            path: [index],
+          });
+        }
+      });
+    }),
 });
 
 export type AddPlantForm = z.infer<typeof AddPlantFormSchema>;
