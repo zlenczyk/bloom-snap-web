@@ -10,7 +10,8 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Edit } from "lucide-react";
-import { PlantWithPhotos } from "../../types";
+import { useRouter } from "next/navigation";
+import { PlantWithAbsolutePhotoUrls } from "../../types";
 import Background from "./Background";
 import CareNotes from "./CareNotes";
 import Characteristics from "./Characteristics";
@@ -19,10 +20,12 @@ import Gallery from "./Gallery";
 import Growth from "./Growth";
 
 interface PlantProps {
-  plant: PlantWithPhotos;
+  plant: PlantWithAbsolutePhotoUrls;
 }
 
 const PlantDetails = ({ plant }: PlantProps) => {
+  const router = useRouter();
+
   const characteristics = {
     commonName: plant.commonName,
     nickname: plant.nickname,
@@ -62,6 +65,10 @@ const PlantDetails = ({ plant }: PlantProps) => {
     additionalNotes: plant.additionalNotes,
   };
 
+  const handleEditPlant = () => {
+    router.push(`/my-collection/${plant.id}/edit-plant`);
+  }
+
   return (
     <div className="flex min-h-screen bg-zinc-100">
       <div className="mx-auto px-6 py-8 max-w-7xl w-full">
@@ -86,7 +93,7 @@ const PlantDetails = ({ plant }: PlantProps) => {
               {plant.commonName}
             </h1>
           </div>
-          <Button className="gap-2" size="sm">
+          <Button className="gap-2" size="sm" onClick={handleEditPlant}>
             <Edit className="h-4 w-4" />
             Edit Plant Info
           </Button>

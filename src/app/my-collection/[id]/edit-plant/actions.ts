@@ -3,20 +3,24 @@
 import { auth } from "@/auth";
 import { PlantFormState } from "@/components/PlantForm/types";
 import db from "@/lib/db/db";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { toOptionalBoolean } from "@/lib/utils";
+import { PlantFormSchema } from "@/lib/validations/plant";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import z from "zod";
-import uploadImageToStorage from "../../lib/actions/uploadImageToStorage";
-import { PlantFormSchema } from "../../lib/validations/plant";
+import uploadImageToStorage from "../../../../lib/actions/uploadImageToStorage";
 
-const addPlant = async (state: PlantFormState, formData: FormData) => {
+export const updatePlant = async (
+  plantId: string,
+  state: PlantFormState,
+  formData: FormData
+): Promise<PlantFormState> => {
   const session = await auth();
 
   if (!session?.user?.id) {
     redirect("/sign-in");
   }
-
   const userId = session.user.id;
 
   const ownedSinceStr = formData.get("ownedSince");
@@ -54,27 +58,19 @@ const addPlant = async (state: PlantFormState, formData: FormData) => {
     photos: formData.getAll("photos").slice(0, 5) ?? [],
   });
 
-  console.log("Validation result:", validationResult);
-
   if (!validationResult.success) {
-    console.log(
-      "zod flattened errors with field errors:",
-      z.flattenError(validationResult.error).fieldErrors
-    );
-
     return {
       errors: z.flattenError(validationResult.error).fieldErrors,
       message: "Input validation failed. Please check your entries.",
       success: false,
-    } as const;
+    };
   }
 
   const validData = validationResult.data;
 
-  let newPlantId: string;
-
   try {
-    const newPlant = await db.plant.create({
+    await db.plant.update({
+      where: { id: plantId },
       data: {
         additionalNotes: validData.additionalNotes,
         commonName: validData.commonName,
@@ -98,29 +94,41 @@ const addPlant = async (state: PlantFormState, formData: FormData) => {
         source: validData.source,
         species: validData.species,
         temperature: validData.temperature,
-        userId,
         wateringNotes: validData.wateringNotes,
         windowDirection: validData.windowDirection || undefined,
       },
     });
-
-    newPlantId = newPlant.id;
-  } catch (error) {
-    console.error("Database error:", error);
-    return {
-      message: "Failed to submit form. Please try again later.",
-      success: false,
-    };
+  } catch (err) {
+    console.error("Database error:", err);
+    return { success: false, message: "Failed to update plant" };
   }
+
+  const existingPhotos = await db.plantPhoto.findMany({ where: { plantId } });
+
+  const photosToKeep = validData.photos.filter((p) => typeof p === "string");
+
+  const photosToDelete = existingPhotos.filter(
+    (p) => !photosToKeep.includes(p.url)
+  );
+
+  for (const photo of photosToDelete) {
+    try {
+      await supabaseAdmin.storage
+        .from("bloomsnap-plant-photos")
+        .remove([photo.url]);
+
+      await db.plantPhoto.delete({ where: { id: photo.id } });
+    } catch (err) {
+      console.error("Failed to delete photo:", err);
+    }
+  }
+
+  const newFiles = validData.photos.filter((p) => p instanceof File);
 
   const uploadedPhotoPaths: string[] = [];
   const failedPhotos: string[] = []; // both for not uploaded and not saved to db
 
-  for (const file of validData.photos || []) {
-    if (typeof file === "string") {
-      continue;
-    }
-
+  for (const file of newFiles) {
     const path = await uploadImageToStorage(file, userId);
 
     if (!path) {
@@ -137,7 +145,7 @@ const addPlant = async (state: PlantFormState, formData: FormData) => {
     while (attempt < 3) {
       try {
         await db.plantPhoto.createMany({
-          data: uploadedPhotoPaths.map((url) => ({ plantId: newPlantId, url })),
+          data: uploadedPhotoPaths.map((url) => ({ plantId, url })),
         });
 
         success = true;
@@ -165,14 +173,13 @@ const addPlant = async (state: PlantFormState, formData: FormData) => {
     console.log("Some photos failed to upload or save to DB:", failedPhotos);
 
     return {
-      message: `Plant added successfully, but some photo(s) failed to upload.`,
+      message: `Plant updated successfully, but some photo(s) failed to upload.`,
       success: true,
     };
   }
 
   revalidatePath("/my-collection");
-
-  redirect("/my-collection");
+  redirect(`/my-collection/${plantId}`);
 };
 
-export default addPlant;
+export default updatePlant;

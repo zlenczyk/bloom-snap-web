@@ -11,49 +11,70 @@ import { Input } from "@/components/ui/input";
 import { XIcon } from "lucide-react";
 import { ChangeEvent, useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
-import { AddPlantFormState } from "./actions";
-import { AddPlantForm } from "./schema";
+import { PlantWithAbsolutePhotoUrls } from "../../app/my-collection/types";
+import { PlantForm } from "../../lib/validations/plant";
+import { PlantFormState } from "./types";
 
 type PhotosTabProps = {
-  form: UseFormReturn<AddPlantForm>;
-  state?: AddPlantFormState;
+  form: UseFormReturn<PlantForm>;
+  state?: PlantFormState;
+  existingPlant?: PlantWithAbsolutePhotoUrls | null;
 };
 
 const MAX_IMAGES = 5;
 
-const PhotosTab = ({ form, state }: PhotosTabProps) => {
+const PhotosTab = ({ form, state, existingPlant }: PhotosTabProps) => {
   const { control, setValue, watch } = form;
-  const files: File[] = watch("photos") || [];
+
+  const photos = watch("photos") || [];
+
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
 
   useEffect(() => {
-    const urls = files.map((file) => URL.createObjectURL(file));
+    const urls = photos.map((item) => {
+      if (typeof item === "string") {
+        // Use absoluteUrl from existingPlant if available
+        const absolute = existingPlant?.photos.find(
+          (p) => p.url === item
+        )?.absoluteUrl;
+
+        return absolute || item; // fallback to relative URL
+      }
+
+      return URL.createObjectURL(item); // new File
+    });
+
     setPreviewUrls(urls);
 
-    return () => urls.forEach((url) => URL.revokeObjectURL(url));
-  }, [JSON.stringify(files)]);
+    return () => {
+      urls.forEach((url, idx) => {
+        if (photos[idx] instanceof File) URL.revokeObjectURL(url);
+      });
+    };
+  }, [JSON.stringify(photos), existingPlant]);
 
   const handleAddFiles = (e: ChangeEvent<HTMLInputElement>) => {
-    const selected = e.target.files;
-    if (!selected) return;
+    const selectedFiles = e.target.files;
+    if (!selectedFiles) return;
 
-    const remainingSlots = MAX_IMAGES - files.length;
+    const remainingSlots = MAX_IMAGES - photos.length;
     if (remainingSlots <= 0) return;
 
-    const newFiles = Array.from(selected).slice(0, remainingSlots);
-    const combinedFiles = [...files, ...newFiles];
-    setValue("photos", combinedFiles, { shouldValidate: true });
+    const newFiles = Array.from(selectedFiles).slice(0, remainingSlots);
+
+    const combined = [...photos, ...newFiles];
+    setValue("photos", combined, { shouldValidate: true });
 
     e.target.value = "";
   };
 
-  const handleRemoveFile = (index: number) => {
-    const updatedFiles = [...files];
-    updatedFiles.splice(index, 1);
-    setValue("photos", updatedFiles, { shouldValidate: true });
+  const handleRemove = (index: number) => {
+    const updated = [...photos];
+    updated.splice(index, 1);
+    setValue("photos", updated, { shouldValidate: true });
   };
 
-  const isMaxReached = files.length >= MAX_IMAGES;
+  const isMaxReached = photos.length >= MAX_IMAGES;
 
   return (
     <div className="flex flex-col gap-6">
@@ -68,37 +89,42 @@ const PhotosTab = ({ form, state }: PhotosTabProps) => {
                 type="file"
                 accept="image/*"
                 multiple
-                onChange={handleAddFiles}
                 disabled={isMaxReached}
-                className="pr-2 pl-1 text-sm text-gray-600 file:mr-4 file:px-4 file:rounded-md file:bg-zinc-50 hover:file:bg-zinc-100 file:text-gray-700 file:text-sm rounded-md"
+                onChange={handleAddFiles}
+                className="pr-2 pl-1 text-sm text-gray-600 
+                  file:mr-4 file:px-4 file:rounded-md file:bg-zinc-50 
+                  hover:file:bg-zinc-100 file:text-gray-700 file:text-sm rounded-md"
                 aria-invalid={!!state?.errors?.[field.name]}
               />
             </FormControl>
-            {state?.errors?.photos && Array.isArray(state.errors.photos) && (
+
+            {state?.errors?.photos && (
               <p className="text-sm text-destructive">
-                {state.errors.photos.length === 1 ? (
-                  <>Image: {state.errors.photos[0]} is invalid.</>
-                ) : (
-                  <>Images: {state.errors.photos.join(", ")} are invalid.</>
-                )}
+                {Array.isArray(state.errors.photos)
+                  ? state.errors.photos.join(", ")
+                  : state.errors.photos}
               </p>
             )}
 
             {isMaxReached && (
               <p className="text-xs text-gray-500 mt-1">
-                Maximum {MAX_IMAGES} photos uploaded. Remove a photo to upload a
-                new one.
+                Maximum {MAX_IMAGES} photos uploaded. Remove one to add new.
               </p>
             )}
           </FormItem>
         )}
       />
+
       {previewUrls.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           {previewUrls.map((url, idx) => {
-            const filename = files[idx]?.name;
+            const item = photos[idx];
+
+            const fileName = item instanceof File ? item.name : null;
+
             const isInvalid =
-              filename && state?.errors?.photos?.includes(filename);
+              fileName &&
+              state?.errors?.photos?.some((err) => err.includes(fileName));
 
             return (
               <div
@@ -109,13 +135,14 @@ const PhotosTab = ({ form, state }: PhotosTabProps) => {
               >
                 <img
                   src={url}
-                  alt={`preview ${idx + 1}`}
+                  alt={`photo ${idx + 1}`}
                   className="object-cover w-full h-full"
                 />
+
                 <Button
                   type="button"
                   className="absolute h-8 w-8 top-1 right-1 p-1 rounded-full bg-red-600 hover:bg-red-700"
-                  onClick={() => handleRemoveFile(idx)}
+                  onClick={() => handleRemove(idx)}
                 >
                   <XIcon className="w-4 h-4" />
                 </Button>

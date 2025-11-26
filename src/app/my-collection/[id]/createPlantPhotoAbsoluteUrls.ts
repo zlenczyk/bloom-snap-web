@@ -1,11 +1,11 @@
 "use server";
 
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
-import { PlantWithPhotos } from "../types";
+import { PlantWithAbsolutePhotoUrls, PlantWithPhotos } from "../types";
 
 const createPlantPhotoAbsoluteUrls = async (
   plant: PlantWithPhotos
-): Promise<PlantWithPhotos> => {
+): Promise<PlantWithAbsolutePhotoUrls> => {
   const photos = await Promise.all(
     plant.photos.map(async (photo) => {
       const { data, error } = await supabaseAdmin.storage
@@ -16,13 +16,13 @@ const createPlantPhotoAbsoluteUrls = async (
         console.error("Failed to generate signed URL:", error);
         return {
           ...photo,
-          url: "",
+          absoluteUrl: "",
         };
       }
 
       return {
         ...photo,
-        url: data.signedUrl, // replace internal storage path
+        absoluteUrl: data.signedUrl,
       };
     })
   );

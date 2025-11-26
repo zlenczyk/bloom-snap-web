@@ -34,13 +34,13 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
-import { AddPlantFormState } from "./actions";
+import { PlantForm } from "../../lib/validations/plant";
 import pottingComponents from "./potting";
-import { AddPlantForm } from "./schema";
+import { PlantFormState } from "./types";
 
 type EnvironmentTabProps = {
-  form: UseFormReturn<AddPlantForm>;
-  state?: AddPlantFormState;
+  form: UseFormReturn<PlantForm>;
+  state?: PlantFormState;
 };
 
 const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {

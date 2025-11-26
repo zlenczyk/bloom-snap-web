@@ -9,12 +9,12 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { NotesFieldsEnum } from "@/lib/data/plantDetailsTypes";
 import { UseFormReturn } from "react-hook-form";
-import { AddPlantFormState } from "./actions";
-import { AddPlantForm } from "./schema";
+import { PlantForm } from "../../lib/validations/plant";
+import { PlantFormState } from "./types";
 
 type CareNotesProps = {
-  form: UseFormReturn<AddPlantForm>;
-  state?: AddPlantFormState;
+  form: UseFormReturn<PlantForm>;
+  state?: PlantFormState;
 };
 
 const CareNotesTab = ({ form, state }: CareNotesProps) => {

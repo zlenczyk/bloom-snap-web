@@ -1,10 +1,10 @@
 import CarouselArrows from "@/components/CarouselArrows";
-import { PlantPhoto } from "@prisma/client";
 import Image from "next/image";
 import { useLayoutEffect, useRef, useState } from "react";
+import { PlantAbsolutePhotoUrl } from "../../types";
 
 interface GalleryProps {
-  photos?: PlantPhoto[];
+  photos?: PlantAbsolutePhotoUrl[];
 }
 
 const Gallery = ({ photos }: GalleryProps) => {
@@ -43,7 +43,6 @@ const Gallery = ({ photos }: GalleryProps) => {
     }
   }, [currentImageIndex]);
 
-
   return (
     <section id="image-gallery" className="flex flex-col">
       <div className="relative flex-1 aspect-square overflow-hidden rounded-xl shadow-md border border-gray-100 group bg-white">
@@ -58,7 +57,7 @@ const Gallery = ({ photos }: GalleryProps) => {
             >
               <div className="relative w-full h-full">
                 <Image
-                  src={photo.url}
+                  src={photo.absoluteUrl}
                   alt={`Plant image ${index + 1}`}
                   fill
                   className="object-contain"

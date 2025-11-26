@@ -26,17 +26,16 @@ import {
   isSafeEnum,
   OverviewFieldsEnum,
 } from "@/lib/data/plantDetailsTypes";
-import { cn } from "@/lib/utils";
+import { cn, toOptionalBoolean, toOptionalBooleanString } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
-import { AddPlantFormState } from "./actions";
-import { AddPlantForm } from "./schema";
-import { booleanToSelectString, selectStringToBoolean } from "./utils";
+import { PlantForm } from "../../lib/validations/plant";
+import { PlantFormState } from "./types";
 
 type OverviewTabProps = {
-  form: UseFormReturn<AddPlantForm>;
-  state?: AddPlantFormState;
+  form: UseFormReturn<PlantForm>;
+  state?: PlantFormState;
 };
 
 const OverviewTab = ({ form, state }: OverviewTabProps) => {
@@ -214,7 +213,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
           control={form.control}
           name={OverviewFieldsEnum.IsAirPurifying}
           render={({ field }) => {
-            const selectValue = booleanToSelectString(field.value);
+            const selectValue = toOptionalBooleanString(field.value);
 
             return (
               <FormItem className="gap-3 self-start">
@@ -223,7 +222,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
                   <Select
                     value={selectValue}
                     onValueChange={(val) => {
-                      field.onChange(selectStringToBoolean(val));
+                      field.onChange(toOptionalBoolean(val));
                     }}
                     key={selectValue}
                   >
@@ -253,7 +252,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
           control={form.control}
           name={OverviewFieldsEnum.IsSafe}
           render={({ field }) => {
-            const selectValue = booleanToSelectString(field.value);
+            const selectValue = toOptionalBooleanString(field.value);
 
             return (
               <FormItem className="gap-3 self-start">
@@ -262,7 +261,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
                   <Select
                     value={selectValue}
                     onValueChange={(val) => {
-                      field.onChange(selectStringToBoolean(val));
+                      field.onChange(toOptionalBoolean(val));
                     }}
                     key={selectValue}
                   >

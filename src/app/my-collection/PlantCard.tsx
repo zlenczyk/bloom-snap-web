@@ -9,10 +9,10 @@ import { Info, MapPin, PawPrint, ShoppingCart, Wind } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { PlantWithPhotos } from "./types";
+import { PlantWithAbsolutePhotoUrls } from "./types";
 
 interface PlantCardProps {
-  plant: PlantWithPhotos;
+  plant: PlantWithAbsolutePhotoUrls;
 }
 
 const formatDate = (date: string | Date) => {
@@ -26,7 +26,8 @@ const PlantCard = ({ plant }: PlantCardProps) => {
     ? formatDate(plant.ownedSince)
     : null;
 
-  const photos = plant.photos?.map((photo) => ({ url: photo.url })) ?? [];
+  const photos =
+    plant.photos?.map((photo) => ({ url: photo.absoluteUrl })) ?? [];
 
   return (
     <Card className="group relative h-[450px] overflow-hidden transition-all hover:shadow-lg">

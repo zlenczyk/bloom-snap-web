@@ -9,10 +9,10 @@ import { useEffect, useRef, useState } from "react";
 import Pager from "./Pager";
 import PlantCard from "./PlantCard";
 import SortFilterDropdown from "./SortFilterDropdown";
-import { Filters, PlantWithPhotos, SortBy } from "./types";
+import { Filters, PlantWithAbsolutePhotoUrls, SortBy } from "./types";
 
 interface CollectionProps {
-  plants: PlantWithPhotos[];
+  plants: PlantWithAbsolutePhotoUrls[];
   totalPages: number;
 }
 

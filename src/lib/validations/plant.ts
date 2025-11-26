@@ -5,7 +5,7 @@ import {
 } from "@/lib/data/plantDetailsTypes";
 import z from "zod";
 
-export const AddPlantFormSchema = z.object({
+export const PlantFormSchema = z.object({
   // Overview tab
   commonName: z
     .string()
@@ -86,27 +86,30 @@ export const AddPlantFormSchema = z.object({
     .max(1000, { message: "Additional notes cannot exceed 1000 characters." })
     .nullish(),
   photos: z
-    .array(z.instanceof(File))
+    .array(z.union([z.string(), z.instanceof(File)]))
     .max(5)
-    .optional()
-    .superRefine((files, ctx) => {
-      if (!files) return;
+    .superRefine((items, ctx) => {
+      if (!items) return;
 
       const allowedExtensions = /\.(jpe?g|png|webp|avif|heic|heif)$/i;
 
-      files.forEach((file, index) => {
-        const isInvalid =
-          !file.type.startsWith("image/") || !allowedExtensions.test(file.name);
+      items.forEach((item, index) => {
+        // Only validate File objects
+        if (item instanceof File) {
+          const invalid =
+            !item.type.startsWith("image/") ||
+            !allowedExtensions.test(item.name);
 
-        if (isInvalid) {
-          ctx.addIssue({
-            code: "custom",
-            message: `Unsupported format: ${file.name}`,
-            path: [index],
-          });
+          if (invalid) {
+            ctx.addIssue({
+              code: "custom",
+              message: `Unsupported format: ${item.name}`,
+              path: [index],
+            });
+          }
         }
       });
     }),
 });
 
-export type AddPlantForm = z.infer<typeof AddPlantFormSchema>;
+export type PlantForm = z.infer<typeof PlantFormSchema>;

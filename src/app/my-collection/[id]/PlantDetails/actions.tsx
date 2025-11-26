@@ -3,12 +3,12 @@
 import { auth } from "@/auth";
 import db from "@/lib/db/db";
 import { redirect } from "next/navigation";
-import { PlantWithPhotos } from "../../types";
+import { PlantWithAbsolutePhotoUrls } from "../../types";
 import createPlantPhotoAbsoluteUrls from "../createPlantPhotoAbsoluteUrls";
 
 export async function getPlantDetails(
   plantId: string
-): Promise<PlantWithPhotos> {
+): Promise<PlantWithAbsolutePhotoUrls> {
   const session = await auth();
   if (!session?.user) redirect("/sign-in");
 
