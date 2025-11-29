@@ -1,7 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
-import Image from "next/image";
+import { logOut } from "@/app/(auth)/sign-out/actions";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,7 +10,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown, LogOut, Settings } from "lucide-react";
-import { logOut } from "@/app/(auth)/sign-out/actions";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 type Props = {
   userImage: string;
@@ -21,13 +22,10 @@ type Props = {
 const Menu = ({ userImage, userName }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const [errorMessage, formAction, isPending] = useActionState(
-    logOut,
-    undefined
-  );
+  const router = useRouter();
 
   const editProfile = () => {
-    console.log("Edit profile clicked");
+    router.push("/profile");
   };
 
   return (
@@ -58,11 +56,9 @@ const Menu = ({ userImage, userName }: Props) => {
           <span>Edit Profile</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <form action={formAction} className="flex items-center">
-            <LogOut className="mr-2 h-4 w-4" />
-            <button type="submit">Sign Out</button>
-          </form>
+        <DropdownMenuItem onClick={logOut}>
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>Sign Out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
