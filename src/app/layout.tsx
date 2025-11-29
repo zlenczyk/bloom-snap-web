@@ -1,7 +1,8 @@
+import { Toaster } from "@/components/ui/sonner";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
-import "./_styles";
 import Header from "../components/Header/Header";
+import "./_styles";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,14 +25,12 @@ const RootLayout = ({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <main className="min-h-screen flex flex-col justify-center items-center">
-          <Header />
-          {children}
-        </main>
+        <Header />
+        <main className="pt-header-height">{children}</main>
+        <Toaster />
       </body>
     </html>
   );
-  
 };
 
 export default RootLayout;
