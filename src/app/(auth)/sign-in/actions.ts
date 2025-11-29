@@ -3,8 +3,6 @@
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 
-// ...
-
 export const authenticateCredentials = async (
   prevState: string | undefined,
   formData: FormData
