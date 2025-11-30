@@ -1,3 +1,4 @@
+import { formatDateForLocalDisplay } from "@/lib/utils";
 import { Calendar, Diameter, Ruler, TrendingUp } from "lucide-react";
 import ValueDisplay from "./ValueDisplay";
 
@@ -37,13 +38,15 @@ const Growth = ({ growth }: GrowthProps) => {
 
         <div className="flex flex-col items-center justify-center p-3 rounded-lg bg-gradient-to-br from-blue-200/50 to-blue-50 text-center shadow-md">
           <Calendar className="h-5 w-5 text-blue-700 mb-1" />
-          <p className="text-sm text-gray-600">Last Repotted</p>
+          <p className="text-sm text-gray-600">
+            {growth.lastRepotted
+              ? growth.lastRepotted >= new Date()
+                ? "Next Planned Repot"
+                : "Last Repotted"
+              : "Repot Date"}
+          </p>
           <ValueDisplay
-            value={
-              growth.lastRepotted
-                ? growth.lastRepotted.toLocaleDateString()
-                : null
-            }
+            value={formatDateForLocalDisplay(growth.lastRepotted)}
             variant="stats"
           />
         </div>

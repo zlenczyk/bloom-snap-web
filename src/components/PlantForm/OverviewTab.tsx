@@ -26,7 +26,7 @@ import {
   isSafeEnum,
   OverviewFieldsEnum,
 } from "@/lib/data/plantDetailsTypes";
-import { cn, toOptionalBoolean, toOptionalBooleanString } from "@/lib/utils";
+import { cn, toOptionalBoolean, toOptionalBooleanString, toUTCDate } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
@@ -36,9 +36,10 @@ import { PlantFormState } from "./types";
 type OverviewTabProps = {
   form: UseFormReturn<PlantForm>;
   state?: PlantFormState;
+  endMonth: Date;
 };
 
-const OverviewTab = ({ form, state }: OverviewTabProps) => {
+const OverviewTab = ({ form, state, endMonth }: OverviewTabProps) => {
   return (
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -167,7 +168,7 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
           name={OverviewFieldsEnum.OwnedSince}
           render={({ field }) => (
             <FormItem className="gap-3 self-start">
-              <FormLabel>When did you get it?</FormLabel>
+              <FormLabel>When did you get or plan to get this plant?</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -192,11 +193,9 @@ const OverviewTab = ({ form, state }: OverviewTabProps) => {
                   <Calendar
                     mode="single"
                     selected={field.value || undefined}
-                    onSelect={field.onChange}
+                    onSelect={(date) => field.onChange(toUTCDate(date))}
                     captionLayout="dropdown"
-                    disabled={(date) =>
-                      date > new Date() || date < new Date("1900-01-01")
-                    }
+                    endMonth={endMonth}
                   />
                 </PopoverContent>
               </Popover>

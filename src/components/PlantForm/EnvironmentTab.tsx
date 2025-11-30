@@ -30,7 +30,7 @@ import {
   WINDOW_DIRECTION_OPTIONS,
   WindowDirectionEnum,
 } from "@/lib/data/plantDetailsTypes";
-import { cn } from "@/lib/utils";
+import { cn, toUTCDate } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
@@ -41,9 +41,10 @@ import { PlantFormState } from "./types";
 type EnvironmentTabProps = {
   form: UseFormReturn<PlantForm>;
   state?: PlantFormState;
+  endMonth: Date;
 };
 
-const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
+const EnvironmentTab = ({ form, state, endMonth }: EnvironmentTabProps) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <FormField
@@ -97,7 +98,7 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
         name={EnvironmentFieldsEnum.LastRepotted}
         render={({ field }) => (
           <FormItem className="gap-3 w-full self-start">
-            <FormLabel>Last repotting?</FormLabel>
+            <FormLabel>Last repotting or next planned?</FormLabel>
             <FormControl>
               <Popover>
                 <PopoverTrigger asChild>
@@ -121,10 +122,9 @@ const EnvironmentTab = ({ form, state }: EnvironmentTabProps) => {
                   <Calendar
                     mode="single"
                     selected={field.value || undefined}
-                    onSelect={field.onChange}
-                    startMonth={new Date(1950, 0, 1)}
-                    endMonth={new Date()}
-                    disabled={{ after: new Date() }}
+                    onSelect={(date) => field.onChange(toUTCDate(date))}
+                    captionLayout="dropdown"
+                    endMonth={endMonth}
                   />
                 </PopoverContent>
               </Popover>

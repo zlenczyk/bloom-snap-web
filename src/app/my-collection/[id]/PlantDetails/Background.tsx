@@ -1,4 +1,5 @@
 import { Separator } from "@/components/ui/separator";
+import { formatDateForLocalDisplay } from "@/lib/utils";
 import { BookOpenText, Calendar, MapPin, ShoppingBag } from "lucide-react";
 import ValueDisplay from "./ValueDisplay";
 
@@ -43,16 +44,16 @@ const Background = ({ background }: BackgroundProps) => {
         <div className="flex items-center gap-2">
           <Calendar className="h-4 w-4 text-gray-500" />
           <label className="text-sm font-medium text-gray-500">
-            Owned Since
+            {background.ownedSince
+              ? background.ownedSince >= new Date()
+                ? "Planned Ownership"
+                : "Owned Since"
+              : "Ownership Date"}
           </label>
         </div>
         <div className="min-w-0 break-words">
           <ValueDisplay
-            value={
-              background.ownedSince
-                ? background.ownedSince.toLocaleDateString()
-                : null
-            }
+            value={formatDateForLocalDisplay(background.ownedSince)}
             variant="info"
           />
         </div>

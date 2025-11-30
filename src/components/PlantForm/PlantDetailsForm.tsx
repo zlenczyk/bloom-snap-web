@@ -89,6 +89,13 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
   const [activeTab, setActiveTab] = useState("overview");
   const [showCancelDialog, setShowCancelDialog] = useState(false);
 
+  const today = new Date();
+  const endMonth = new Date(
+    today.getFullYear() + 100,
+    today.getMonth(),
+    today.getDate()
+  );
+
   const action = isEditing
     ? updatePlant.bind(null, existingPlant.id)
     : addPlant;
@@ -237,14 +244,18 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
                   forceMount
                   className="data-[state=inactive]:hidden p-1"
                 >
-                  <OverviewTab form={form} state={state} />
+                  <OverviewTab form={form} state={state} endMonth={endMonth} />
                 </TabsContent>
                 <TabsContent
                   value="environment"
                   forceMount
                   className="data-[state=inactive]:hidden p-1"
                 >
-                  <EnvironmentTab form={form} state={state} />
+                  <EnvironmentTab
+                    form={form}
+                    state={state}
+                    endMonth={endMonth}
+                  />
                 </TabsContent>
                 <TabsContent
                   value="notes"

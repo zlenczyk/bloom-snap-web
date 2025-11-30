@@ -13,6 +13,26 @@ export const getCurrentIsoDate = (date = new Date()): string => {
   return isoDate;
 };
 
+export const toUTCDate = (date: Date | null | undefined): Date | null => {
+  if (!date) {
+    return null;
+  }
+
+  return new Date(
+    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+  );
+};
+
+export const formatDateForLocalDisplay = (
+  date: Date | null | undefined
+): string | null => {
+  if (!date) {
+    return null;
+  }
+
+  return date.toLocaleDateString();
+};
+
 export const toOptionalBooleanString = (
   value?: boolean | null
 ): "true" | "false" | undefined => {
