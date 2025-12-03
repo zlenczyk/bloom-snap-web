@@ -3,12 +3,12 @@
 import { auth } from "@/auth";
 import db from "@/lib/db/db";
 import { redirect } from "next/navigation";
-import { PlantWithAbsolutePhotoUrls } from "../../types";
-import createPlantPhotoAbsoluteUrls from "../createPlantPhotoAbsoluteUrls";
+import { PlantWithAbsolutePhotoUrls } from "../types";
+import createPlantPhotoAbsoluteUrls from "./createPlantPhotoAbsoluteUrls";
 
-export async function getPlantDetails(
+export const getPlantDetails = async (
   plantId: string
-): Promise<PlantWithAbsolutePhotoUrls> {
+): Promise<PlantWithAbsolutePhotoUrls> => {
   const session = await auth();
   if (!session?.user) redirect("/sign-in");
 
@@ -24,4 +24,4 @@ export async function getPlantDetails(
   const plantWithPhotoLinks = await createPlantPhotoAbsoluteUrls(plant);
 
   return plantWithPhotoLinks;
-}
+};
