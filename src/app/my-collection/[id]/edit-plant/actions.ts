@@ -178,7 +178,7 @@ export const updatePlant = async (
     };
   }
 
-  revalidatePath("/my-collection");
+  revalidatePath(`/my-collection/${plantId}`);
   redirect(`/my-collection/${plantId}`);
 };
 
