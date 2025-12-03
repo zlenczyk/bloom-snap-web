@@ -16,9 +16,9 @@ import Link from "next/link";
 import { useActionState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import ErrorMessage from "./ErrorMessage";
-import GoogleSignInButton from "./GoogleSignInButton";
-import { authenticateCredentials } from "./sign-in/actions";
+import ErrorMessage from "../ErrorMessage";
+import GoogleSignInButton from "../GoogleSignInButton";
+import { authenticateCredentials } from "./actions";
 
 const FormSchema = z.object({
   email: z.email("Invalid email").min(1, { message: "Email is required" }),

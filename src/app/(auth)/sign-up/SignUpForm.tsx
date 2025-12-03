@@ -15,10 +15,10 @@ import Link from "next/link";
 import { useActionState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import ErrorMessage from "./ErrorMessage";
-import GoogleSignInButton from "./GoogleSignInButton";
-import signUp, { type SignUpFormState } from "./sign-up/actions";
-import { SignUpFormSchema } from "./sign-up/schema";
+import ErrorMessage from "../ErrorMessage";
+import GoogleSignInButton from "../GoogleSignInButton";
+import signUp, { type SignUpFormState } from "./actions";
+import { SignUpFormSchema } from "./schema";
 
 const initialState: SignUpFormState = {
   errors: {},
