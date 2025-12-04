@@ -10,7 +10,6 @@ type EventCardProps = {
   plantId: string;
   event: TimelineEvent;
   onEdit: (event: TimelineEvent) => void;
-  // onDelete: (eventId: string) => void;
 };
 
 const EventCard = ({ plantId, event, onEdit }: EventCardProps) => {
@@ -33,11 +32,7 @@ const EventCard = ({ plantId, event, onEdit }: EventCardProps) => {
             >
               <EditIcon className="w-3 h-3" />
             </Button>
-            <DeleteEventButton
-              plantId={plantId}
-              eventId={event.id}
-              // onDelete={onDelete}
-            />
+            <DeleteEventButton plantId={plantId} eventId={event.id} />
           </div>
         </div>
         <div className="text-sm text-muted-foreground font-medium">

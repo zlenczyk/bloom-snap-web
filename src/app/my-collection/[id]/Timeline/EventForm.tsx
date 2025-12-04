@@ -50,7 +50,6 @@ interface EventFormProps {
   isOpen: boolean;
   onClose: () => void;
   existingEvent?: TimelineEvent | null;
-  // onSave: (event: TimelineEvent) => void;
   plantId: string;
 }
 
@@ -63,7 +62,6 @@ export function EventForm({
   isOpen,
   onClose,
   existingEvent,
-  // onSave,
   plantId,
 }: EventFormProps) {
   const [isCustom, setIsCustom] = useState(false);
@@ -96,8 +94,6 @@ export function EventForm({
 
   useEffect(() => {
     if (state?.success && state?.event) {
-      // onSave(state.event);
-
       handleClose();
     }
   }, [state?.success, state?.event]);

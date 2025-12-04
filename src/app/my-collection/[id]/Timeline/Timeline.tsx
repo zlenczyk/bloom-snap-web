@@ -14,31 +14,11 @@ interface TimelineProps {
 }
 
 export default function Timeline({ initialEvents, plantId }: TimelineProps) {
-  const [events, setEvents] = useState<TimelineEvent[]>(initialEvents);
   const [existingEvent, setEditingEvent] = useState<TimelineEvent | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
-
-  const sortedEvents = [...events].sort(
+  const sortedEvents = [...initialEvents].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
-
-  const handleSaveEvent = (eventData: TimelineEvent) => {
-    setEvents((prev) => {
-      const exists = prev.some((event) => event.id === eventData.id);
-
-      if (exists) {
-        return prev.map((event) =>
-          event.id === eventData.id ? eventData : event
-        );
-      } else {
-        return [...prev, eventData];
-      }
-    });
-  };
-
-  const handleDeleteEvent = (id: string) => {
-    setEvents((prev) => prev.filter((event) => event.id !== id));
-  };
 
   const openAddForm = () => {
     setEditingEvent(null);
@@ -86,7 +66,6 @@ export default function Timeline({ initialEvents, plantId }: TimelineProps) {
                   plantId={plantId}
                   event={event}
                   onEdit={openEditForm}
-                  onDelete={handleDeleteEvent}
                 />
 
                 <TimelineIcon event={event} />
@@ -95,12 +74,10 @@ export default function Timeline({ initialEvents, plantId }: TimelineProps) {
           })}
         </div>
       </div>
-
       <EventForm
         isOpen={isFormOpen}
         onClose={() => setIsFormOpen(false)}
         existingEvent={existingEvent}
-        onSave={handleSaveEvent}
         plantId={plantId}
       />
     </div>
