@@ -1,12 +1,13 @@
 "use server";
 
+import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
-import { updateTimelineEvent } from "../db/queries/updateTimelineEvent";
+import { redirect } from "next/navigation";
+import z from "zod";
+import { EventColorsEnum, EventIcon } from "../data/timelineEventTypes";
+import db from "../db/db";
 import { TimelineEvent } from "../db/schema";
-import {
-  timelineEventIdSchema,
-  timelineEventSchema,
-} from "../validations/timelineEvent";
+import { timelineEventSchema } from "../validations/timelineEvent";
 
 type Errors = {
   color?: string[];
@@ -23,17 +24,22 @@ export type UpdateTimelineEventState = {
   success: boolean;
 };
 
-export async function updateTimelineEventAction(
-  id: string,
+const updateTimelineEvent = async (
+  plantId: string,
+  eventId: string,
   prevState: UpdateTimelineEventState,
   formData: FormData
-): Promise<UpdateTimelineEventState> {
-  try {
-    const validatedId = timelineEventIdSchema.parse({ id });
+): Promise<UpdateTimelineEventState> => {
+  const session = await auth();
 
+  if (!session?.user?.id) {
+    redirect("/sign-in");
+  }
+
+  try {
     const date = formData.get("date");
 
-    const validatedData = timelineEventSchema.parse({
+    const validationResult = timelineEventSchema.safeParse({
       title: formData.get("title"),
       description: formData.get("description") || undefined,
       date: date ? new Date(date.toString()) : undefined,
@@ -41,24 +47,49 @@ export async function updateTimelineEventAction(
       color: formData.get("color"),
     });
 
-    const result = await updateTimelineEvent(validatedId.id, validatedData);
+    if (!validationResult.success) {
+      console.log(
+        "zod flattened errors with field errors:",
+        z.flattenError(validationResult.error).fieldErrors
+      );
 
-    if (!result.success) {
       return {
+        errors: z.flattenError(validationResult.error).fieldErrors,
+        message: "Input validation failed. Please check your entries.",
         success: false,
-        message: result.error || "Failed to update event",
-      };
+      } as const;
     }
 
-    revalidatePath("/");
+    const validData = validationResult.data;
+
+    const event = await db.timelineEvent.update({
+      where: { plantId: plantId, id: eventId },
+      data: {
+        title: validData.title,
+        description: validData.description,
+        date: validData.date,
+        icon: validData.icon,
+        color: validData.color,
+      },
+    });
+
+    const result = {
+      ...event,
+      icon: event.icon as EventIcon,
+      color: event.color as EventColorsEnum,
+    };
+
+    revalidatePath(`/my-collection/${plantId}`);
 
     return {
       success: true,
       message: "Event updated successfully",
-      event: result?.event,
+      event: result,
     };
   } catch (error) {
     console.error("Update event error:", error);
     return { success: false, message: "Failed to update event" };
   }
-}
+};
+
+export default updateTimelineEvent;

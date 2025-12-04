@@ -1,34 +1,52 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import z from "zod";
+import db from "../db/db";
 import { timelineEventIdSchema } from "../validations/timelineEvent";
-import deleteTimelineEvent from "../db/queries/deleteTimelineEvent";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
-export type DeleteTimelineEventActionState = {
+export type DeleteTimelineEventState = {
   success?: boolean;
   error?: string;
   message?: string;
 };
 
-const deleteTimelineEventAction = async (
-  prevState: DeleteTimelineEventActionState | null,
+const deleteTimelineEvent = async (
+  plantId: string,
+  prevState: DeleteTimelineEventState | null,
   formData: FormData
-): Promise<DeleteTimelineEventActionState> => {
+): Promise<DeleteTimelineEventState> => {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    redirect("/sign-in");
+  }
+
   try {
-    const validatedData = timelineEventIdSchema.parse({
+    const validationResult = timelineEventIdSchema.safeParse({
       id: formData.get("id"),
     });
 
-    const result = await deleteTimelineEvent(validatedData.id);
+    if (!validationResult.success) {
+      console.log(
+        "zod flattened errors with field errors:",
+        z.flattenError(validationResult.error).fieldErrors
+      );
 
-    if (!result.success) {
       return {
+        message: "Input validation failed. Timeline event ID is required.",
         success: false,
-        error: result.error || "Failed to delete timeline event",
-      };
+      } as const;
     }
 
-    revalidatePath("/");
+    await db.timelineEvent.delete({
+      where: { id: validationResult.data.id },
+    });
+
+    revalidatePath(`/my-collection/${plantId}`);
+
     return { success: true, message: "Timeline event deleted successfully" };
   } catch (error) {
     console.error("Delete timeline event error:", error);
@@ -36,4 +54,4 @@ const deleteTimelineEventAction = async (
   }
 };
 
-export default deleteTimelineEventAction;
+export default deleteTimelineEvent;

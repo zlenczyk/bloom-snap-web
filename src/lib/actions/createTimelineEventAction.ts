@@ -1,16 +1,20 @@
 "use server";
 
+import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
-import { createTimelineEvent } from "../db/queries/createTimelineEvent";
+import { redirect } from "next/navigation";
+import { EventColorsEnum, EventIcon } from "../data/timelineEventTypes";
+import db from "../db/db";
 import { TimelineEvent } from "../db/schema";
 import { timelineEventSchema } from "../validations/timelineEvent";
+import z from "zod";
 
 type Errors = {
-  title?: string[];
-  description?: string[];
-  date?: string[];
-  icon?: string[];
   color?: string[];
+  date?: string[];
+  description?: string[];
+  icon?: string[];
+  title?: string[];
 };
 
 export type CreateTimelineEventState = {
@@ -21,41 +25,89 @@ export type CreateTimelineEventState = {
   success: boolean;
 };
 
-const createTimelineEventAction = async (
+const createTimelineEvent = async (
+  plantId: string,
   state: CreateTimelineEventState,
   formData: FormData
 ): Promise<CreateTimelineEventState> => {
-  try {
-    const date = formData.get("date");
+  const session = await auth();
 
-    const validatedData = timelineEventSchema.parse({
-      title: formData.get("title"),
-      description: formData.get("description") || undefined,
-      date: date ? new Date(date.toString()) : undefined,
-      icon: formData.get("icon"),
-      color: formData.get("color"),
+  if (!session?.user?.id) {
+    redirect("/sign-in");
+  }
+
+  const userId = session.user.id;
+
+  try {
+    const plant = await db.plant.findFirst({
+      where: {
+        id: plantId,
+        userId: userId,
+      },
     });
 
-    const result = await createTimelineEvent(validatedData);
-
-    if (!result.success) {
+    if (!plant) {
       return {
         success: false,
-        message: result.error || "Failed to create event",
+        message:
+          "You do not have permission to add a timeline event to this plant",
       };
     }
 
-    revalidatePath("/");
+    const date = formData.get("date");
+
+    const validationResult = timelineEventSchema.safeParse({
+      color: formData.get("color"),
+      date: date ? new Date(date.toString()) : undefined,
+      description: formData.get("description") || undefined,
+      icon: formData.get("icon"),
+      title: formData.get("title"),
+    });
+
+    if (!validationResult.success) {
+      console.log(
+        "zod flattened errors with field errors:",
+        z.flattenError(validationResult.error).fieldErrors
+      );
+
+      return {
+        errors: z.flattenError(validationResult.error).fieldErrors,
+        message: "Input validation failed. Please check your entries.",
+        success: false,
+      } as const;
+    }
+
+    const validData = validationResult.data;
+
+    const event = await db.timelineEvent.create({
+      data: {
+        color: validData.color,
+        date: validData.date,
+        description: validData.description,
+        icon: validData.icon,
+        plantId: plantId,
+        title: validData.title,
+      },
+    });
+
+    const result = {
+      ...event,
+      color: event.color as EventColorsEnum,
+      icon: event.icon as EventIcon,
+    };
+
+    revalidatePath(`/my-collection/${plantId}`);
 
     return {
       success: true,
-      message: "Event created successfully",
-      event: result?.event,
+      message: "Timeline event created successfully",
+      event: result,
     };
   } catch (error) {
-    console.error("Create event error:", error);
-    return { success: false, message: "Failed to create event" };
+    console.error("Failed to create timeline event:", error);
+
+    return { success: false, message: "Failed to create timeline event" };
   }
 };
 
-export default createTimelineEventAction;
+export default createTimelineEvent;
