@@ -41,14 +41,6 @@ export const SetupMethodSwitch = ({
 
   const watchedValues = watch();
 
-  // const handlePredefinedSelect = (key: string) => {
-  //   const event = predefinedEvents[key as keyof typeof predefinedEvents];
-
-  //   setValue("title", event.label);
-  //   setValue("icon", event.icon);
-  //   setValue("color", event.color);
-  // };
-
   const handlePredefinedSelect = (
     key: string,
     field: ControllerRenderProps<TimelineEventFormData, "title">
