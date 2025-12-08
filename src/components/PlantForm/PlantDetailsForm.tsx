@@ -176,7 +176,7 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
     startTransition(() => formAction(formData));
   };
 
-  const handleCancel = () => {
+  const handleCancelClick = () => {
     if (isDirty) {
       setShowCancelDialog(true);
 
@@ -186,6 +186,18 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
     router.push(
       existingPlant ? `/my-collection/${existingPlant.id}` : "/my-collection"
     );
+  };
+
+  const handleConfirmCancel = () => {
+    setShowCancelDialog(false);
+
+    if (isEditing) {
+      router.push(`/my-collection/${existingPlant!.id}`);
+
+      return;
+    }
+
+    router.push("/my-collection");
   };
 
   return (
@@ -279,7 +291,11 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
             </CardContent>
 
             <CardFooter className="flex justify-end gap-2 border-t bg-muted/20 p-6 shrink-0">
-              <Button variant="outline" type="button" onClick={handleCancel}>
+              <Button
+                variant="outline"
+                type="button"
+                onClick={handleCancelClick}
+              >
                 Cancel
               </Button>
               <Button
@@ -307,8 +323,9 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
               {isEditing ? "Discard changes?" : "Abandon this plant?"}
             </DialogTitle>
             <DialogDescription>
-              You haven’t saved your changes. Leaving now means your work will
-              be lost.
+              {isEditing
+                ? "💔 Your fresh updates won’t reach this plant! Leaving now will keep it as it was."
+                : "🌿 This plant isn’t part of your collection yet! Leaving now will send it back to the wild."}
             </DialogDescription>
           </DialogHeader>
 
@@ -321,10 +338,7 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
             </Button>
             <Button
               className="bg-red-600 hover:bg-red-700 text-white"
-              onClick={() => {
-                setShowCancelDialog(false);
-                router.push("/my-collection");
-              }}
+              onClick={handleConfirmCancel}
             >
               Discard changes
             </Button>
