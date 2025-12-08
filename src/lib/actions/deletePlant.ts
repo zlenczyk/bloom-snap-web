@@ -44,8 +44,6 @@ const deletePlant = async (plantId: string): Promise<DeletePlantState> => {
       },
     });
 
-    revalidatePath("/my-collection");
-
     return { success: true, message: "Plant deleted successfully" };
   } catch (error) {
     console.error("Delete plant error:", error);
