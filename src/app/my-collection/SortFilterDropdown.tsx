@@ -8,8 +8,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  AArrowDown,
-  AArrowUp,
+  ArrowDownAZ,
+  ArrowUpAZ,
   CalendarArrowDown,
   CalendarArrowUp,
   Filter,
@@ -46,45 +46,68 @@ const SortFilterDropdown = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-60">
         <DropdownMenuLabel>Sort</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className={sortBy === "commonNameAsc" ? "bg-muted" : ""}
-          onClick={() => onChangeSort("commonNameAsc")}
-        >
-          <AArrowUp size={16} className="mr-1 inline" /> Name (A→Z)
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className={sortBy === "commonNameDesc" ? "bg-muted" : ""}
-          onClick={() => onChangeSort("commonNameDesc")}
-        >
-          <AArrowDown size={16} className="mr-1 inline" /> Name (Z→A)
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className={sortBy === "createdAtOldest" ? "bg-muted" : ""}
-          onClick={() => onChangeSort("createdAtOldest")}
-        >
-          <CalendarArrowUp size={16} className="mr-1 inline" /> Created (Oldest)
-        </DropdownMenuItem>
         <DropdownMenuItem
           className={sortBy === "createdAtNewest" ? "bg-muted" : ""}
           onClick={() => onChangeSort("createdAtNewest")}
         >
-          <CalendarArrowDown size={16} className="mr-1 inline" /> Created
-          (Newest)
+          <CalendarArrowDown size={16} className="mr-1 inline" />
+          Added · Newest
         </DropdownMenuItem>
+
         <DropdownMenuItem
-          className={sortBy === "lastRepottedOldest" ? "bg-muted" : ""}
-          onClick={() => onChangeSort("lastRepottedOldest")}
+          className={sortBy === "createdAtOldest" ? "bg-muted" : ""}
+          onClick={() => onChangeSort("createdAtOldest")}
         >
-          <CalendarArrowUp size={16} className="mr-1 inline" /> Last Repotted
-          (Oldest)
+          <CalendarArrowUp size={16} className="mr-1 inline" />
+          Added · Oldest
         </DropdownMenuItem>
+
+        <DropdownMenuItem
+          className={sortBy === "commonNameAsc" ? "bg-muted" : ""}
+          onClick={() => onChangeSort("commonNameAsc")}
+        >
+          <ArrowDownAZ size={16} className="mr-1 inline" />
+          Common Name · A–Z
+        </DropdownMenuItem>
+
+        <DropdownMenuItem
+          className={sortBy === "commonNameDesc" ? "bg-muted" : ""}
+          onClick={() => onChangeSort("commonNameDesc")}
+        >
+          <ArrowUpAZ size={16} className="mr-1 inline" />
+          Common Name · Z–A
+        </DropdownMenuItem>
+
+        <DropdownMenuItem
+          className={sortBy === "ownedSinceNewest" ? "bg-muted" : ""}
+          onClick={() => onChangeSort("ownedSinceNewest")}
+        >
+          <CalendarArrowDown size={16} className="mr-1 inline" />
+          Owned · Newest
+        </DropdownMenuItem>
+
+        <DropdownMenuItem
+          className={sortBy === "ownedSinceOldest" ? "bg-muted" : ""}
+          onClick={() => onChangeSort("ownedSinceOldest")}
+        >
+          <CalendarArrowUp size={16} className="mr-1 inline" />
+          Owned · Oldest
+        </DropdownMenuItem>
+
         <DropdownMenuItem
           className={sortBy === "lastRepottedNewest" ? "bg-muted" : ""}
           onClick={() => onChangeSort("lastRepottedNewest")}
         >
-          <CalendarArrowDown size={16} className="mr-1 inline" /> Last Repotted
-          (Newest)
+          <CalendarArrowDown size={16} className="mr-1 inline" />
+          Repot · Newest
+        </DropdownMenuItem>
+
+        <DropdownMenuItem
+          className={sortBy === "lastRepottedOldest" ? "bg-muted" : ""}
+          onClick={() => onChangeSort("lastRepottedOldest")}
+        >
+          <CalendarArrowUp size={16} className="mr-1 inline" />
+          Repot · Oldest
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />

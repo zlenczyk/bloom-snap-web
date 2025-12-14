@@ -20,6 +20,8 @@ const sortMap: Record<
   commonNameDesc: { field: "commonName", order: "desc" },
   lastRepottedNewest: { field: "lastRepotted", order: "desc" },
   lastRepottedOldest: { field: "lastRepotted", order: "asc" },
+  ownedSinceNewest: { field: "ownedSince", order: "desc" },
+  ownedSinceOldest: { field: "ownedSince", order: "asc" },
 };
 
 interface GetCollectionOptions {
@@ -65,12 +67,24 @@ export async function getCollection({
 
   const sort = sortMap[sortBy] || sortMap["createdAtNewest"];
 
+  const orderBy: Prisma.PlantOrderByWithRelationInput[] = [];
+
+  if (["lastRepotted", "ownedSince"].includes(sort.field)) {
+    orderBy.push({ [sort.field]: { sort: sort.order, nulls: "last" } });
+  } else {
+    orderBy.push({ [sort.field]: sort.order });
+  }
+
+  if (sort.field !== "createdAt") {
+    orderBy.push({ createdAt: "desc" });
+  }
+
   const [plants, totalCount] = await Promise.all([
     db.plant.findMany({
       where,
       skip,
       take: limit,
-      orderBy: { [sort.field]: sort.order },
+      orderBy: orderBy,
       include: {
         photos: true,
       },
