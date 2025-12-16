@@ -21,6 +21,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 Technologies links:
 1. NextAuth vs Supabase: https://www.restack.io/docs/supabase-knowledge-supabase-auth-vs-nextauth
 
+avatars:
+https://raphael.app/
 
 Issues:
 1. change use of bcrypt to bcryptjs -> https://github.com/kelektiv/node.bcrypt.js/issues/979
