@@ -39,7 +39,7 @@ import {
 } from "@/lib/data/plantDetailsTypes";
 import { cn, getCurrentIsoDate } from "@/lib/utils";
 import { PlantForm } from "@/lib/validations/plant";
-import { Leaf, Sprout } from "lucide-react";
+import { Image as ImageIcon, Leaf, Notebook, Sprout, Sun } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { startTransition, useActionState, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -49,6 +49,13 @@ const initialState: PlantFormState = {
   errors: {},
   message: "",
   success: false,
+};
+
+const TabIcons: Record<string, React.ReactNode> = {
+  overview: <Sprout className="w-5 h-5" />,
+  environment: <Sun className="w-5 h-5" />,
+  notes: <Notebook className="w-5 h-5" />,
+  photos: <ImageIcon className="w-5 h-5" />,
 };
 
 const defaultValues: PlantForm = {
@@ -211,18 +218,18 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
 
   return (
     <div
-      className="max-w-3xl mx-auto p-4 flex justify-center items-center w-full h-screen"
+      className="max-w-3xl mx-auto w-full h-screen flex flex-col sm:justify-center sm:items-center p-0 sm:p-4"
       style={{ maxHeight: "calc(100dvh - var(--header-height))" }}
     >
-      <Card className="w-full max-w-3xl flex flex-col max-h-[720px] h-full">
-        <CardHeader className="space-y-1 rounded-t-lg border-b shrink-0">
+      <Card className="w-full flex flex-col h-full max-h-[100dvh] sm:max-h-[720px] shadow-none sm:shadow rounded-none sm:rounded-lg">
+        <CardHeader className="space-y-1 border-b p-4 sm:p-6">
           <div className="flex items-center gap-2">
-            <Sprout className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
-            <CardTitle className="text-2xl">
+            <Sprout className="h-5 w-5 sm:h-6 sm:w-6 text-emerald-600 dark:text-emerald-400" />
+            <CardTitle className="text-xl sm:text-2xl">
               {isEditing ? "Edit Plant" : "Add New Plant"}
             </CardTitle>
           </div>
-          <CardDescription>
+          <CardDescription className="text-sm sm:text-base">
             {isEditing
               ? "Update your plant's details"
               : "Track your plant's details and care information"}
@@ -238,7 +245,7 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
               <Tabs
                 value={activeTab}
                 onValueChange={setActiveTab}
-                className="w-full min-w-0 gap-6 overflow-y-auto px-6 pt-6"
+                className="w-full min-w-0 gap-6 overflow-y-auto px-4 pt-4 sm:px-6 sm:pt-6"
               >
                 <TabsList className="grid grid-cols-4 w-full shrink-0">
                   {Object.values(TabEnum).map((tab) => (
@@ -249,10 +256,12 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
                         tabsWithErrors.includes(tab) && "text-destructive",
                         activeTab === tab &&
                           tabsWithErrors.includes(tab) &&
-                          "outline-1 outline-destructive outline-offset-[-1px] bg-destructive/10 hover:bg-destructive/20"
+                          "outline-1 outline-destructive outline-offset-[-1px] bg-destructive/10 hover:bg-destructive/20",
+                        "flex items-center justify-center gap-2"
                       )}
                     >
-                      {tab}
+                      <span className="sm:hidden">{TabIcons[tab]}</span>
+                      <span className="hidden sm:inline">{tab}</span>
                       {tabsWithErrors.includes(tab) && (
                         <span className="text-destructive">●</span>
                       )}
@@ -299,7 +308,7 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
               </Tabs>
             </CardContent>
 
-            <CardFooter className="flex justify-end gap-2 border-t bg-muted/20 p-6 shrink-0">
+            <CardFooter className="flex justify-end gap-2 border-t bg-muted/20 p-4 sm:p-6 shrink-0">
               <Button
                 variant="outline"
                 type="button"
