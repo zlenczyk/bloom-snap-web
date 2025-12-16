@@ -165,12 +165,21 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
     const formData = new FormData();
 
     Object.entries(data).forEach(([key, value]) => {
-      if (value instanceof Date) formData.append(key, getCurrentIsoDate(value));
-      else if (value === true || value === false)
+      if (value instanceof Date) {
+        formData.append(key, getCurrentIsoDate(value));
+      }
+
+      if (value === true || value === false) {
         formData.append(key, value ? "true" : "false");
-      else if (Array.isArray(value))
+      }
+
+      if (Array.isArray(value)) {
         value.forEach((v) => formData.append(key, v));
-      else if (value) formData.append(key, value.toString());
+      }
+
+      if (value) {
+        formData.append(key, value.toString());
+      }
     });
 
     startTransition(() => formAction(formData));
@@ -205,7 +214,7 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
       className="max-w-3xl mx-auto p-4 flex justify-center items-center w-full h-screen"
       style={{ maxHeight: "calc(100dvh - var(--header-height))" }}
     >
-      <Card className="max-h-[720px] flex flex-col h-full">
+      <Card className="w-full max-w-3xl flex flex-col max-h-[720px] h-full">
         <CardHeader className="space-y-1 rounded-t-lg border-b shrink-0">
           <div className="flex items-center gap-2">
             <Sprout className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
@@ -223,13 +232,13 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col"
+            className="flex flex-col h-full"
           >
-            <CardContent className="flex-1 flex p-0">
+            <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
               <Tabs
                 value={activeTab}
                 onValueChange={setActiveTab}
-                className="w-full gap-6 overflow-y-auto px-6 pt-6"
+                className="w-full min-w-0 gap-6 overflow-y-auto px-6 pt-6"
               >
                 <TabsList className="grid grid-cols-4 w-full shrink-0">
                   {Object.values(TabEnum).map((tab) => (
@@ -279,7 +288,7 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
                 <TabsContent
                   value="photos"
                   forceMount
-                  className="data-[state=inactive]:hidden p-1"
+                  className="data-[state=inactive]:hidden p-1 flex flex-col flex-1 overflow-auto"
                 >
                   <PhotosTab
                     form={form}

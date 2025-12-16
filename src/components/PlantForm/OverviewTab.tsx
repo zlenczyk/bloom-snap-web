@@ -26,7 +26,12 @@ import {
   isSafeEnum,
   OverviewFieldsEnum,
 } from "@/lib/data/plantDetailsTypes";
-import { cn, toOptionalBoolean, toOptionalBooleanString, toUTCDate } from "@/lib/utils";
+import {
+  cn,
+  toOptionalBoolean,
+  toOptionalBooleanString,
+  toUTCDate,
+} from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
@@ -42,7 +47,7 @@ type OverviewTabProps = {
 const OverviewTab = ({ form, state, endMonth }: OverviewTabProps) => {
   return (
     <div className="flex flex-col gap-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid w-full min-w-0 grid-cols-1 md:grid-cols-2 gap-6">
         <FormField
           control={form.control}
           name={OverviewFieldsEnum.CommonName}

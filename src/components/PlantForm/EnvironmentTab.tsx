@@ -46,7 +46,7 @@ type EnvironmentTabProps = {
 
 const EnvironmentTab = ({ form, state, endMonth }: EnvironmentTabProps) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid w-full min-w-0 grid-cols-1 md:grid-cols-2 gap-6">
       <FormField
         control={form.control}
         name={EnvironmentFieldsEnum.CurrentHeight}
