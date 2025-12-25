@@ -10,7 +10,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useActionState } from "react";
+import { signOut } from "next-auth/react";
+import { useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import ErrorMessage from "../ErrorMessage";
@@ -35,6 +36,12 @@ const CompleteProfileForm = () => {
       userName: "",
     },
   });
+
+  useEffect(() => {
+    if (state.success) {
+      signOut();
+    }
+  }, [state.success]);
 
   return (
     <Form {...form}>
@@ -71,7 +78,7 @@ const CompleteProfileForm = () => {
             )}
           />
 
-          {!state?.errors && state.message && (
+          {!state.success && !state?.errors && (
             <ErrorMessage messages={[state.message]} />
           )}
 
