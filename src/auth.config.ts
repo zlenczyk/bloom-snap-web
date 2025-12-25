@@ -6,12 +6,10 @@ import db from "./lib/db/db";
 import { compare } from "bcryptjs";
 
 const credentialsSchema = z.object({
-  email: z
-    .string()
-    .min(1, {
-      message: "Email is required",
-    })
-    .email("Invalid email"),
+  email: z.email({
+    error: (issue) =>
+      issue.input === undefined ? "Email is required" : "Invalid email",
+  }),
   password: z
     .string()
     .min(1, "Password is required")
@@ -73,8 +71,7 @@ export const authConfig = {
         return {
           id: profile.sub,
           email: profile.email,
-          image: profile.picture ?? null,
-          userName: `temp_${profile.sub.slice(0, 8)}`,
+          userName: null,
           profileCompleted: false,
         };
       },

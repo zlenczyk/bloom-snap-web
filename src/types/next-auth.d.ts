@@ -5,17 +5,15 @@ declare module "next-auth" {
     user: {
       id: string;
       email: string;
-      userName: string;
+      userName: string | null;
       profileCompleted: boolean;
-      image?: string | null;
     };
   }
 
   interface User {
     id: string;
     email: string;
-    userName: string;
+    userName: string | null;
     profileCompleted: boolean;
-    image?: string | null;
   }
 }
