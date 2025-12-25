@@ -1,139 +1,416 @@
 "use client";
 
-import { useState } from "react";
-import { deleteAccount, updatePassword, updateProfile } from "./actions";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { startTransition, useActionState, useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import z from "zod";
+import ErrorMessage from "../(auth)/ErrorMessage";
+import { PasswordSchema, UserNameSchema } from "../(auth)/sign-up/schema";
+import {
+  changePassword,
+  deleteAccount,
+  updateAvatar,
+  updateUsername,
+} from "./actions";
+import { AVATAR_PRESETS, AvatarPreset, AvatarSchema } from "./types";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface EditProfileFormProps {
+  createdAt: string;
+  image: string | null;
+  plantsCount: number;
   userName: string;
 }
 
-export default function EditProfileForm({ userName }: EditProfileFormProps) {
-  const [nickname, setNickname] = useState(userName || "");
-  const [password, setPassword] = useState("");
-  const [loadingNickname, setLoadingNickname] = useState(false);
-  const [loadingPassword, setLoadingPassword] = useState(false);
-  const [loadingDelete, setLoadingDelete] = useState(false);
+const initialUserState = {
+  success: false,
+  message: "",
+  errors: {},
+};
 
-  // Update nickname
-  const handleNicknameSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      setLoadingNickname(true);
-      await updateProfile(nickname); // use the input value!
-      toast.success("Nickname updated successfully!");
-    } catch (error: any) {
-      toast.error("Error updating nickname: " + (error.message || error));
-    } finally {
-      setLoadingNickname(false);
-    }
+interface PasswordFormValues {
+  password: string;
+  confirmPassword: string;
+}
+
+type AvatarFormValues = z.infer<typeof AvatarSchema>;
+
+export default function EditProfileForm({
+  userName,
+  image,
+  createdAt,
+  plantsCount,
+}: EditProfileFormProps) {
+  const [avatar, setAvatar] = useState<string | null>(image ?? null);
+
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+
+  const [usernameState, updateUsernameAction, usernamePending] = useActionState(
+    updateUsername,
+    initialUserState
+  );
+  const [passwordState, changePasswordAction, passwordPending] = useActionState(
+    changePassword,
+    initialUserState
+  );
+
+  const [avatarState, updateAvatarAction, avatarPending] = useActionState(
+    updateAvatar,
+    initialUserState
+  );
+
+  const router = useRouter();
+
+  const usernameForm = useForm<z.infer<typeof UserNameSchema>>({
+    resolver: zodResolver(UserNameSchema),
+    defaultValues: { userName: userName },
+  });
+
+  const passwordForm = useForm<z.infer<typeof PasswordSchema>>({
+    resolver: zodResolver(PasswordSchema),
+    defaultValues: { password: "", confirmPassword: "" },
+  });
+
+  const avatarForm = useForm<z.infer<typeof AvatarSchema>>({
+    resolver: zodResolver(AvatarSchema),
+    defaultValues: { avatar: avatar as AvatarPreset },
+  });
+
+  const handlePassword: SubmitHandler<PasswordFormValues> = (data) => {
+    const formData = new FormData();
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        formData.append(key, value.toString());
+      }
+    });
+
+    startTransition(() => changePasswordAction(formData));
   };
 
-  // Change password
-  const handlePasswordSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      setLoadingPassword(true);
-      await updatePassword(password);
-      toast.success("Password changed successfully!");
-      setPassword("");
-    } catch (error: any) {
-      toast.error("Error changing password: " + (error.message || error));
-    } finally {
-      setLoadingPassword(false);
-    }
+  const handleAvatar: SubmitHandler<AvatarFormValues> = (data) => {
+    const formData = new FormData();
+
+    formData.append("avatar", data.avatar ?? "");
+
+    startTransition(() => updateAvatarAction(formData));
   };
 
-  // Delete account
-  const handleDeleteSubmit = async () => {
-    if (!confirm("Are you sure? This cannot be undone.")) return;
+  const handleDeleteAccount = async () => {
+    const { success } = await deleteAccount();
 
-    try {
-      setLoadingDelete(true);
-      await deleteAccount();
-      toast.success("Account deleted successfully!");
-      // optionally redirect user
-    } catch (error: any) {
-      toast.error("Error deleting account: " + (error.message || error));
-    } finally {
-      setLoadingDelete(false);
+    if (success) {
+      router.replace("/sign-in");
+
+      toast.success("Account deleted successfully");
+
+      return;
     }
+
+    toast.error("Failed to delete account");
   };
+
+  useEffect(() => {
+    if (!avatarState.message) {
+      return;
+    }
+
+    if (avatarState.success) {
+      setAvatar(avatarState.avatar ?? null);
+
+      startTransition(() => {
+        router.refresh();
+      });
+
+      toast.success(avatarState.message);
+    } else {
+      toast.error(avatarState.message);
+    }
+  }, [avatarState]);
+
+  useEffect(() => {
+    if (!usernameState.message) {
+      return;
+    }
+
+    if (usernameState.success) {
+      toast.success(usernameState.message);
+
+      startTransition(() => {
+        router.refresh();
+      });
+    } else {
+      toast.error(usernameState.message);
+    }
+  }, [usernameState]);
+
+  useEffect(() => {
+    if (!passwordState.message) {
+      return;
+    }
+
+    if (passwordState.success) {
+      toast.success(passwordState.message);
+    } else {
+      toast.error(passwordState.message);
+    }
+  }, [passwordState]);
 
   return (
-    <div className="max-w-md mx-auto space-y-6">
-      {/* Update Nickname Form */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Update Nickname</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleNicknameSubmit} className="space-y-3">
-            <div className="space-y-1">
-              <Label htmlFor="nickname">Nickname</Label>
-              <Input
-                id="nickname"
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
-                placeholder="Enter new nickname"
-              />
-            </div>
-            <Button type="submit" disabled={loadingNickname}>
-              {loadingNickname ? "Saving..." : "Save Nickname"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+    <div className="max-w-7xl mx-auto w-full space-y-12">
+      <div className="flex flex-col items-center text-center space-y-4">
+        {avatar ? (
+          <img
+            src={avatar}
+            alt="avatar"
+            className="w-40 h-40 rounded-full object-cover"
+          />
+        ) : (
+          <div className="w-40 h-40 rounded-full bg-green-500 flex items-center justify-center text-white text-7xl font-bold select-none">
+            {userName.charAt(0).toUpperCase()}
+          </div>
+        )}
 
-      {/* Change Password Form */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Change Password</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handlePasswordSubmit} className="space-y-3">
-            <div className="space-y-1">
-              <Label htmlFor="password">New Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter new password"
-              />
-            </div>
-            <Button
-              type="submit"
-              variant="secondary"
-              disabled={loadingPassword}
-            >
-              {loadingPassword ? "Saving..." : "Change Password"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+        <div>
+          <h2 className="text-3xl font-bold">{userName}</h2>
+          <p className="text-sm md:text-md text-gray-500 mt-1">
+            Member since: {new Date(createdAt).toLocaleDateString()}
+          </p>
 
-      {/* Delete Account Form */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Delete Account</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Button
-            onClick={handleDeleteSubmit}
-            variant="destructive"
-            className="w-full"
-            disabled={loadingDelete}
-          >
-            {loadingDelete ? "Deleting..." : "Delete Account"}
-          </Button>
-        </CardContent>
-      </Card>
+          <p className="text-sm font-semibold md:text-md mt-1 flex items-center justify-center gap-1 text-green-700">
+            <span className="text-lg">🪴</span>
+            {plantsCount} plants owned
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="space-y-8">
+          <Card className="rounded-2xl shadow-md border">
+            <CardHeader>
+              <CardTitle className="text-xl font-semibold">
+                Update Username
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Form {...usernameForm}>
+                <form
+                  onSubmit={usernameForm.handleSubmit((data) =>
+                    startTransition(() => updateUsernameAction(data.userName))
+                  )}
+                  className="space-y-4"
+                >
+                  <FormField
+                    control={usernameForm.control}
+                    name="userName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Username</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <ErrorMessage
+                          messages={usernameState.errors?.userName || []}
+                        />
+                      </FormItem>
+                    )}
+                  />
+                  <Button
+                    type="submit"
+                    disabled={usernamePending}
+                    className="w-full"
+                  >
+                    {usernamePending ? "Saving..." : "Save Nickname"}
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-2xl shadow-md border">
+            <CardHeader>
+              <CardTitle className="text-xl font-semibold">
+                Change Password
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Form {...passwordForm}>
+                <form
+                  onSubmit={passwordForm.handleSubmit(handlePassword)}
+                  className="space-y-4"
+                >
+                  <FormField
+                    control={passwordForm.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>New Password</FormLabel>
+                        <FormControl>
+                          <Input type="password" {...field} />
+                        </FormControl>
+                        <ErrorMessage
+                          messages={passwordState.errors?.password || []}
+                        />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={passwordForm.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Confirm Password</FormLabel>
+                        <FormControl>
+                          <Input type="password" {...field} />
+                        </FormControl>
+                        <ErrorMessage
+                          messages={passwordState.errors?.confirmPassword || []}
+                        />
+                      </FormItem>
+                    )}
+                  />
+                  <Button
+                    type="submit"
+                    disabled={passwordPending}
+                    className="w-full"
+                  >
+                    {passwordPending ? "Saving..." : "Change Password"}
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-2xl shadow-md border border-red-300">
+            <CardHeader>
+              <CardTitle className="text-xl font-semibold">
+                ⚠️ Delete Account
+              </CardTitle>
+              <CardDescription>
+                This action will permanently remove your account and all
+                associated data
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button
+                onClick={() => setOpenDeleteDialog(true)}
+                type="button"
+                variant="destructive"
+                className="w-full"
+              >
+                Delete Account
+              </Button>
+            </CardContent>
+          </Card>
+          <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
+            <DialogContent className="rounded-lg">
+              <DialogHeader>
+                <DialogTitle>Delete account?</DialogTitle>
+                <DialogDescription>
+                  You’re about to permanently delete your account including your
+                  digital plant collection. We hope at least your real plants
+                  survive…
+                  <br />
+                  <br />
+                  ⚠️ This action cannot be undone!
+                </DialogDescription>
+              </DialogHeader>
+
+              <DialogFooter className="mt-4 flex justify-end gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setOpenDeleteDialog(false)}
+                >
+                  Cancel
+                </Button>
+
+                <Button variant="destructive" onClick={handleDeleteAccount}>
+                  Yes, delete my account
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+
+        <Card className="rounded-2xl shadow-md border h-full">
+          <CardHeader>
+            <CardTitle className="text-xl font-semibold text-center">
+              Choose Avatar
+            </CardTitle>
+          </CardHeader>
+
+          <CardContent className="flex-1 flex flex-col space-y-6">
+            <Form {...avatarForm}>
+              <form
+                onSubmit={avatarForm.handleSubmit(handleAvatar)}
+                className="space-y-6"
+              >
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 justify-items-center">
+                  {AVATAR_PRESETS.map((avatar) => (
+                    <img
+                      key={avatar}
+                      src={avatar}
+                      alt={avatar}
+                      onClick={() => avatarForm.setValue("avatar", avatar)}
+                      className={`w-30 h-30 rounded-full object-cover cursor-pointer transition-all hover:scale-105 shadow-md ${
+                        avatarForm.watch("avatar") === avatar
+                          ? "ring-3 ring-green-600 ring-offset-3 ring-offset-white"
+                          : "ring-0"
+                      }`}
+                    />
+                  ))}
+                  <input type="hidden" {...avatarForm.register("avatar")} />
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  <Button
+                    type="submit"
+                    disabled={avatarPending}
+                    className="w-full"
+                  >
+                    {avatarPending ? "Saving..." : "Save Avatar"}
+                  </Button>
+
+                  <Button
+                    type="submit"
+                    variant="outline"
+                    disabled={avatarPending || !avatarState.avatar}
+                    onClick={() => avatarForm.setValue("avatar", null)}
+                    className="w-full"
+                  >
+                    Remove Avatar
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
