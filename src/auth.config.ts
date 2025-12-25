@@ -56,22 +56,19 @@ export const authConfig = {
       }
       return session;
     },
-
-    async signIn({ user, account }) {
-      if (account?.provider === "google") {
-        // Google users must complete userName if still temporary
-        if (user.userName.startsWith("temp_")) {
-          return true; // NextAuth will redirect to /complete-profile
-        }
-      }
-      return true;
-    },
   },
   secret: process.env.AUTH_SECRET ?? "",
   providers: [
     Google({
       clientId: process.env.AUTH_GOOGLE_ID ?? "",
       clientSecret: process.env.AUTH_GOOGLE_SECRET ?? "",
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
       profile(profile) {
         return {
           id: profile.sub,
