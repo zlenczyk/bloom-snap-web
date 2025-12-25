@@ -7,9 +7,8 @@ type Props = {
 const Layout = ({ children }: Props) => {
   return (
     <div
-      className="flex justify-center items-center w-full bg-cover bg-center"
+      className="flex justify-center items-center w-full"
       style={{
-        backgroundImage: "url('/assets/main-background.jpeg')",
         minHeight: "calc(100dvh - var(--header-height))",
       }}
     >
