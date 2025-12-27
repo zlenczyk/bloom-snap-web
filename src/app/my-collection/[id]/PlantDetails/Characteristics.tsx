@@ -41,7 +41,7 @@ const Characteristics = ({ characteristics }: CharacteristicProps) => {
   return (
     <section
       id="plant-characteristics"
-      className="bg-white rounded-xl p-6 shadow-md border border-gray-100 col-span-full"
+      className="bg-white sm:rounded-xl p-6 shadow-md border border-gray-100 col-span-full"
     >
       <div className="flex items-center gap-3 mb-4">
         <div className="p-2 rounded-lg bg-green-100">

@@ -33,7 +33,7 @@ const Environment = ({ environment }: EnvironmentProps) => {
   return (
     <section
       id="environmental-conditions"
-      className="rounded-xl p-6 shadow-md col-span-full bg-white"
+      className="sm:rounded-xl p-6 shadow-md col-span-full bg-white"
     >
       <div className="flex items-center gap-3 mb-4">
         <div className="p-2 rounded-lg bg-cyan-100">
@@ -42,7 +42,7 @@ const Environment = ({ environment }: EnvironmentProps) => {
         <h2 className="text-xl font-semibold text-gray-900">Environment</h2>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
         <div className="flex flex-col items-center justify-center p-3 rounded-lg bg-gradient-to-br from-cyan-400/40 to-cyan-50 text-center shadow-md min-w-0 w-full">
           <Cloud className="h-5 w-5 text-cyan-800 mb-1" />
           <p className="text-sm text-gray-600">Humidity</p>
@@ -75,8 +75,8 @@ const Environment = ({ environment }: EnvironmentProps) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div className="flex flex-col gap-3 h-full">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="flex flex-col gap-4 h-full">
           <div className="flex-1 flex flex-col items-center justify-center p-3 rounded-lg bg-gradient-to-br from-blue-400/40 to-blue-50 text-center shadow-md min-w-0 w-full">
             <Compass className="h-5 w-5 text-blue-800 mb-1" />
             <p className="text-sm text-gray-600">Window</p>

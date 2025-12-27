@@ -1,4 +1,5 @@
 import CarouselArrows from "@/components/CarouselArrows";
+import { CameraOff } from "lucide-react";
 import Image from "next/image";
 import { useLayoutEffect, useRef, useState } from "react";
 import { PlantAbsolutePhotoUrl } from "../../types";
@@ -45,15 +46,18 @@ const Gallery = ({ photos }: GalleryProps) => {
 
   return (
     <section id="image-gallery" className="flex flex-col">
-      <div className="relative flex-1 aspect-square overflow-hidden rounded-xl shadow-md border border-gray-100 group bg-white">
-        {(!photos || photos.length === 0) && (
-          <div className="flex items-center justify-center h-full w-full text-gray-400 text-lg font-medium">
-            No photos found
+      {(!photos || photos.length === 0) && (
+        <div className="relative flex-1 py-6 lg:aspect-square overflow-hidden sm:rounded-xl shadow-md border border-gray-100 group bg-white">
+          <div className="flex flex-col items-center justify-center h-full w-full text-gray-400">
+            <CameraOff className="w-8 h-8 mb-2" />
+            <span className="text-lg font-medium">No photos found</span>
           </div>
-        )}
+        </div>
+      )}
 
-        {photos && photos.length > 0 && (
-          <>
+      {photos && photos.length > 0 && (
+        <>
+          <div className="relative flex-1 aspect-square overflow-hidden sm:rounded-xl shadow-md border border-gray-100 group bg-white">
             <div
               className="flex h-full w-full transition-transform duration-500 ease-in-out"
               style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
@@ -89,31 +93,31 @@ const Gallery = ({ photos }: GalleryProps) => {
                 {currentImageIndex + 1} / {photos.length}
               </div>
             )}
-          </>
-        )}
-      </div>
-      {photos && photos.length > 1 && (
-        <div ref={thumbnailsRef} className="flex gap-2 overflow-x-auto py-2">
-          {photos.map((photo, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentImageIndex(index)}
-              className={`relative w-30 h-30 flex-shrink-0 rounded-lg overflow-hidden border shadow-md
+          </div>
+          {photos.length > 1 && (
+            <div ref={thumbnailsRef} className="flex gap-2 overflow-x-auto p-2">
+              {photos.map((photo, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentImageIndex(index)}
+                  className={`relative w-20 h-20 sm:w-30 sm:h-30 flex-shrink-0 rounded-lg overflow-hidden border shadow-md
                 ${
                   index === currentImageIndex
-                    ? "border-emerald-600 border-2"
-                    : "border-none"
+                    ? "ring-3 ring-green-600 ring-offset-1 ring-offset-white"
+                    : "ring-0"
                 }`}
-            >
-              <Image
-                src={photo.absoluteUrl}
-                alt={`Thumbnail ${index + 1}`}
-                fill
-                className="object-cover"
-              />
-            </button>
-          ))}
-        </div>
+                >
+                  <Image
+                    src={photo.absoluteUrl}
+                    alt={`Thumbnail ${index + 1}`}
+                    fill
+                    className="object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </section>
   );
