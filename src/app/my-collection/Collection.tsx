@@ -128,7 +128,7 @@ export default function Collection({ plants, totalPages }: CollectionProps) {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search your plants..."
+            placeholder="Search by name or room location"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-10"
