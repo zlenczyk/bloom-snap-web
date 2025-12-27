@@ -10,7 +10,10 @@ import z from "zod";
 import uploadImageToStorage from "../../lib/actions/uploadImageToStorage";
 import { PlantFormSchema } from "../../lib/validations/plant";
 
-const addPlant = async (state: PlantFormState, formData: FormData) => {
+const addPlant = async (
+  state: PlantFormState,
+  formData: FormData
+): Promise<PlantFormState> => {
   const session = await auth();
 
   if (!session?.user?.id) {
@@ -48,9 +51,9 @@ const addPlant = async (state: PlantFormState, formData: FormData) => {
     ownedSince: ownedSinceStr ? new Date(ownedSinceStr.toString()) : null,
     lastRepotted: lastRepottedStr ? new Date(lastRepottedStr.toString()) : null,
     roomLocation: formData.get("roomLocation") || null,
-    isSafe: toOptionalBoolean(formData.get("isSafe")) || null,
+    isSafe: toOptionalBoolean(formData.get("isSafe")) ?? null,
     windowDirection: formData.get("windowDirection") || null,
-    isAirPurifying: toOptionalBoolean(formData.get("isAirPurifying")) || null,
+    isAirPurifying: toOptionalBoolean(formData.get("isAirPurifying")) ?? null,
     photos: formData.getAll("photos").slice(0, 5) ?? [],
   });
 
@@ -108,7 +111,7 @@ const addPlant = async (state: PlantFormState, formData: FormData) => {
   } catch (error) {
     console.error("Database error:", error);
     return {
-      message: "Failed to submit form. Please try again later.",
+      message: "Failed to add plant. Please try again later.",
       success: false,
     };
   }
@@ -165,14 +168,17 @@ const addPlant = async (state: PlantFormState, formData: FormData) => {
     console.log("Some photos failed to upload or save to DB:", failedPhotos);
 
     return {
-      message: `Plant added successfully, but some photo(s) failed to upload.`,
+      message: `${validData.commonName} added successfully, but some photo(s) failed to upload.`,
       success: true,
+      id: newPlantId,
     };
   }
 
-  revalidatePath("/my-collection");
-
-  redirect("/my-collection");
+  return {
+    message: `${validData.commonName} added successfully!`,
+    success: true,
+    id: newPlantId,
+  };
 };
 
 export default addPlant;

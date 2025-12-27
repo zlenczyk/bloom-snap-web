@@ -43,6 +43,7 @@ import { Image as ImageIcon, Leaf, Notebook, Sprout, Sun } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { startTransition, useActionState, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { PlantFormState } from "./types";
 
 const initialState: PlantFormState = {
@@ -192,6 +193,20 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
     startTransition(() => formAction(formData));
   };
 
+  useEffect(() => {
+    if (!state.message) {
+      return;
+    }
+
+    if (state.success) {
+      toast.success(state.message);
+
+      router.push(`/my-collection/${state.id}`);
+    } else {
+      toast.error(state?.message || "Something went wrong");
+    }
+  }, [state.message]);
+
   const handleCancelClick = () => {
     if (isDirty) {
       setShowCancelDialog(true);
@@ -222,9 +237,11 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
       style={{ maxHeight: "calc(100dvh - var(--header-height))" }}
     >
       <Card className="w-full flex flex-col h-full max-h-[100dvh] sm:max-h-[720px] shadow-none sm:shadow rounded-none sm:rounded-lg">
-        <CardHeader className="space-y-1 border-b p-4 sm:p-6">
+        <CardHeader className="space-y-1 border-b p-4 sm:p-6 shrink-0">
           <div className="flex items-center gap-2">
-            <Sprout className="h-5 w-5 sm:h-6 sm:w-6 text-emerald-600 dark:text-emerald-400" />
+            <span className="text-emerald-600 dark:text-emerald-400 text-2xl sm:text-3xl">
+              🪴
+            </span>
             <CardTitle className="text-xl sm:text-2xl">
               {isEditing ? "Edit Plant" : "Add New Plant"}
             </CardTitle>
@@ -239,9 +256,9 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col h-full"
+            className="flex flex-col flex-1"
           >
-            <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
+            <CardContent className="flex-1 flex flex-col p-0 overflow-hidden relative">
               <Tabs
                 value={activeTab}
                 onValueChange={setActiveTab}
@@ -297,7 +314,7 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
                 <TabsContent
                   value="photos"
                   forceMount
-                  className="data-[state=inactive]:hidden p-1 flex flex-col flex-1 overflow-auto"
+                  className="data-[state=inactive]:hidden p-1"
                 >
                   <PhotosTab
                     form={form}

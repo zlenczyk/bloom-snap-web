@@ -6,7 +6,6 @@ import db from "@/lib/db/db";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { toOptionalBoolean } from "@/lib/utils";
 import { PlantFormSchema } from "@/lib/validations/plant";
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import z from "zod";
 import uploadImageToStorage from "../../../../lib/actions/uploadImageToStorage";
@@ -52,9 +51,9 @@ export const updatePlant = async (
     ownedSince: ownedSinceStr ? new Date(ownedSinceStr.toString()) : null,
     lastRepotted: lastRepottedStr ? new Date(lastRepottedStr.toString()) : null,
     roomLocation: formData.get("roomLocation") || null,
-    isSafe: toOptionalBoolean(formData.get("isSafe")) || null,
+    isSafe: toOptionalBoolean(formData.get("isSafe")) ?? null,
     windowDirection: formData.get("windowDirection") || null,
-    isAirPurifying: toOptionalBoolean(formData.get("isAirPurifying")) || null,
+    isAirPurifying: toOptionalBoolean(formData.get("isAirPurifying")) ?? null,
     photos: formData.getAll("photos").slice(0, 5) ?? [],
   });
 
@@ -100,7 +99,10 @@ export const updatePlant = async (
     });
   } catch (err) {
     console.error("Database error:", err);
-    return { success: false, message: "Failed to update plant" };
+    return {
+      success: false,
+      message: "Failed to update plant. Please try again later.",
+    };
   }
 
   const existingPhotos = await db.plantPhoto.findMany({ where: { plantId } });
@@ -173,13 +175,17 @@ export const updatePlant = async (
     console.log("Some photos failed to upload or save to DB:", failedPhotos);
 
     return {
-      message: `Plant updated successfully, but some photo(s) failed to upload.`,
+      message: `${validData.commonName} updated successfully, but some photo(s) failed to upload.`,
       success: true,
+      id: plantId,
     };
   }
 
-  revalidatePath(`/my-collection/${plantId}`);
-  redirect(`/my-collection/${plantId}`);
+  return {
+    message: `${validData.commonName} updated successfully!`,
+    success: true,
+    id: plantId,
+  };
 };
 
 export default updatePlant;
