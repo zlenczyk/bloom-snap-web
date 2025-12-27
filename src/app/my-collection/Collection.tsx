@@ -116,7 +116,7 @@ export default function Collection({ plants, totalPages }: CollectionProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 mx-auto max-w-7xl">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-2xl font-bold">My Plant Collection</h2>
         <Button asChild>
