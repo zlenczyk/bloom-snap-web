@@ -21,7 +21,7 @@ export type CreateTimelineEventState = {
   errors?: Errors;
   event?: TimelineEvent;
   id?: string;
-  message?: string;
+  message: string;
   success: boolean;
 };
 
