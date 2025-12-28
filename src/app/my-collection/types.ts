@@ -6,9 +6,15 @@ export type SortBy =
   | "commonNameAsc"
   | "commonNameDesc"
   | "lastRepottedNewest"
-  | "lastRepottedOldest";
+  | "lastRepottedOldest"
+  | "ownedSinceNewest"
+  | "ownedSinceOldest";
 
-export type SortByField = "commonName" | "createdAt" | "lastRepotted";
+export type SortByField =
+  | "createdAt"
+  | "commonName"
+  | "lastRepotted"
+  | "ownedSince";
 
 export type SortOrder = "asc" | "desc";
 
