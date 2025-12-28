@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -116,22 +116,31 @@ export default function Collection({ plants, totalPages }: CollectionProps) {
   };
 
   return (
-    <div className="space-y-6 mx-auto max-w-7xl">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-2xl font-bold">My Plant Collection</h2>
+    <div className="mx-auto max-w-7xl space-y-4 sm:space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-bold sm:text-2xl">My Plant Collection</h2>
+
         <Button asChild>
-          <Link href="/add-plant">Add New Plant</Link>
+          <Link
+            href="/add-plant"
+            aria-label="Add plant"
+            className="flex items-center gap-2"
+          >
+            <Plus className="h-5 w-5" />
+            <span className="hidden sm:inline">Add New Plant</span>
+            <span className="inline sm:hidden">Add</span>
+          </Link>
         </Button>
       </div>
 
-      <div className="flex flex-col gap-4 sm:flex-row">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search by name or room location"
+            placeholder="Search by name or location"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-10"
+            className="h-9 pl-10"
           />
         </div>
 
@@ -144,13 +153,13 @@ export default function Collection({ plants, totalPages }: CollectionProps) {
       </div>
 
       {plants.length === 0 ? (
-        <p className="text-center text-muted-foreground py-10">
+        <p className="py-10 text-center text-muted-foreground">
           No plants found.
         </p>
       ) : (
         <>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {plants.map((plant) => (
+            {plants.map((plant: PlantWithAbsolutePhotoUrls) => (
               <PlantCard key={plant.id} plant={plant} />
             ))}
           </div>
