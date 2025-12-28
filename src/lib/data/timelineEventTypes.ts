@@ -144,6 +144,7 @@ export const eventIconsMap = {
   Cherry: Cherry,
 
   // 4. Routine care
+  Camera: Camera,
   Wrench: Wrench,
   Ruler: Ruler,
   Scaling: Scaling,
@@ -186,7 +187,6 @@ export const eventIconsMap = {
   Cat: Cat,
   Dog: Dog,
   PawPrint: PawPrint,
-  Camera: Camera,
 };
 
 export const predefinedEvents: Record<string, Event> = {
@@ -418,4 +418,7 @@ export const predefinedEvents: Record<string, Event> = {
 };
 
 export const eventIcons = Object.keys(eventIconsMap) as EventIcon[];
-export const eventIconsTuple = Object.keys(eventIconsMap) as [EventIcon, ...EventIcon[]];
+export const eventIconsTuple = Object.keys(eventIconsMap) as [
+  EventIcon,
+  ...EventIcon[]
+];
