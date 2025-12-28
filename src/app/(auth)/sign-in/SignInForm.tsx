@@ -98,7 +98,7 @@ const SignInForm = () => {
               className="w-full py-3 text-white mt-6"
               aria-disabled={isPending}
             >
-              {isPending ? "Submitting" : "Log In"}
+              {isPending ? "Submitting" : "Sign In"}
             </Button>
           </div>
         </form>
