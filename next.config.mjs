@@ -11,7 +11,7 @@ const nextConfig = {
     },
   },
   images: {
-    domains: ["bmzatgreusmpxojnbkra.supabase.co"],
+    domains: ["bmzatgreusmpxojnbkra.supabase.co", "lh3.googleusercontent.com"],
   },
 };
 
