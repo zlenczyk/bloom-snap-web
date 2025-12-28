@@ -34,8 +34,8 @@ export default async function Home({
   });
 
   return (
-    <main className="container py-8 px-6 mx-auto max-w-7xl">
+    <div className="layout-padding">
       <Collection plants={plants} totalPages={totalPages} />
-    </main>
+    </div>
   );
 }
