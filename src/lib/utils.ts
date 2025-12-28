@@ -23,14 +23,17 @@ export const toUTCDate = (date: Date | null | undefined): Date | null => {
   );
 };
 
-export const formatDateForLocalDisplay = (
-  date: Date | null | undefined
-): string | null => {
+export const formatDate = (
+  date: Date | string | null,
+  locale = navigator.language
+) => {
   if (!date) {
     return null;
   }
 
-  return date.toLocaleDateString();
+  return new Intl.DateTimeFormat(locale, {
+    dateStyle: "medium",
+  }).format(new Date(date));
 };
 
 export const toOptionalBooleanString = (

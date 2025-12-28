@@ -1,5 +1,6 @@
 "use client";
 
+import LocalDate from "@/components/LocalDate";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -34,10 +35,10 @@ import {
   timelineEventSchema,
 } from "@/lib/validations/timelineEvent";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { startTransition, useActionState, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { SetupMethodSwitch } from "./SetupMethodSwitch";
 
 const initialState: CreateTimelineEventState = {
@@ -93,10 +94,22 @@ export function EventForm({
   const { register, handleSubmit, reset } = form;
 
   useEffect(() => {
-    if (state?.success && state?.event) {
-      handleClose();
+    if (!state.message) {
+      return;
     }
-  }, [state?.success, state?.event]);
+
+    if (state.success && state.event) {
+      handleClose();
+
+      toast.success(
+        `Event ${existingEvent ? "updated" : "created"} successfully`
+      );
+
+      return;
+    }
+
+    toast.error(`Failed to ${existingEvent ? "update" : "create"} event`);
+  }, [state.success, state.event]);
 
   useEffect(() => {
     if (!existingEvent) return;
@@ -195,7 +208,7 @@ export function EventForm({
                         >
                           <CalendarIcon />
                           {field.value ? (
-                            format(field.value, "PPP")
+                            <LocalDate date={field.value} />
                           ) : (
                             <span>Pick a date</span>
                           )}

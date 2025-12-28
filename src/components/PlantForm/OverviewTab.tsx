@@ -30,12 +30,12 @@ import {
   cn,
   toOptionalBoolean,
   toOptionalBooleanString,
-  toUTCDate,
+  toUTCDate
 } from "@/lib/utils";
-import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 import { PlantForm } from "../../lib/validations/plant";
+import LocalDate from "../LocalDate";
 import { PlantFormState } from "./types";
 
 type OverviewTabProps = {
@@ -187,7 +187,7 @@ const OverviewTab = ({ form, state, endMonth }: OverviewTabProps) => {
                     >
                       <CalendarIcon />
                       {field.value ? (
-                        format(field.value, "PPP")
+                        <LocalDate date={field.value} />
                       ) : (
                         <span>Pick a date</span>
                       )}

@@ -31,10 +31,10 @@ import {
   WindowDirectionEnum,
 } from "@/lib/data/plantDetailsTypes";
 import { cn, toUTCDate } from "@/lib/utils";
-import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 import { PlantForm } from "../../lib/validations/plant";
+import LocalDate from "../LocalDate";
 import pottingComponents from "./potting";
 import { PlantFormState } from "./types";
 
@@ -112,7 +112,7 @@ const EnvironmentTab = ({ form, state, endMonth }: EnvironmentTabProps) => {
                   >
                     <CalendarIcon />
                     {field.value ? (
-                      format(field.value, "PPP")
+                      <LocalDate date={field.value} />
                     ) : (
                       <span>Pick a date</span>
                     )}
@@ -203,7 +203,7 @@ const EnvironmentTab = ({ form, state, endMonth }: EnvironmentTabProps) => {
                   aria-invalid={!!state?.errors?.[field.name]}
                 />
 
-                <SelectContent>
+                <SelectContent popover="auto">
                   <SelectItem value={LightExposureEnum.MorningSun}>
                     {LIGHT_EXPOSURE_OPTIONS[LightExposureEnum.MorningSun].label}
                   </SelectItem>
@@ -251,7 +251,7 @@ const EnvironmentTab = ({ form, state, endMonth }: EnvironmentTabProps) => {
                   aria-invalid={!!state?.errors?.[field.name]}
                 />
 
-                <SelectContent>
+                <SelectContent popover="auto">
                   <SelectItem
                     value={WindowDirectionEnum.NorthFacingNorthernHemisphere}
                   >
@@ -379,7 +379,7 @@ const EnvironmentTab = ({ form, state, endMonth }: EnvironmentTabProps) => {
                   aria-invalid={!!state?.errors?.[field.name]}
                 />
 
-                <SelectContent>
+                <SelectContent popover="auto">
                   <SelectItem value={GrowingMediumEnum.Soil}>
                     {GROWING_MEDIUM_OPTIONS[GrowingMediumEnum.Soil].label}
                   </SelectItem>

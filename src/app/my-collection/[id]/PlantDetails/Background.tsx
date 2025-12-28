@@ -1,5 +1,4 @@
 import { Separator } from "@/components/ui/separator";
-import { formatDateForLocalDisplay } from "@/lib/utils";
 import { BookOpenText, Calendar, MapPin, ShoppingBag } from "lucide-react";
 import ValueDisplay from "./ValueDisplay";
 
@@ -52,10 +51,7 @@ const Background = ({ background }: BackgroundProps) => {
           </label>
         </div>
         <div className="min-w-0 break-words">
-          <ValueDisplay
-            value={formatDateForLocalDisplay(background.ownedSince)}
-            variant="info"
-          />
+          <ValueDisplay value={background.ownedSince} variant="info" />
         </div>
 
         <div className="col-span-2 my-2">

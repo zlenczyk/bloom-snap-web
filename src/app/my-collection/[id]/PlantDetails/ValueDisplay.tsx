@@ -1,5 +1,7 @@
+import LocalDate from "@/components/LocalDate";
+
 interface ValueDisplayProps {
-  value: string | null;
+  value: string | Date | null;
   variant?: "info" | "stats" | "notes";
 }
 
@@ -26,7 +28,15 @@ const ValueDisplay = ({ value, variant = "info" }: ValueDisplayProps) => {
       break;
   }
 
-  return <p className={classes}>{value ?? "-"}</p>;
+  const isDate =
+    value instanceof Date ||
+    (typeof value === "string" && !isNaN(Date.parse(value)));
+
+  return (
+    <p className={classes}>
+      {value ? isDate ? <LocalDate date={value} /> : value : "-"}
+    </p>
+  );
 };
 
 export default ValueDisplay;

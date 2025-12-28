@@ -1,4 +1,3 @@
-import { formatDateForLocalDisplay } from "@/lib/utils";
 import { Calendar, Diameter, Ruler, TrendingUp } from "lucide-react";
 import ValueDisplay from "./ValueDisplay";
 
@@ -45,10 +44,7 @@ const Growth = ({ growth }: GrowthProps) => {
                 : "Last Repotted"
               : "Repot Date"}
           </p>
-          <ValueDisplay
-            value={formatDateForLocalDisplay(growth.lastRepotted)}
-            variant="stats"
-          />
+          <ValueDisplay value={growth.lastRepotted} variant="stats" />
         </div>
       </div>
     </section>
