@@ -9,6 +9,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Form,
   FormControl,
   FormField,
@@ -16,7 +24,6 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { startTransition, useActionState, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -31,18 +38,11 @@ import {
   updateUsername,
 } from "./actions";
 import { AVATAR_PRESETS, AvatarPreset, AvatarSchema } from "./types";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 
 interface EditProfileFormProps {
   createdAt: string;
   image: string | null;
+  isSocialLogin: boolean;
   plantsCount: number;
   userName: string;
 }
@@ -61,10 +61,11 @@ interface PasswordFormValues {
 type AvatarFormValues = z.infer<typeof AvatarSchema>;
 
 export default function EditProfileForm({
-  userName,
-  image,
   createdAt,
+  image,
+  isSocialLogin,
   plantsCount,
+  userName,
 }: EditProfileFormProps) {
   const [avatar, setAvatar] = useState<string | null>(image ?? null);
 
@@ -87,17 +88,14 @@ export default function EditProfileForm({
   const router = useRouter();
 
   const usernameForm = useForm<z.infer<typeof UserNameSchema>>({
-    resolver: zodResolver(UserNameSchema),
     defaultValues: { userName: userName },
   });
 
   const passwordForm = useForm<z.infer<typeof PasswordSchema>>({
-    resolver: zodResolver(PasswordSchema),
     defaultValues: { password: "", confirmPassword: "" },
   });
 
   const avatarForm = useForm<z.infer<typeof AvatarSchema>>({
-    resolver: zodResolver(AvatarSchema),
     defaultValues: { avatar: avatar as AvatarPreset },
   });
 
@@ -252,59 +250,63 @@ export default function EditProfileForm({
             </CardContent>
           </Card>
 
-          <Card className="rounded-2xl shadow-md border">
-            <CardHeader>
-              <CardTitle className="text-xl font-semibold">
-                Change Password
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Form {...passwordForm}>
-                <form
-                  onSubmit={passwordForm.handleSubmit(handlePassword)}
-                  className="space-y-4"
-                >
-                  <FormField
-                    control={passwordForm.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>New Password</FormLabel>
-                        <FormControl>
-                          <Input type="password" {...field} />
-                        </FormControl>
-                        <ErrorMessage
-                          messages={passwordState.errors?.password || []}
-                        />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={passwordForm.control}
-                    name="confirmPassword"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Confirm Password</FormLabel>
-                        <FormControl>
-                          <Input type="password" {...field} />
-                        </FormControl>
-                        <ErrorMessage
-                          messages={passwordState.errors?.confirmPassword || []}
-                        />
-                      </FormItem>
-                    )}
-                  />
-                  <Button
-                    type="submit"
-                    disabled={passwordPending}
-                    className="w-full"
+          {!isSocialLogin && (
+            <Card className="rounded-2xl shadow-md border">
+              <CardHeader>
+                <CardTitle className="text-xl font-semibold">
+                  Change Password
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Form {...passwordForm}>
+                  <form
+                    onSubmit={passwordForm.handleSubmit(handlePassword)}
+                    className="space-y-4"
                   >
-                    {passwordPending ? "Saving..." : "Change Password"}
-                  </Button>
-                </form>
-              </Form>
-            </CardContent>
-          </Card>
+                    <FormField
+                      control={passwordForm.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>New Password</FormLabel>
+                          <FormControl>
+                            <Input type="password" {...field} />
+                          </FormControl>
+                          <ErrorMessage
+                            messages={passwordState.errors?.password || []}
+                          />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={passwordForm.control}
+                      name="confirmPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Confirm Password</FormLabel>
+                          <FormControl>
+                            <Input type="password" {...field} />
+                          </FormControl>
+                          <ErrorMessage
+                            messages={
+                              passwordState.errors?.confirmPassword || []
+                            }
+                          />
+                        </FormItem>
+                      )}
+                    />
+                    <Button
+                      type="submit"
+                      disabled={passwordPending}
+                      className="w-full"
+                    >
+                      {passwordPending ? "Saving..." : "Change Password"}
+                    </Button>
+                  </form>
+                </Form>
+              </CardContent>
+            </Card>
+          )}
 
           <Card className="rounded-2xl shadow-md border border-red-300">
             <CardHeader>
