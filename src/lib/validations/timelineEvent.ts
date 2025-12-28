@@ -1,19 +1,19 @@
 import { z } from "zod";
-import { eventIconsTuple, EventColorsEnum } from "../data/timelineEventTypes";
+import {
+  eventIconsTuple,
+  EventColorsEnum,
+} from "../../app/my-collection/[id]/Timeline/types";
 
 export const timelineEventSchema = z.object({
   title: z
     .string()
     .min(1, "Title is required")
-    .max(100, "Title must be less than 100 characters"),
+    .max(200, "Title must be less than 200 characters"),
   description: z
     .string()
-    .max(250, "Description must be less than 250 characters")
+    .max(500, "Description must be less than 500 characters")
     .optional(),
-  date: z
-    .date()
-    .min(new Date("1900-01-01"), { message: "Date must be after 1900." })
-    .max(new Date(), { message: "Date cannot be in the future." }),
+  date: z.date(),
   icon: z.enum(eventIconsTuple, {
     error: () => ({ message: "Icon is required" }),
   }),
@@ -23,7 +23,9 @@ export const timelineEventSchema = z.object({
 });
 
 export const timelineEventIdSchema = z.object({
-  id: z.string().min(1, "Timeline Event ID is required"),
+  id: z.cuid({
+    message: "Timeline Event ID must be a valid CUID",
+  }),
 });
 
 export type TimelineEventFormData = z.infer<typeof timelineEventSchema>;
