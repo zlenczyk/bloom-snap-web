@@ -188,10 +188,10 @@ export default function EditProfileForm({
           <img
             src={avatar}
             alt="avatar"
-            className="w-40 h-40 rounded-full object-cover"
+            className="w-24 h-24 sm:w-40 sm:h-40 rounded-full object-cover"
           />
         ) : (
-          <div className="w-40 h-40 rounded-full bg-green-500 flex items-center justify-center text-white text-7xl font-bold select-none">
+          <div className="w-24 h-24 sm:w-40 sm:h-40 rounded-full bg-green-500 flex items-center justify-center text-white text-4xl sm:text-7xl font-bold select-none">
             {userName.charAt(0).toUpperCase()}
           </div>
         )}
