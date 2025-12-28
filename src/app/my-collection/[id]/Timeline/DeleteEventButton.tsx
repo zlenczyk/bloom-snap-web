@@ -34,7 +34,7 @@ export function DeleteEventButton({
       type="submit"
       variant="ghost"
       size="sm"
-      className="h-8 w-8 p-0 hover:bg-red-50 hover:text-red-600"
+      className="h-8 w-8 p-0 hover:bg-red-50 hover:text-red-600 ml-1"
       disabled={isPending}
       onClick={handleDelete}
     >
