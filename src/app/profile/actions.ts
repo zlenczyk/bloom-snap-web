@@ -1,7 +1,7 @@
 "use server";
 
 import { auth, signOut } from "@/auth";
-import db from "@/lib/db/db";
+import db from "@/lib/db";
 import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";

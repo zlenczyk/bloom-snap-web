@@ -29,7 +29,7 @@ import {
   LightExposureEnum,
   WINDOW_DIRECTION_OPTIONS,
   WindowDirectionEnum,
-} from "@/lib/data/plantDetailsTypes";
+} from "@/app/my-collection/[id]/PlantDetails/types";
 import { cn, toUTCDate } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";

@@ -1,4 +1,4 @@
-import { TimelineEvent } from "@/lib/db/schema";
+import { TimelineEvent } from "@/app/my-collection/[id]/Timeline/types";
 import { IconRenderer } from "./IconRenderer";
 
 interface TimelineIconProps {

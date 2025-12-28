@@ -2,9 +2,8 @@
 
 import { auth } from "@/auth";
 import { PlantFormState } from "@/components/PlantForm/types";
-import db from "@/lib/db/db";
+import db from "@/lib/db";
 import { toOptionalBoolean } from "@/lib/utils";
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import z from "zod";
 import uploadImageToStorage from "../../lib/actions/uploadImageToStorage";

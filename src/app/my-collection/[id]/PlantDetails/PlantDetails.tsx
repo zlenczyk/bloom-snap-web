@@ -25,12 +25,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import deletePlant from "@/lib/actions/deletePlant";
 import { Edit, MoreVertical, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { PlantWithAbsolutePhotoUrls } from "../../types";
+import deletePlant from "../actions/deletePlant";
 import Background from "./Background";
 import CareNotes from "./CareNotes";
 import Characteristics from "./Characteristics";

@@ -7,7 +7,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { NotesFieldsEnum } from "@/lib/data/plantDetailsTypes";
+import { NotesFieldsEnum } from "@/app/my-collection/[id]/PlantDetails/types";
 import { UseFormReturn } from "react-hook-form";
 import { PlantForm } from "../../lib/validations/plant";
 import { PlantFormState } from "./types";

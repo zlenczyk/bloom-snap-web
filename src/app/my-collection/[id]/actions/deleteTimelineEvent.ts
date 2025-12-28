@@ -1,11 +1,11 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import z from "zod";
-import db from "../db/db";
-import { timelineEventIdSchema } from "../validations/timelineEvent";
 import { auth } from "@/auth";
+import db from "@/lib/db";
+import { timelineEventIdSchema } from "@/lib/validations/timelineEvent";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import z from "zod";
 
 export type DeleteTimelineEventState = {
   success?: boolean;

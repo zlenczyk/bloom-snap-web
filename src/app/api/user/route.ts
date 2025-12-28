@@ -1,4 +1,4 @@
-import db from "@/lib/db/db";
+import db from "@/lib/db";
 import { hash } from "bcryptjs";
 import { z } from "zod";
 

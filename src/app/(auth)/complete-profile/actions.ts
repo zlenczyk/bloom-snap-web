@@ -1,7 +1,7 @@
 "use server";
 
 import { auth } from "@/auth";
-import db from "@/lib/db/db";
+import db from "@/lib/db";
 import { redirect } from "next/navigation";
 import z from "zod";
 import { UserNameSchema } from "../sign-up/schema";

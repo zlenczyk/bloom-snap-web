@@ -2,7 +2,7 @@ import {
   EventIcon,
   eventIconsMap,
   predefinedEvents,
-} from "@/lib/data/timelineEventTypes";
+} from "@/app/my-collection/[id]/Timeline/types";
 
 interface IconRendererProps {
   className?: string;

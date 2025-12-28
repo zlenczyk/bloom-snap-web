@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { TimelineEvent } from "@/lib/db/schema";
+import { TimelineEvent } from "@/app/my-collection/[id]/Timeline/types";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import EventCard from "./EventCard";

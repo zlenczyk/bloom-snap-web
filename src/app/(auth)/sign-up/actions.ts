@@ -1,6 +1,6 @@
 "use server";
 
-import db from "@/lib/db/db";
+import db from "@/lib/db";
 import { hash } from "bcryptjs";
 import { redirect } from "next/navigation";
 import z from "zod";

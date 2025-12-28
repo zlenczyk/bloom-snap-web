@@ -2,7 +2,7 @@ import { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import { z } from "zod";
-import db from "./lib/db/db";
+import db from "./lib/db";
 import { compare } from "bcryptjs";
 
 const credentialsSchema = z.object({

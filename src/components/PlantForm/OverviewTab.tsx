@@ -25,12 +25,12 @@ import {
   isAirPurifyingEnum,
   isSafeEnum,
   OverviewFieldsEnum,
-} from "@/lib/data/plantDetailsTypes";
+} from "@/app/my-collection/[id]/PlantDetails/types";
 import {
   cn,
   toOptionalBoolean,
   toOptionalBooleanString,
-  toUTCDate
+  toUTCDate,
 } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";

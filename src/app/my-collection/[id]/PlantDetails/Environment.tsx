@@ -5,7 +5,7 @@ import {
   LightExposureEnum,
   WINDOW_DIRECTION_OPTIONS,
   WindowDirectionEnum,
-} from "@/lib/data/plantDetailsTypes";
+} from "@/app/my-collection/[id]/PlantDetails/types";
 import {
   Cloud,
   Compass,

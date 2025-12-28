@@ -1,7 +1,18 @@
 "use client";
 
 import addPlant from "@/app/add-plant/actions";
-import updatePlant from "@/app/my-collection/[id]/edit-plant/actions";
+import updatePlant from "@/app/my-collection/[id]/actions/updatePlant";
+import {
+  EnvironmentFieldsEnum,
+  GrowingMediumEnum,
+  LightExposureEnum,
+  NotesFieldsEnum,
+  OverviewFieldsEnum,
+  PhotosFieldsEnum,
+  TabEnum,
+  tabFieldInputs,
+  WindowDirectionEnum,
+} from "@/app/my-collection/[id]/PlantDetails/types";
 import { PlantWithAbsolutePhotoUrls } from "@/app/my-collection/types";
 import CareNotesTab from "@/components/PlantForm/CareNotesTab";
 import EnvironmentTab from "@/components/PlantForm/EnvironmentTab";
@@ -26,17 +37,6 @@ import {
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  EnvironmentFieldsEnum,
-  GrowingMediumEnum,
-  LightExposureEnum,
-  NotesFieldsEnum,
-  OverviewFieldsEnum,
-  PhotosFieldsEnum,
-  TabEnum,
-  tabFieldInputs,
-  WindowDirectionEnum,
-} from "@/lib/data/plantDetailsTypes";
 import { cn, getCurrentIsoDate } from "@/lib/utils";
 import { PlantForm } from "@/lib/validations/plant";
 import { Image as ImageIcon, Leaf, Notebook, Sprout, Sun } from "lucide-react";

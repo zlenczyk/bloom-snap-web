@@ -1,11 +1,10 @@
 "use server";
 
 import { auth } from "@/auth";
-import { revalidatePath } from "next/cache";
+import db from "@/lib/db";
+import { PlantIdSchema } from "@/lib/validations/plant";
 import { redirect } from "next/navigation";
 import z from "zod";
-import db from "../db/db";
-import { PlantIdSchema } from "../validations/plant";
 
 export type DeletePlantState = {
   success?: boolean;

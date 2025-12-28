@@ -4,10 +4,9 @@ import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import z from "zod";
-import { EventColorsEnum, EventIcon } from "../data/timelineEventTypes";
-import db from "../db/db";
-import { TimelineEvent } from "../db/schema";
-import { timelineEventSchema } from "../validations/timelineEvent";
+import { EventColorsEnum, EventIcon, TimelineEvent } from "../Timeline/types";
+import db from "../../../../lib/db";
+import { timelineEventSchema } from "../../../../lib/validations/timelineEvent";
 
 type Errors = {
   color?: string[];
@@ -20,7 +19,7 @@ type Errors = {
 export type UpdateTimelineEventState = {
   errors?: Errors;
   event?: TimelineEvent;
-  message?: string;
+  message: string;
   success: boolean;
 };
 

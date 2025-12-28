@@ -3,11 +3,10 @@
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { EventColorsEnum, EventIcon } from "../data/timelineEventTypes";
-import db from "../db/db";
-import { TimelineEvent } from "../db/schema";
-import { timelineEventSchema } from "../validations/timelineEvent";
 import z from "zod";
+import db from "../../../../lib/db";
+import { timelineEventSchema } from "../../../../lib/validations/timelineEvent";
+import { EventColorsEnum, EventIcon, TimelineEvent } from "../Timeline/types";
 
 type Errors = {
   color?: string[];

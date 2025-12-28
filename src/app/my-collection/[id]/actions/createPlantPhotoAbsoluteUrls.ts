@@ -1,7 +1,7 @@
 "use server";
 
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
-import { PlantWithAbsolutePhotoUrls, PlantWithPhotos } from "../types";
+import { PlantWithAbsolutePhotoUrls, PlantWithPhotos } from "../../types";
 
 const createPlantPhotoAbsoluteUrls = async (
   plant: PlantWithPhotos

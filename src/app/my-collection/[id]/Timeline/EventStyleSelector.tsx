@@ -5,7 +5,7 @@ import {
   eventColors,
   EventIcon,
   eventIcons,
-} from "@/lib/data/timelineEventTypes";
+} from "@/app/my-collection/[id]/Timeline/types";
 import { IconRenderer } from "./IconRenderer";
 
 interface EventStyleSelectorProps {

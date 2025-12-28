@@ -1,8 +1,13 @@
+"use server";
+
 import { auth } from "@/auth";
-import { EventColor, EventIcon } from "@/lib/data/timelineEventTypes";
+import {
+  EventColor,
+  EventIcon,
+  TimelineEvent,
+} from "@/app/my-collection/[id]/Timeline/types";
 import { redirect } from "next/navigation";
-import db from "../db";
-import { TimelineEvent } from "../schema";
+import db from "../../../../lib/db";
 
 export async function getTimelineEvents(
   plantId: string

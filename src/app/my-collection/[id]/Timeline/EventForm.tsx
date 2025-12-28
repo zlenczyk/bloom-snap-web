@@ -25,10 +25,12 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import createTimelineEvent, {
   type CreateTimelineEventState,
-} from "@/lib/actions/createTimelineEvent";
-import updateTimelineEvent from "@/lib/actions/updateTimelineEvent";
-import { predefinedEvents } from "@/lib/data/timelineEventTypes";
-import { type TimelineEvent } from "@/lib/db/schema";
+} from "@/app/my-collection/[id]/actions/createTimelineEvent";
+import updateTimelineEvent from "@/app/my-collection/[id]/actions/updateTimelineEvent";
+import {
+  predefinedEvents,
+  TimelineEvent,
+} from "@/app/my-collection/[id]/Timeline/types";
 import { cn, getCurrentIsoDate } from "@/lib/utils";
 import {
   type TimelineEventFormData,

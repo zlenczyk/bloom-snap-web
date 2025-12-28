@@ -1,9 +1,9 @@
 "use server";
 
 import { auth } from "@/auth";
-import db from "@/lib/db/db";
+import db from "@/lib/db";
 import { redirect } from "next/navigation";
-import { PlantWithAbsolutePhotoUrls } from "../types";
+import { PlantWithAbsolutePhotoUrls } from "../../types";
 import createPlantPhotoAbsoluteUrls from "./createPlantPhotoAbsoluteUrls";
 
 export const getPlantDetails = async (

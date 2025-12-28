@@ -422,3 +422,14 @@ export const eventIconsTuple = Object.keys(eventIconsMap) as [
   EventIcon,
   ...EventIcon[]
 ];
+
+export interface TimelineEvent {
+  id: string;
+  title: string;
+  description: string | null;
+  date: Date;
+  icon: EventIcon;
+  color: EventColor;
+  createdAt: Date;
+  updatedAt: Date;
+}

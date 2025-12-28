@@ -1,10 +1,10 @@
 "use server";
 
 import { auth } from "@/auth";
-import db from "@/lib/db/db";
+import db from "@/lib/db";
 import { Prisma } from "@prisma/client";
 import { redirect } from "next/navigation";
-import createPlantPhotoAbsoluteUrls from "./[id]/createPlantPhotoAbsoluteUrls";
+import createPlantPhotoAbsoluteUrls from "./[id]/actions/createPlantPhotoAbsoluteUrls";
 import { SortBy, SortByField, SortOrder } from "./types";
 
 const sortMap: Record<

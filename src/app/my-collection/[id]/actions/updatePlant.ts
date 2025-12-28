@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth";
 import { PlantFormState } from "@/components/PlantForm/types";
-import db from "@/lib/db/db";
+import db from "@/lib/db";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { toOptionalBoolean } from "@/lib/utils";
 import { PlantFormSchema } from "@/lib/validations/plant";

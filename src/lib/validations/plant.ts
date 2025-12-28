@@ -2,7 +2,7 @@ import {
   GrowingMediumEnum,
   LightExposureEnum,
   WindowDirectionEnum,
-} from "@/lib/data/plantDetailsTypes";
+} from "@/app/my-collection/[id]/PlantDetails/types";
 import z from "zod";
 
 export const PlantFormSchema = z.object({

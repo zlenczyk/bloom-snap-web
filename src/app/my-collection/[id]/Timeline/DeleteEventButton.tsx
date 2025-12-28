@@ -1,9 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import deleteTimelineEvent from "@/lib/actions/deleteTimelineEvent";
 import { Trash2 as DeleteIcon } from "lucide-react";
 import { startTransition, useActionState } from "react";
+import deleteTimelineEvent from "../actions/deleteTimelineEvent";
 
 interface DeleteEventButtonProps {
   plantId: string;
