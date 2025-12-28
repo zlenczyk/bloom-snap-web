@@ -30,4 +30,5 @@ export type PlantFormState = {
   message?: string;
   success?: boolean;
   errors?: Errors;
+  id?: string;
 };
