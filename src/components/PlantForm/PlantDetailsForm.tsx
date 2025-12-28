@@ -337,7 +337,7 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
                 type="submit"
                 className="bg-emerald-600 hover:bg-emerald-700 text-white"
               >
-                <Leaf className="mr-2 h-4 w-4" />
+                <Leaf className="h-4 w-4" />
                 {isPending
                   ? isEditing
                     ? "Saving..."
