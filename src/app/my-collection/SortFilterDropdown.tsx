@@ -44,7 +44,7 @@ const SortFilterDropdown = ({
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-60">
+      <DropdownMenuContent className="w-60" align="end">
         <DropdownMenuLabel>Sort</DropdownMenuLabel>
         <DropdownMenuItem
           className={sortBy === "createdAtNewest" ? "bg-muted" : ""}
