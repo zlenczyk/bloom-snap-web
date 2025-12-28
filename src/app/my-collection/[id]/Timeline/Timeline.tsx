@@ -43,7 +43,7 @@ export default function Timeline({ events, plantId }: TimelineProps) {
 
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="flex items-center justify-between mb-4 px-6 sm:px-0 gap-4">
+      <div className="flex items-center justify-between mb-4 px-4 sm:px-0 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-foreground">
             Plant Care Timeline
