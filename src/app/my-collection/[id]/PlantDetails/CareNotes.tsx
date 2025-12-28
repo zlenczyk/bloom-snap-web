@@ -23,7 +23,7 @@ const CareNotes = ({ careNotes }: CareNotesProps) => {
   return (
     <section
       id="care-notes"
-      className="bg-white sm:rounded-xl p-6 shadow-md border border-gray-100 col-span-full"
+      className="bg-white sm:rounded-xl p-4 sm:p-6 shadow-md border border-gray-100 col-span-full"
     >
       <div className="flex items-center gap-3 mb-4">
         <div className="p-2 rounded-lg bg-amber-100">

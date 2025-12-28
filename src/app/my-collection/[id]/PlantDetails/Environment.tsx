@@ -33,7 +33,7 @@ const Environment = ({ environment }: EnvironmentProps) => {
   return (
     <section
       id="environmental-conditions"
-      className="sm:rounded-xl p-6 shadow-md col-span-full bg-white"
+      className="sm:rounded-xl p-4 sm:p-6 shadow-md col-span-full bg-white"
     >
       <div className="flex items-center gap-3 mb-4">
         <div className="p-2 rounded-lg bg-cyan-100">
