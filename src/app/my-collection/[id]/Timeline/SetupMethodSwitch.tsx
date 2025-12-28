@@ -150,7 +150,7 @@ export const SetupMethodSwitch = ({
         <div className="flex items-center gap-4 mt-4">
           <Label>Live Preview:</Label>
           <div
-            className={`w-10 h-10 rounded-full ${watchedValues.color} flex items-center justify-center shadow-md`}
+            className={`w-10 h-10 rounded-full ${watchedValues.color} flex items-center justify-center shrink-0 shadow-md`}
           >
             <IconRenderer
               icon={watchedValues.icon}
