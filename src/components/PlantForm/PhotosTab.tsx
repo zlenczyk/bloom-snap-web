@@ -77,7 +77,7 @@ const PhotosTab = ({ form, state, existingPlant }: PhotosTabProps) => {
   const isMaxReached = photos.length >= MAX_IMAGES;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col shrink-0 gap-6">
       <FormField
         control={control}
         name="photos"
@@ -116,7 +116,7 @@ const PhotosTab = ({ form, state, existingPlant }: PhotosTabProps) => {
       />
 
       {previewUrls.length > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        <div className="grid auto-rows-max grid-cols-2 sm:grid-cols-3 gap-4">
           {previewUrls.map((url, idx) => {
             const item = photos[idx];
 
