@@ -65,8 +65,8 @@ export async function changePassword(
 
   try {
     const validationResult = PasswordSchema.safeParse({
-      password: formData.get("password") || null,
-      confirmPassword: formData.get("confirmPassword") || null,
+      password: formData.get("password"),
+      confirmPassword: formData.get("confirmPassword"),
     });
 
     if (!validationResult.success) {
