@@ -5,12 +5,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const getCurrentIsoDate = (date = new Date()): string => {
-  const isoDateTime = date.toISOString();
-  const segments = isoDateTime.split("T");
-  const [isoDate] = segments;
+export const getLocalDateString = (date = new Date()): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
 
-  return isoDate;
+  return `${year}-${month}-${day}`;
 };
 
 export const toUTCDate = (date: Date | null | undefined): Date | null => {

@@ -31,7 +31,7 @@ import {
   predefinedEvents,
   TimelineEvent,
 } from "@/app/my-collection/[id]/Timeline/types";
-import { cn, getCurrentIsoDate } from "@/lib/utils";
+import { cn, getLocalDateString } from "@/lib/utils";
 import {
   type TimelineEventFormData,
   timelineEventSchema,
@@ -130,7 +130,9 @@ export function EventForm({
 
     Object.entries(data).forEach(([key, value]) => {
       if (value instanceof Date) {
-        formData.append(key, getCurrentIsoDate(value));
+        const formattedDate = getLocalDateString(value);
+
+        formData.append(key, formattedDate);
 
         return;
       }

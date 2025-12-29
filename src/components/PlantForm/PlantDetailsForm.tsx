@@ -37,7 +37,7 @@ import {
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { cn, getCurrentIsoDate } from "@/lib/utils";
+import { cn, getLocalDateString } from "@/lib/utils";
 import { PlantForm } from "@/lib/validations/plant";
 import { Image as ImageIcon, Leaf, Notebook, Sprout, Sun } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -174,7 +174,7 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
 
     Object.entries(data).forEach(([key, value]) => {
       if (value instanceof Date) {
-        formData.append(key, getCurrentIsoDate(value));
+        formData.append(key, getLocalDateString(value));
 
         return;
       }
