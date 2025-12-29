@@ -4,12 +4,10 @@ import { auth } from "@/auth";
 import db from "@/lib/db";
 import { PlantIdSchema } from "@/lib/validations/plant";
 import { redirect } from "next/navigation";
-import z from "zod";
 
 export type DeletePlantState = {
-  success?: boolean;
-  error?: string;
-  message?: string;
+  success: boolean;
+  message: string;
 };
 
 const deletePlant = async (plantId: string): Promise<DeletePlantState> => {
@@ -25,11 +23,6 @@ const deletePlant = async (plantId: string): Promise<DeletePlantState> => {
     });
 
     if (!validationResult.success) {
-      console.log(
-        "zod flattened errors with field errors:",
-        z.flattenError(validationResult.error).fieldErrors
-      );
-
       return {
         message: "Input validation failed. Plant ID is required.",
         success: false,
@@ -46,7 +39,7 @@ const deletePlant = async (plantId: string): Promise<DeletePlantState> => {
     return { success: true, message: "Plant deleted successfully" };
   } catch (error) {
     console.error("Delete plant error:", error);
-    return { success: false, error: "Failed to delete plant" };
+    return { success: false, message: "Failed to delete plant" };
   }
 };
 
