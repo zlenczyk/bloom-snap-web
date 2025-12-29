@@ -19,7 +19,7 @@ const GrowingMedium = ({ mediumType, items = [] }: GrowingMediumProps) => {
         {items.map((item, idx) => (
           <span
             key={idx}
-            className="px-3 py-1 text-xs font-medium rounded-full border border-amber-700/30 shadow-sm text-amber-800/80 bg-gradient-to-br from-amber-700/10 to-teal-300/20"
+            className="px-3 py-1 text-xs font-medium rounded-full border border-amber-700/30 shadow-sm text-amber-800/80 bg-gradient-to-br from-amber-700/10 to-teal-300/20 whitespace-normal break-words"
           >
             {item}
           </span>
