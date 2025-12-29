@@ -64,11 +64,6 @@ const createTimelineEvent = async (
     });
 
     if (!validationResult.success) {
-      console.log(
-        "zod flattened errors with field errors:",
-        z.flattenError(validationResult.error).fieldErrors
-      );
-
       return {
         errors: z.flattenError(validationResult.error).fieldErrors,
         message: "Input validation failed. Please check your entries.",
