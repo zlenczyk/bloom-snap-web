@@ -18,7 +18,7 @@ const Tags = ({ selectedItems, toggleOption }: TagsProps) => {
           <Badge
             key={`${item}-${index}`}
             variant="secondary"
-            className="mr-1 mb-1 [&>svg]:pointer-events-auto"
+            className="mr-1 mb-1 [&>svg]:pointer-events-auto whitespace-normal break-words"
           >
             {item}
             <ClearIcon
