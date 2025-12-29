@@ -16,6 +16,8 @@ pnpm dev
 bun dev
 ```
 
+
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 Technologies links:
@@ -35,6 +37,9 @@ Issues:
 - https://github.com/radix-ui/primitives/issues/1569
 7. problem with redirecting hell - proper handling of middleware logic and proper order of checks, trying to protect routes for specific cases, problem with complete-profile page
 8. We initially tried to limit the user’s ability to select certain dates or exceed the maximum length of form fields. As the application evolved, I realized that—even if it feels less intuitive—we should not make decisions on behalf of the user. We should give them as much freedom as possible, without assuming their preferences. For example, just because we expect them to add a plant they already own (a past date) doesn’t mean the user won’t want to enter a future date (e.g., they might be picking up the plant from a store next week). We should avoid assumptions and limit the user as little as possible. Allowing full flexibility with dates also makes the code and validation logic simpler and more reliable, since we don’t need to handle multiple edge cases or artificially restrict user input. The input fields in the database have also been extended to allow a much larger number of characters. However, they still have reasonable limits to ensure the database remains secure and stable.
+
+Small improvements to do (hard to do alone as developer):
+1. Tabs names in plant form could have been capitalized
 
 Idelogy of clean code:
 - how lond should be data fields? https://stackoverflow.com/questions/20958/list-of-standard-lengths-for-database-fields
