@@ -18,7 +18,16 @@ export default async function ProfilePage() {
     },
   });
 
-  if (!user) redirect("/sign-in");
+  if (!user || !user.userName) redirect("/sign-in");
+
+  const account = await db.account.findFirst({
+    where: {
+      userId: session.user.id,
+      provider: "google",
+    },
+  });
+
+  const isSocialLogin = Boolean(account);
 
   return (
     <div className="max-w-7xl mx-auto w-full layout-padding">
@@ -27,6 +36,7 @@ export default async function ProfilePage() {
         image={user.image}
         createdAt={user.createdAt.toISOString()}
         plantsCount={user.plants.length}
+        isSocialLogin={isSocialLogin}
       />
     </div>
   );
