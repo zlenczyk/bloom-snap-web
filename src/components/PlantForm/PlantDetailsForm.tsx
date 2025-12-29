@@ -175,14 +175,20 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
     Object.entries(data).forEach(([key, value]) => {
       if (value instanceof Date) {
         formData.append(key, getCurrentIsoDate(value));
+
+        return;
       }
 
       if (value === true || value === false) {
         formData.append(key, value ? "true" : "false");
+
+        return;
       }
 
       if (Array.isArray(value)) {
         value.forEach((v) => formData.append(key, v));
+
+        return;
       }
 
       if (value) {

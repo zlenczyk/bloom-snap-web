@@ -411,8 +411,8 @@ const EnvironmentTab = ({ form, state, endMonth }: EnvironmentTabProps) => {
             <FormControl>
               <MultiSelectTagInput
                 options={pottingComponents}
-                selectedItems={field.value ?? []}
-                onChange={field.onChange}
+                selectedItems={Array.isArray(field.value) ? field.value : []}
+                onChange={(items) => field.onChange(items)}
               />
             </FormControl>
           </FormItem>
