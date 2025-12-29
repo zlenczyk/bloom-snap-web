@@ -7,14 +7,20 @@ export const UserNameSchema = z.object({
     .max(255, "Username too long. Use up to 255 characters."),
 });
 
-export const SignUpFormSchema = z
+export const PasswordSchema = z
   .object({
-    ...UserNameSchema.shape,
-    email: z.email("Invalid email").min(1, { message: "Email is required" }),
     password: z.string().min(8, "Password must have at least 8 characters"),
-    confirmPassword: z.string().min(8, "Password confirmation is required"),
+    confirmPassword: z
+      .string()
+      .min(8, "Password must have at least 8 characters"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ["confirmPassword"],
     message: "Passwords do not match",
   });
+
+export const SignUpFormSchema = z.object({
+  ...UserNameSchema.shape,
+  email: z.email("Invalid email").min(1, { message: "Email is required" }),
+  ...PasswordSchema.shape,
+});
