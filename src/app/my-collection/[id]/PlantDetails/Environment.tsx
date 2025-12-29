@@ -77,7 +77,7 @@ const Environment = ({ environment }: EnvironmentProps) => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="flex flex-col gap-4 h-full">
-          <div className="flex-1 flex flex-col items-center justify-center p-3 rounded-lg bg-gradient-to-br from-blue-400/40 to-blue-50 text-center shadow-md min-w-0 w-full">
+          <div className="flex flex-col items-center justify-center p-3 rounded-lg bg-gradient-to-br from-blue-400/40 to-blue-50 text-center shadow-md min-w-0 w-full">
             <Compass className="h-5 w-5 text-blue-800 mb-1" />
             <p className="text-sm text-gray-600">Window</p>
             <div className="w-full">
@@ -93,7 +93,7 @@ const Environment = ({ environment }: EnvironmentProps) => {
             </div>
           </div>
 
-          <div className="flex-1 flex flex-col items-center justify-center p-3 rounded-lg bg-gradient-to-br from-orange-600/20 to-orange-50 text-center shadow-md min-w-0 w-full">
+          <div className="flex flex-col items-center justify-center p-3 rounded-lg bg-gradient-to-br from-orange-600/20 to-orange-50 text-center shadow-md min-w-0 w-full">
             <MapPin className="h-5 w-5 text-orange-800 mb-1" />
             <p className="text-sm text-gray-600">Location</p>
             <div className="w-full">
