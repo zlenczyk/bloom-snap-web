@@ -1,11 +1,18 @@
 "use client";
 
 import CarouselArrows from "@/components/CarouselArrows";
+import LocalDate from "@/components/LocalDate";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { Info, MapPin, PawPrint, ShoppingCart, Wind } from "lucide-react";
+import {
+  Info,
+  MapPin,
+  PawPrint,
+  ShoppingCart,
+  Shovel,
+  Wind,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -15,22 +22,14 @@ interface PlantCardProps {
   plant: PlantWithAbsolutePhotoUrls;
 }
 
-const formatDate = (date: string | Date) => {
-  return format(new Date(date), "MMM d, yyyy");
-};
-
 const PlantCard = ({ plant }: PlantCardProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  const formattedOwnedSince = plant.ownedSince
-    ? formatDate(plant.ownedSince)
-    : null;
 
   const photos =
     plant.photos?.map((photo) => ({ url: photo.absoluteUrl })) ?? [];
 
   return (
-    <Card className="group relative h-[450px] overflow-hidden transition-all hover:shadow-lg">
+    <Card className="group relative h-88 sm:h-112 overflow-hidden transition-all hover:shadow-lg">
       <div className="relative h-full w-full overflow-hidden">
         <div className="relative h-full w-full overflow-hidden">
           <div
@@ -125,78 +124,108 @@ const PlantCard = ({ plant }: PlantCardProps) => {
           )}
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 z-10 p-4">
-          <h3 className="text-xl font-bold text-white mb-1">
+        <div className="absolute bottom-0 left-0 right-0 z-10 p-4 flex flex-col">
+          <h3 className="text-xl font-bold text-white mb-1 whitespace-normal break-words line-clamp-2 sm:line-clamp-3">
             {plant.commonName}
           </h3>
-          <div
-            className={cn(
-              "overflow-hidden transition-[max-height,transform] duration-400 ease-in-out",
-              currentImageIndex === 0 ? "max-h-40" : "max-h-0"
-            )}
-          >
+          <div className="overflow-hidden">
             <div
               className={cn(
-                "transition-opacity duration-400 ease-in-out",
-                currentImageIndex === 0 ? "opacity-100" : "opacity-0"
+                "transition-[max-height, opacity]  duration-400 ease-in-out flex flex-col",
+                currentImageIndex === 0
+                  ? "max-h-88 sm:max-h-112 opacity-100"
+                  : " max-h-0 opacity-0"
               )}
             >
               {plant.nickname && (
-                <p className="text-sm text-white/80">"{plant.nickname}"</p>
+                <p className="text-sm text-white/80 whitespace-normal break-words line-clamp-1 sm:line-clamp-2">
+                  "{plant.nickname}"
+                </p>
               )}
               {(plant.genus || plant.species) && (
                 <p className="mt-1 text-sm italic text-white/70 whitespace-normal break-words">
-                  {plant.genus}
-                  {plant.genus && plant.species && ", "}
-                  {plant.species}
+                  {plant.genus && (
+                    <span className="line-clamp-1 sm:line-clamp-2">
+                      {plant.genus}
+                      {plant.species && ", "}
+                    </span>
+                  )}
+
+                  {plant.species && (
+                    <span className="line-clamp-1 sm:line-clamp-2">
+                      {plant.species}
+                    </span>
+                  )}
                 </p>
               )}
             </div>
 
-            {plant.roomLocation && (
-              <Badge
-                className={cn(
-                  "flex-inline items-center gap-1 text-white backdrop-blur-xl transition-colors duration-400 my-2 mr-2",
-                  currentImageIndex === 0 ? "bg-white/20" : "bg-white/0"
-                )}
-              >
-                <MapPin className="h-3 w-3" />
-                {plant.roomLocation}
-              </Badge>
-            )}
+            <div
+              className={cn(
+                "transition-[max-height, opacity] duration-400 ease-in-out flex flex-wrap gap-2 mt-2 mb-3",
+                currentImageIndex === 0
+                  ? "max-h-88 sm:max-h-112 opacity-100"
+                  : " max-h-0 opacity-0"
+              )}
+            >
+              {plant.roomLocation && (
+                <Badge
+                  className={
+                    "flex-inline items-center gap-1 text-white backdrop-blur-xl transition-colors duration-400 max-w-full bg-white/20"
+                  }
+                >
+                  <MapPin className="h-3 w-3 shrink-0" />
+                  <span className="overflow-hidden whitespace-nowrap overflow-ellipsis">
+                    {plant.roomLocation}
+                  </span>
+                </Badge>
+              )}
 
-            {formattedOwnedSince && (
-              <Badge
-                className={cn(
-                  "flex-inline items-center gap-1 text-white backdrop-blur-xl transition-colors duration-400",
-                  currentImageIndex === 0 ? "bg-white/20" : "bg-white/0"
-                )}
-              >
-                <ShoppingCart className="h-3 w-3" />
-                {formattedOwnedSince}
-              </Badge>
-            )}
-          </div>
+              {plant.ownedSince && (
+                <Badge
+                  className={
+                    "flex-inline items-center gap-1 text-white backdrop-blur-xl transition-colors duration-400 bg-white/20"
+                  }
+                >
+                  <ShoppingCart className="h-3 w-3" />
+                  <LocalDate date={plant.ownedSince} />
+                </Badge>
+              )}
 
-          <div className="flex justify-center gap-1">
-            {photos.length > 1 &&
-              photos.map((_, index) => (
-                <div
-                  key={`image-indicator-${index}`}
-                  className={cn(
-                    "h-1.5 w-1.5 rounded-full transition-all mt-1",
-                    index === currentImageIndex ? "bg-white w-3" : "bg-white/50"
-                  )}
-                />
-              ))}
+              {plant.lastRepotted && (
+                <Badge
+                  className={
+                    "flex-inline items-center gap-1 text-white backdrop-blur-xl transition-colors duration-400 bg-white/20"
+                  }
+                >
+                  <Shovel className="h-3 w-3" />
+                  <LocalDate date={plant.lastRepotted} />
+                </Badge>
+              )}
+            </div>
+
+            <div className="flex justify-center gap-1">
+              {photos.length > 1 &&
+                photos.map((_, index) => (
+                  <div
+                    key={`image-indicator-${index}`}
+                    className={cn(
+                      "h-1.5 w-1.5 rounded-full transition-all mt-1",
+                      index === currentImageIndex
+                        ? "bg-white w-3"
+                        : "bg-white/50"
+                    )}
+                  />
+                ))}
+            </div>
+            <Link
+              href={`my-collection/${plant.id}`}
+              className="flex items-center gap-1 mt-2 cursor-pointer justify-center rounded-full bg-white/20 hover:bg-white/30 px-4 py-1.5 text-sm text-white backdrop-blur-sm"
+            >
+              See full details
+              <Info className="h-4 w-4 ml-1" />
+            </Link>
           </div>
-          <Link
-            href={`my-collection/${plant.id}`}
-            className="flex items-center gap-1 mt-2 cursor-pointer justify-center rounded-full bg-white/20 hover:bg-white/30 px-4 py-1.5 text-sm text-white backdrop-blur-sm"
-          >
-            See full details
-            <Info className="h-4 w-4 ml-1" />
-          </Link>
         </div>
       </div>
     </Card>
