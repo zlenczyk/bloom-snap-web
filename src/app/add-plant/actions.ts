@@ -56,14 +56,7 @@ const addPlant = async (
     photos: formData.getAll("photos").slice(0, 5) ?? [],
   });
 
-  console.log("Validation result:", validationResult);
-
   if (!validationResult.success) {
-    console.log(
-      "zod flattened errors with field errors:",
-      z.flattenError(validationResult.error).fieldErrors
-    );
-
     return {
       errors: z.flattenError(validationResult.error).fieldErrors,
       message: "Input validation failed. Please check your entries.",
