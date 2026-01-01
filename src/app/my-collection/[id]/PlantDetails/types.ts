@@ -115,10 +115,10 @@ export enum isSafeEnum {
 
 // Enum for tabs
 export enum TabEnum {
-  Overview = "overview",
-  Environment = "environment",
-  Notes = "notes",
-  Photos = "photos",
+  Overview = "Overview",
+  Environment = "Environment",
+  Notes = "Notes",
+  Photos = "Photos",
 }
 
 // Enum for fields (optional, for strong typing)

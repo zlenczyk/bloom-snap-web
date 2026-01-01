@@ -53,10 +53,10 @@ const initialState: PlantFormState = {
 };
 
 const TabIcons: Record<string, React.ReactNode> = {
-  overview: <Sprout className="w-5 h-5" />,
-  environment: <Sun className="w-5 h-5" />,
-  notes: <Notebook className="w-5 h-5" />,
-  photos: <ImageIcon className="w-5 h-5" />,
+  [TabEnum.Overview]: <Sprout className="w-5 h-5" />,
+  [TabEnum.Environment]: <Sun className="w-5 h-5" />,
+  [TabEnum.Notes]: <Notebook className="w-5 h-5" />,
+  [TabEnum.Photos]: <ImageIcon className="w-5 h-5" />,
 };
 
 const defaultValues: PlantForm = {
@@ -94,7 +94,7 @@ interface PlantFormProps {
 const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
   const router = useRouter();
   const isEditing = !!existingPlant;
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("Overview");
   const [showCancelDialog, setShowCancelDialog] = useState(false);
 
   const today = new Date();
@@ -293,14 +293,14 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
                 </TabsList>
 
                 <TabsContent
-                  value="overview"
+                  value={TabEnum.Overview}
                   forceMount
                   className="data-[state=inactive]:hidden p-1"
                 >
                   <OverviewTab form={form} state={state} endMonth={endMonth} />
                 </TabsContent>
                 <TabsContent
-                  value="environment"
+                  value={TabEnum.Environment}
                   forceMount
                   className="data-[state=inactive]:hidden p-1"
                 >
@@ -311,14 +311,14 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
                   />
                 </TabsContent>
                 <TabsContent
-                  value="notes"
+                  value={TabEnum.Notes}
                   forceMount
                   className="data-[state=inactive]:hidden p-1"
                 >
                   <CareNotesTab form={form} state={state} />
                 </TabsContent>
                 <TabsContent
-                  value="photos"
+                  value={TabEnum.Photos}
                   forceMount
                   className="data-[state=inactive]:hidden p-1"
                 >
