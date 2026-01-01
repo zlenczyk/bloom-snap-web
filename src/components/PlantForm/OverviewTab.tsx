@@ -61,7 +61,7 @@ const OverviewTab = ({ form, state, endMonth }: OverviewTabProps) => {
               </FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Philodendron pink princess"
+                  placeholder="Philodendron Pink Princess"
                   autoComplete="on"
                   {...field}
                   aria-invalid={!!state?.errors?.[field.name]}
@@ -149,7 +149,7 @@ const OverviewTab = ({ form, state, endMonth }: OverviewTabProps) => {
           name={OverviewFieldsEnum.Source}
           render={({ field }) => (
             <FormItem className="gap-3 self-start">
-              <FormLabel>Where you get it?</FormLabel>
+              <FormLabel>Where did you get it?</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Shop name, gift, or special find"
@@ -173,7 +173,7 @@ const OverviewTab = ({ form, state, endMonth }: OverviewTabProps) => {
           name={OverviewFieldsEnum.OwnedSince}
           render={({ field }) => (
             <FormItem className="gap-3 self-start">
-              <FormLabel>When did you get or plan to get this plant?</FormLabel>
+              <FormLabel>When did you get or plan to get it?</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -260,7 +260,7 @@ const OverviewTab = ({ form, state, endMonth }: OverviewTabProps) => {
 
             return (
               <FormItem className="gap-3 self-start">
-                <FormLabel>Is it safe for pets or children?</FormLabel>
+                <FormLabel>Is it safe for pets?</FormLabel>
                 <FormControl className="w-full">
                   <Select
                     value={selectValue}
