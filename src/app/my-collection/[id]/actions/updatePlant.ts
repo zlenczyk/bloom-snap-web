@@ -182,7 +182,7 @@ export const updatePlant = async (
   }
 
   return {
-    message: `${validData.commonName} updated successfully!`,
+    message: `${validData.commonName} updated successfully`,
     success: true,
     id: plantId,
   };
