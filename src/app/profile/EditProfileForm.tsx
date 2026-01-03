@@ -1,5 +1,6 @@
 "use client";
 
+import LocalDate from "@/components/LocalDate";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -197,7 +198,7 @@ export default function EditProfileForm({
         <div>
           <h2 className="text-3xl font-bold">{userName}</h2>
           <p className="text-sm md:text-md text-gray-500 mt-1">
-            Member since: {new Date(createdAt).toLocaleDateString()}
+            Member since: <LocalDate date={createdAt} />
           </p>
 
           <p className="text-sm font-semibold md:text-md mt-1 flex items-center justify-center gap-1 text-green-700">
