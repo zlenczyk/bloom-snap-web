@@ -8,9 +8,9 @@ import { redirect } from "next/navigation";
 import z from "zod";
 
 export type DeleteTimelineEventState = {
-  success?: boolean;
+  success: boolean;
   error?: string;
-  message?: string;
+  message: string;
 };
 
 const deleteTimelineEvent = async (
@@ -45,12 +45,10 @@ const deleteTimelineEvent = async (
       where: { id: validationResult.data.id },
     });
 
-    revalidatePath(`/my-collection/${plantId}`);
-
     return { success: true, message: "Timeline event deleted successfully" };
   } catch (error) {
     console.error("Delete timeline event error:", error);
-    return { success: false, error: "Failed to delete timeline event" };
+    return { success: false, message: "Failed to delete timeline event" };
   }
 };
 
