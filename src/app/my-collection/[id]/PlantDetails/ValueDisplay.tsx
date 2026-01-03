@@ -1,9 +1,16 @@
 import LocalDate from "@/components/LocalDate";
+import { parseISO } from "date-fns";
 
 interface ValueDisplayProps {
   value: string | Date | null;
   variant?: "info" | "stats" | "notes";
 }
+
+const isDate = (value: string): boolean => {
+  const parsed = parseISO(value);
+
+  return !isNaN(parsed.getTime());
+};
 
 const ValueDisplay = ({ value, variant = "info" }: ValueDisplayProps) => {
   let classes = "text-lg";
@@ -28,15 +35,15 @@ const ValueDisplay = ({ value, variant = "info" }: ValueDisplayProps) => {
       break;
   }
 
-  const isDate =
-    value instanceof Date ||
-    (typeof value === "string" && !isNaN(Date.parse(value)));
+  let displayValue: React.ReactNode;
 
-  return (
-    <p className={classes}>
-      {value ? isDate ? <LocalDate date={value} /> : value : "-"}
-    </p>
-  );
+  if (value instanceof Date || (typeof value === "string" && isDate(value))) {
+    displayValue = <LocalDate date={value} />;
+  } else {
+    displayValue = value ?? "-";
+  }
+
+  return <p className={classes}>{displayValue}</p>;
 };
 
 export default ValueDisplay;
