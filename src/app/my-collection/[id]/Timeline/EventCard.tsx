@@ -46,7 +46,7 @@ const EventCard = ({ plantId, event, onEdit, isFuture }: EventCardProps) => {
             >
               <EditIcon className="w-3 h-3" />
             </Button>
-            <DeleteEventButton plantId={plantId} eventId={event.id} />
+            <DeleteEventButton plantId={plantId} eventId={event.id} eventTitle={event.title} eventDate={event.date} isFuture={isFuture} />
           </div>
         </div>
         <div className="text-sm text-muted-foreground font-medium">
