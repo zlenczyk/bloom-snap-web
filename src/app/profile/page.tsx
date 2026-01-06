@@ -30,7 +30,7 @@ export default async function ProfilePage() {
   const isSocialLogin = Boolean(account);
 
   return (
-    <div className="max-w-7xl mx-auto w-full layout-padding">
+    <div className="layout-padding">
       <EditProfileForm
         userName={user.userName}
         image={user.image}

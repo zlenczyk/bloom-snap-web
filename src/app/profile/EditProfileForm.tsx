@@ -181,7 +181,7 @@ export default function EditProfileForm({
   }, [passwordState]);
 
   return (
-    <div className="max-w-7xl mx-auto w-full space-y-12">
+    <div className="mx-auto max-w-7xl space-y-4 sm:space-y-6">
       <div className="flex flex-col items-center text-center space-y-4">
         {avatar ? (
           <img
@@ -402,7 +402,8 @@ export default function EditProfileForm({
                   <Button
                     type="submit"
                     variant="outline"
-                    disabled={avatarPending || !avatarState.avatar}
+                    // disabled={avatarPending || !avatarState.avatar}
+                    disabled={avatarPending || !avatar}
                     onClick={() => avatarForm.setValue("avatar", null)}
                     className="w-full"
                   >

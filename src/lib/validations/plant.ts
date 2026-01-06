@@ -116,9 +116,4 @@ export const PlantIdSchema = z.object({
   id: z.string().regex(/^c[a-z0-9]{24,}$/, { message: "Invalid Plant ID" }),
 });
 
-//TODO: change cuid to uuids
-// export const PlantIdSchema = z.object({
-//   id: z.uuid().nonempty({ message: "Plant ID is required" }),
-// });
-
 export type PlantForm = z.infer<typeof PlantFormSchema>;
