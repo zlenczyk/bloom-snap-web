@@ -402,7 +402,6 @@ export default function EditProfileForm({
                   <Button
                     type="submit"
                     variant="outline"
-                    // disabled={avatarPending || !avatarState.avatar}
                     disabled={avatarPending || !avatar}
                     onClick={() => avatarForm.setValue("avatar", null)}
                     className="w-full"

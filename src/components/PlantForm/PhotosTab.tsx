@@ -33,15 +33,14 @@ const PhotosTab = ({ form, state, existingPlant }: PhotosTabProps) => {
   useEffect(() => {
     const urls = photos.map((item) => {
       if (typeof item === "string") {
-        // Use absoluteUrl from existingPlant if available
         const absolute = existingPlant?.photos.find(
           (p) => p.url === item
         )?.absoluteUrl;
 
-        return absolute || item; // fallback to relative URL
+        return absolute || item;
       }
 
-      return URL.createObjectURL(item); // new File
+      return URL.createObjectURL(item);
     });
 
     setPreviewUrls(urls);

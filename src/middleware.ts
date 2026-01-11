@@ -13,10 +13,10 @@ export default auth((req) => {
   const path = nextUrl.pathname;
   const user = req.auth?.user;
 
-  // Public pages → always allowed
+  // Public pages - always allowed
   if (PUBLIC_ROUTES.includes(path)) return NextResponse.next();
 
-  // Guest pages → allowed if NOT logged in
+  // Guest pages - allowed if NOT logged in
   if (GUEST_ROUTES.includes(path)) {
     if (user?.profileCompleted) {
       return NextResponse.redirect(new URL("/my-collection", nextUrl));
@@ -30,7 +30,7 @@ export default auth((req) => {
     return NextResponse.redirect(new URL("/sign-in", nextUrl));
   }
 
-  // Temp users → force complete-profile
+  // Google users - force complete-profile
   if (
     !user.profileCompleted &&
     !GUEST_ROUTES.includes(path) &&
@@ -39,7 +39,7 @@ export default auth((req) => {
     return NextResponse.redirect(new URL("/complete-profile", nextUrl));
   }
 
-  // Normal users → block access to complete-profile
+  // Normal users - block access to complete-profile
   if (user.profileCompleted && path === "/complete-profile") {
     return NextResponse.redirect(new URL("/my-collection", nextUrl));
   }

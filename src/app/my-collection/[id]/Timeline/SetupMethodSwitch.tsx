@@ -76,7 +76,6 @@ export const SetupMethodSwitch = ({
           control={form.control}
           name="title"
           render={({ field }) => {
-            // Find the current selected key based on title
             const selectedKey = Object.entries(predefinedEvents).find(
               ([key, event]) => event.label === field.value
             )?.[0];

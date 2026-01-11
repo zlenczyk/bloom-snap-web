@@ -112,15 +112,12 @@ export interface Event {
 export const eventColors = Object.values(EventColorsEnum);
 
 export const eventIconsMap = {
-  // 1. Buying & acquiring
   ShoppingCart: ShoppingCart,
   Package: Package,
   PackageOpen: PackageOpen,
   Gift: Gift,
   Truck: Truck,
   HousePlus: HousePlus,
-
-  // 2. Setup & environment
   LampDesk: LampDesk,
   Lightbulb: Lightbulb,
   Sun: Sun,
@@ -130,8 +127,6 @@ export const eventIconsMap = {
   Cloud: Cloud,
   Snowflake: Snowflake,
   Wind: Wind,
-
-  // 3. Plant types & identification
   Sprout: Sprout,
   Leaf: Leaf,
   LeafyGreen: LeafyGreen,
@@ -142,8 +137,6 @@ export const eventIconsMap = {
   TreePalm: TreePalm,
   Apple: Apple,
   Cherry: Cherry,
-
-  // 4. Routine care
   Camera: Camera,
   Wrench: Wrench,
   Ruler: Ruler,
@@ -154,43 +147,30 @@ export const eventIconsMap = {
   SprayCan: SprayCan,
   Sparkles: Sparkles,
   Bandage: Bandage,
-
-  // 5. Advanced plant work
   ArrowLeftRight: ArrowLeftRight,
   LocationEdit: LocationEdit,
   Repeat: Repeat,
   Calendar: Calendar,
-
-  // 6. Nutrients & growth support (paired with problems)
   Zap: Zap,
   ZapOffIcon: ZapOffIcon,
   ShieldPlus: ShieldPlus,
   ShieldCheck: ShieldCheck,
   ShieldAlert: ShieldAlert,
   AlertTriangle: AlertTriangle,
-
-  // 7. Health & emotions (positive/negative pairs)
   Heart: Heart,
   HeartCrack: HeartCrack,
   Check: Check,
   X: X,
-
-  // 8. Pests & problems
   Bug: Bug,
   BugOff: BugOff,
-
-  // 9. Security & restricted access (paired)
   Lock: Lock,
   Unlock: Unlock,
-
-  // 10. Other life around plants
   Cat: Cat,
   Dog: Dog,
   PawPrint: PawPrint,
 };
 
 export const predefinedEvents: Record<string, Event> = {
-  // 1. Acquisition & gifting
   purchase: {
     icon: "ShoppingCart",
     label: "Purchase Plant",
@@ -211,8 +191,6 @@ export const predefinedEvents: Record<string, Event> = {
     label: "Plant Trade",
     color: EventColorsEnum.BgIndigo600,
   },
-
-  // 2. Propagation & planting start
   seed: {
     icon: "Sprout",
     label: "Start from Seed",
@@ -228,8 +206,6 @@ export const predefinedEvents: Record<string, Event> = {
     label: "Plant Division",
     color: EventColorsEnum.BgViolet400,
   },
-
-  // 3. Setup & environment adjustment
   lighting: {
     icon: "Lightbulb",
     label: "Lighting Change",
@@ -250,8 +226,6 @@ export const predefinedEvents: Record<string, Event> = {
     label: "Watering",
     color: EventColorsEnum.BgCyan600,
   },
-
-  // 4. Routine care & maintenance
   fertilize: {
     icon: "Zap",
     label: "Fertilizing",
@@ -292,8 +266,6 @@ export const predefinedEvents: Record<string, Event> = {
     label: "Care Adjustment",
     color: EventColorsEnum.BgCyan400,
   },
-
-  // 5. Growth & milestones
   newLeaf: {
     icon: "Leaf",
     label: "New Leaf",
@@ -314,8 +286,6 @@ export const predefinedEvents: Record<string, Event> = {
     label: "Fruit",
     color: EventColorsEnum.BgOrange600,
   },
-
-  // 6. Health & recovery
   recovery: {
     icon: "Heart",
     label: "Recovery",
@@ -366,8 +336,6 @@ export const predefinedEvents: Record<string, Event> = {
     label: "Physical Damage",
     color: EventColorsEnum.BgZinc500,
   },
-
-  // 7. Environmental damage rescue
   overwaterRescue: {
     icon: "Waves",
     label: "Rescue from Overwatering",
@@ -383,8 +351,6 @@ export const predefinedEvents: Record<string, Event> = {
     label: "Rescue from Sunburn",
     color: EventColorsEnum.BgOrange400,
   },
-
-  // 8. Misc / status / fun
   checkMark: {
     icon: "Check",
     label: "Task Completed",

@@ -113,7 +113,6 @@ export enum isSafeEnum {
   No = "No",
 }
 
-// Enum for tabs
 export enum TabEnum {
   Overview = "Overview",
   Environment = "Environment",
@@ -121,7 +120,6 @@ export enum TabEnum {
   Photos = "Photos",
 }
 
-// Enum for fields (optional, for strong typing)
 export enum OverviewFieldsEnum {
   CommonName = "commonName",
   Species = "species",
@@ -159,7 +157,6 @@ export enum PhotosFieldsEnum {
   Photos = "photos",
 }
 
-// Mapping object for easier access
 export const tabFieldInputs = Object.freeze({
   [TabEnum.Overview]: Object.values(OverviewFieldsEnum),
   [TabEnum.Environment]: Object.values(EnvironmentFieldsEnum),
