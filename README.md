@@ -1,83 +1,133 @@
-## About
+# Bloom Snap 🌸
 
-BloomSnap is a diploma thesis web application for creating a wall and sharing your collection of houseplants with others.
+Bloom Snap is a modern full-stack web application built with **Next.js 15**, **React 19**, **Prisma**, and **Tailwind CSS**.  
+
+This is a **private project** and requires environment variables provided by the project owner in order to run.
+
+---
+
+## Tech Stack
+
+- **Language:** TypeScript
+- **Framework:** Next.js 15 (App Router)
+- **Frontend:** React 19, Tailwind CSS, shadcn/ui, Lucide React Icons
+- **Authentication:** Auth.js
+- **Database:** PostgreSQL (Neon) with Prisma ORM
+- **Forms & Validation:** React Hook Form + Zod
+
+---
+
+## Node.js Requirements
+
+This project requires **Node.js 22**.
+
+```bash
+node >= 22.11
+```
+
+You can check your Node version with:
+
+```bash
+node -v
+```
+
+If needed, use a version manager like nvm:
+
+```bash
+nvm install 22.11
+nvm use 22.11
+```
 
 ## Getting Started
 
-First, run the development server:
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/zlenczyk/bloom-snap-web
+```
+
+### 2. Install Dependencies
+```
+npm install
+```
+
+### 3. Environment Variables
+
+1. Copy **the environment variable keys** from the provided `.env.example` file.  
+
+2. Create a new file named `.env.local` in the root of the project.
+
+3. Paste the copied keys into `.env.local` and contact the project owner to obtain the **actual values**.
+
+Example `.env.local` structure:
+
+```env
+AUTH_GOOGLE_ID=
+AUTH_GOOGLE_SECRET
+// more...
+```
+
+⚠️ Do not commit `.env` files to version control.
+
+### 4. Set Up the Database (Prisma)
+
+Before running the app for the first time, Prisma and the database must be prepared.
+
+1. Generate the Prisma Client
+
+The Prisma Client is the TypeScript/JavaScript interface this app uses to communicate with the database. Generating it does not modify the database itself.
+
+```bash
+npm run generate
+# or
+npx prisma generate
+```
+
+2. Run Database Migrations
+
+Normally, migrations apply pending changes to the database and ensure its schema matches what is defined in prisma/schema.prisma. Running migrations also updates the Prisma Client automatically.
+
+If the database is empty (first run), Prisma will apply the existing migrations from the `prisma/migrations/` folder. It will not create a new migration unless you make changes to the schema yourself.
+
+```bash
+npm run migrate
+# or
+npx prisma migrate dev
+```
+
+### ⚠️ During Development
+
+When you modify `prisma/schema.prisma`, choose your next step based on whether the change affects the database structure or only the Prisma Client.
+
+#### a) Run a migration (changes affect the database). Examples:
+- Adding, removing, or renaming a model
+- Adding, removing, or changing a field type
+- Updating relations between models
+
+```bash
+npm run migrate
+```
+
+It will ask for migration name - contact author to check for convention in naming.
+
+#### b) Regenerate the client (changes affect only the client). Examples:
+
+- Updating @@map or @map for database naming
+- Changing enum names without changing database values
+- Adding @default values that don’t require database migration
+
+```bash
+npm run generate
+```
+
+This updates the Prisma Client types so your code can use the changes without modifying the database.
+
+### 5. Start the Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
+The application will be available at:
 
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-Technologies links:
-1. NextAuth vs Supabase: https://www.restack.io/docs/supabase-knowledge-supabase-auth-vs-nextauth
-
-avatars:
-https://raphael.app/
-
-Issues:
-1. change use of bcrypt to bcryptjs -> https://github.com/kelektiv/node.bcrypt.js/issues/979
-2. prisma with edge environment (fix: installation neon adapter) -> https://github.com/prisma/prisma/issues/20560
-3. shadcn components not always support newest versions of libraries they use: https://github.com/shadcn-ui/ui/issues/4366 https://date-picker.luca-felix.com/
-4. design: when user is asking for "yes" or "no", but he has option to not answer at all, what is the best design (select vs radio discussion)
-5. database: difference between null and "" in the database.
-6. Problem with clearing shadcn Select component. When using custom clear buttom, form data is updated, but UI not. For example, when choosing "No" and then clicking clear button - user still see "No". First solution was just not to try to show placeholder again as no value, but have one more value always, e.g. "null" that will be choosen on clear. This way user could see "Do not specify", "Yes", and "No", when option "Do not specify" was set with custom clear button. Final solution is a little bit hacky, but very simple - give the <Select> component the key prop. In react - when key is updated, component must rerender. This way clearing button works perfectly without additional "Do not specify" option!
-- https://www.reddit.com/r/nextjs/comments/1gl2wmv/strange_behavior_with_shadcn_ui_select_component/
-- https://github.com/radix-ui/primitives/issues/1569
-7. problem with redirecting hell - proper handling of middleware logic and proper order of checks, trying to protect routes for specific cases, problem with complete-profile page
-8. We initially tried to limit the user’s ability to select certain dates or exceed the maximum length of form fields. As the application evolved, I realized that—even if it feels less intuitive—we should not make decisions on behalf of the user. We should give them as much freedom as possible, without assuming their preferences. For example, just because we expect them to add a plant they already own (a past date) doesn’t mean the user won’t want to enter a future date (e.g., they might be picking up the plant from a store next week). We should avoid assumptions and limit the user as little as possible. Allowing full flexibility with dates also makes the code and validation logic simpler and more reliable, since we don’t need to handle multiple edge cases or artificially restrict user input. The input fields in the database have also been extended to allow a much larger number of characters. However, they still have reasonable limits to ensure the database remains secure and stable.
-
-Small improvements to do (hard to do alone as developer):
-1. Tabs names in plant form could have been capitalized
-
-Idelogy of clean code:
-- how lond should be data fields? https://stackoverflow.com/questions/20958/list-of-standard-lengths-for-database-fields
-- uploading images - when choosing files vs on form submit, architecture and consequences. I chosen 2 version.
-
-# Potential Features for an Expanded App Version
-
-## Main Feed
-- Show photos from users with public collections.
-- Users can see their own collection, plus collections they liked or follow.
-- Users can set their collection as **private** or **public**.
-- Follow other accounts, comment, and like photos.
-
-## AI agents/ external APIs
-- Analyze photos to detect plant health.
-- Identify plant species.
-- Provide care tips
-
-## Sharing & Export
-- Export collection data to CSV or PDF.
-- Share collections with friends via link / messenger / whatsapp, etc.
-
-## Achievements & Gamification
-- Collect trophies for milestones, e.g: First plant, First 50 plants, Healing a sick plant, etc.
-
-## Timeline & Event Visibility
-- Show plant timeline events (e.g., flowering, location changes, health updates) **not only in timeline view but also on plant cards, collection view, and badges**, so users can see important events without opening detailed views.
-
-## Plant Statistics
-- Detailed stats in form of graphs and analytics screen summarizing user’s plants, e.g. health status, age, species distribution, etc.
-
-## Expansion of Scope
-- Currently focused on house plants, the app could expand to **herbs, garden plants, and other plant types**, catering to different user needs and interests.
-- This expansion could introduce **features tailored to specific plant types**, e.g., statistics for garden plants may include seasonal or weather-related data, while house plant stats may focus on indoor conditions.
-
-> **Note:** The features listed here are just a starting point. There can always be more, and everything depends on real user needs. The app may evolve and change over time based on feedback and usage patterns. 
-
-Bigger dependencies changes during working on app:
-1. Tailwind 3 -> 4
-2. Next.js 14 -> 15
-3. React 18 -> 19
+http://localhost:3000
