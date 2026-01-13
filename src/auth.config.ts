@@ -5,6 +5,10 @@ import { z } from "zod";
 import db from "./lib/db";
 import { compare } from "bcryptjs";
 
+if (!process.env.AUTH_SECRET) {
+  throw new Error("AUTH_SECRET is not set");
+}
+
 const credentialsSchema = z.object({
   email: z.email({
     error: (issue) =>
@@ -55,7 +59,7 @@ export const authConfig = {
       return session;
     },
   },
-  secret: process.env.AUTH_SECRET ?? "",
+  secret: process.env.AUTH_SECRET,
   providers: [
     Google({
       clientId: process.env.AUTH_GOOGLE_ID ?? "",
