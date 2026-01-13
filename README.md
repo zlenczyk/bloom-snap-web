@@ -59,7 +59,7 @@ They are used for different purposes and both are required for the project to bu
 1. Copy **all environment variable keys** from the provided `.env.example` file.
 
 2. Create a file named `.env` in the root of the project. (required for Prisma / database)
-Add the database-related variables and request the actual values from the project owner. Those are:
+Add the database-related variables and request the actual values from the project owner (https://onetimesecret.com/en/, etc.). Those are:
 
 ```bash
 DATABASE_URL=
