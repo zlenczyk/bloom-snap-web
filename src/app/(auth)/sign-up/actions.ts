@@ -53,7 +53,7 @@ const signUp = async (state: SignUpFormState, formData: FormData) => {
 
   if (existingEmail) {
     return {
-      errors: { userName: ["User with this email already exist!"] },
+      errors: { email: ["User with this email already exist!"] },
       message: "User with this email already exist!",
       success: false,
     };
