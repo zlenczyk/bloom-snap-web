@@ -19,10 +19,10 @@ This is a **private project** and requires environment variables provided by the
 
 ## Node.js Requirements
 
-This project requires **Node.js 22**.
+This project requires the stable version of **Node.js 22**.
 
 ```bash
-node >= 22.11
+node >= 22.22
 ```
 
 You can check your Node version with:
@@ -34,8 +34,8 @@ node -v
 If needed, use a version manager like nvm:
 
 ```bash
-nvm install 22.11
-nvm use 22.11
+nvm install 22.22
+nvm use 22.22
 ```
 
 ## Getting Started
