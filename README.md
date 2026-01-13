@@ -53,18 +53,30 @@ npm install
 
 ### 3. Environment Variables
 
-1. Copy **the environment variable keys** from the provided `.env.example` file.  
+This project requires two environment files: `.env` and `.env.local`.
+They are used for different purposes and both are required for the project to build correctly.
 
-2. Create a new file named `.env.local` in the root of the project.
+1. Copy **all environment variable keys** from the provided `.env.example` file.
 
-3. Paste the copied keys into `.env.local` and contact the project owner to obtain the **actual values**.
+2. Create a file named `.env` in the root of the project. (required for Prisma / database)
+Add the database-related variables and request the actual values from the project owner. Those are:
 
-Example `.env.local` structure:
+```bash
+DATABASE_URL=
+DIRECT_URL=
+```
+
+3. Create a new file named `.env.local` in the root of the project (required for Next.js runtime)
+
+Add rest of the variables into new file and contact the project owner to obtain the actual values. The structure should be:
 
 ```env
 AUTH_GOOGLE_ID=
 AUTH_GOOGLE_SECRET=
-// more...
+AUTH_SECRET=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+NEXT_PUBLIC_SUPABASE_URL=
+SUPABASE_SERVICE_ROLE_KEY=
 ```
 
 ⚠️ Do not commit `.env` files to version control.
