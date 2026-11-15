@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "./auth";
 
 const PUBLIC_ROUTES = ["/contact", "/terms"];
-const GUEST_ROUTES = ["/sign-in", "/sign-up"];
+const GUEST_ROUTES = ["/sign-in", "/sign-up", "/demo"];
 
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico|assets/).*)"],

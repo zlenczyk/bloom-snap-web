@@ -3,7 +3,7 @@
 import { auth } from "@/auth";
 import { PlantFormState } from "@/components/PlantForm/types";
 import db from "@/lib/db";
-import { isOwnPhotoPath } from "@/lib/photos";
+import { isDemoPhotoPath, isOwnPhotoPath } from "@/lib/photos";
 import { deletePhotos } from "@/lib/storage";
 import { toOptionalBoolean } from "@/lib/utils";
 import { PlantFormSchema } from "@/lib/validations/plant";
@@ -143,7 +143,10 @@ export const updatePlant = async (
 
   for (const photo of photosToDelete) {
     try {
-      await deletePhotos([photo.url]);
+      // Sample photos of the demo collection are shared files, not uploads.
+      if (!isDemoPhotoPath(photo.url)) {
+        await deletePhotos([photo.url]);
+      }
 
       await db.plantPhoto.delete({ where: { id: photo.id } });
     } catch (err) {

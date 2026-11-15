@@ -63,6 +63,11 @@ export async function changePassword(
     redirect("/sign-in");
   }
 
+  // Demo accounts are signed into with a single click and have no password.
+  if (session.user.isDemo) {
+    return { success: false, message: "Demo accounts have no password" };
+  }
+
   try {
     const validationResult = PasswordSchema.safeParse({
       password: formData.get("password"),

@@ -17,9 +17,13 @@ model User {
   password         String?
   plants           Plant[]
   profileCompleted Boolean   @default(false)
+  // Temporary account with a sample collection, created by "Try the demo"
+  isDemo           Boolean   @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([isDemo, createdAt])
 }
 
 model Account {

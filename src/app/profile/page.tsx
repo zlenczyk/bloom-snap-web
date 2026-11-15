@@ -27,7 +27,8 @@ export default async function ProfilePage() {
     },
   });
 
-  const isSocialLogin = Boolean(account);
+  // Neither Google nor demo accounts have a password to change.
+  const isSocialLogin = Boolean(account) || session.user.isDemo;
 
   return (
     <div className="layout-padding">

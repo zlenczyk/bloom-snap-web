@@ -16,6 +16,7 @@ import Link from "next/link";
 import { useActionState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import DemoButton from "../DemoButton";
 import ErrorMessage from "../ErrorMessage";
 import GoogleSignInButton from "../GoogleSignInButton";
 import { authenticateCredentials } from "./actions";
@@ -110,6 +111,8 @@ const SignInForm = () => {
         </div>
 
         <GoogleSignInButton>Sign in with Google</GoogleSignInButton>
+
+        <DemoButton />
 
         <p className="text-sm text-gray-500 text-center mt-6 mb-2">
           Not a member?{" "}

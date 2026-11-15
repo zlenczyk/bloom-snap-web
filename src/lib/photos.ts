@@ -23,6 +23,15 @@ const sanitizeFileName = (fileName: string): string =>
 export const buildPhotoPath = (userId: string, fileName: string): string =>
   `${userId}/${crypto.randomUUID()}-${sanitizeFileName(fileName)}`;
 
+// Sample photos of the demo collection ship with the app (public/assets/demo)
+// and are shared by every demo account, so they are never uploaded or deleted.
+const DEMO_PHOTO_PREFIX = "demo/";
+
+export const isDemoPhotoPath = (path: string): boolean =>
+  path.startsWith(DEMO_PHOTO_PREFIX) && !path.includes("..");
+
+export const getDemoPhotoUrl = (path: string): string => `/assets/${path}`;
+
 export const isOwnPhotoPath = (path: string, userId: string): boolean =>
   path.startsWith(`${userId}/`) &&
   !path.includes("..") &&

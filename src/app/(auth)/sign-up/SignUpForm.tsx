@@ -159,6 +159,14 @@ const SignUpForm = () => {
           >
             Sign in
           </Link>
+          <br />
+          Just looking around?{" "}
+          <Link
+            className="underline text-emerald-600 hover:text-emerald-500"
+            href="/demo"
+          >
+            Try the live demo
+          </Link>
         </p>
       </div>
     </Form>

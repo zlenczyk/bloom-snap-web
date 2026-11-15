@@ -6,6 +6,21 @@ This is a **private project** and requires environment variables provided by the
 
 ---
 
+## Live Demo
+
+**[bloom-snap-web.vercel.app/demo](https://bloom-snap-web.vercel.app/demo)**
+
+One click, no sign-up. The link opens a sample collection of 12 plants with photos, care notes and care timelines.
+
+- Every visitor gets a **private copy** of the collection in a temporary account, so you can freely add, edit and delete plants without affecting anyone else.
+- Timeline dates are generated relative to the day you open the demo, so there are always recent and upcoming care events.
+- Demo accounts are deleted when you sign out, or automatically after 24 hours.
+- Sample photos are public domain (CC0), see [`public/assets/demo/SOURCES.md`](public/assets/demo/SOURCES.md).
+
+The demo is also available from the **Try the live demo** button on the sign-in page.
+
+---
+
 ## Tech Stack
 
 - **Language:** TypeScript
@@ -113,6 +128,8 @@ For a production database, apply the existing migrations without creating new on
 ```bash
 npx prisma migrate deploy
 ```
+
+The production build (`npm run build`, used by Vercel) runs this step automatically, so pending migrations are applied before a new version goes live.
 
 ### ⚠️ During Development
 
