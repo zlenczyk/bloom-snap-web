@@ -3,10 +3,10 @@
 import { auth } from "@/auth";
 import { PlantFormState } from "@/components/PlantForm/types";
 import db from "@/lib/db";
+import { isOwnPhotoPath } from "@/lib/photos";
 import { toOptionalBoolean } from "@/lib/utils";
 import { redirect } from "next/navigation";
 import z from "zod";
-import uploadImageToStorage from "../../lib/actions/uploadImageToStorage";
 import { PlantFormSchema } from "../../lib/validations/plant";
 
 const addPlant = async (
@@ -66,6 +66,24 @@ const addPlant = async (
 
   const validData = validationResult.data;
 
+  // Photos are uploaded by the browser straight to storage; the form only
+  // carries their storage paths, which must point into the user's own folder.
+  const uploadedPhotoPaths = validData.photos.filter(
+    (photo) => typeof photo === "string"
+  );
+
+  const invalidPhotoPaths = uploadedPhotoPaths.filter(
+    (path) => !isOwnPhotoPath(path, userId)
+  );
+
+  if (invalidPhotoPaths.length > 0) {
+    return {
+      errors: { photos: ["Some photos could not be attached."] },
+      message: "Input validation failed. Please check your entries.",
+      success: false,
+    };
+  }
+
   let newPlantId: string;
 
   try {
@@ -108,22 +126,7 @@ const addPlant = async (
     };
   }
 
-  const uploadedPhotoPaths: string[] = [];
-  const failedPhotos: string[] = []; // both for not uploaded and not saved to db
-
-  for (const file of validData.photos || []) {
-    if (typeof file === "string") {
-      continue;
-    }
-
-    const path = await uploadImageToStorage(file, userId);
-
-    if (!path) {
-      failedPhotos.push(file.name);
-    } else {
-      uploadedPhotoPaths.push(path);
-    }
-  }
+  const failedPhotos: string[] = []; // uploaded, but not saved to db
 
   if (uploadedPhotoPaths.length > 0) {
     let attempt = 0;
@@ -157,7 +160,7 @@ const addPlant = async (
   }
 
   if (failedPhotos.length > 0) {
-    console.log("Some photos failed to upload or save to DB:", failedPhotos);
+    console.log("Some photos failed to save to DB:", failedPhotos);
 
     return {
       message: `${validData.commonName} added successfully, but some photo(s) failed to upload.`,

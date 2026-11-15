@@ -3,12 +3,12 @@
 import { auth } from "@/auth";
 import { PlantFormState } from "@/components/PlantForm/types";
 import db from "@/lib/db";
-import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import { isOwnPhotoPath } from "@/lib/photos";
+import { deletePhotos } from "@/lib/storage";
 import { toOptionalBoolean } from "@/lib/utils";
 import { PlantFormSchema } from "@/lib/validations/plant";
 import { redirect } from "next/navigation";
 import z from "zod";
-import uploadImageToStorage from "../../../../lib/actions/uploadImageToStorage";
 
 export const updatePlant = async (
   plantId: string,
@@ -67,9 +67,41 @@ export const updatePlant = async (
 
   const validData = validationResult.data;
 
+  // Only the owner may edit a plant.
+  const existingPlant = await db.plant.findFirst({
+    where: { id: plantId, userId },
+    include: { photos: true },
+  });
+
+  if (!existingPlant) {
+    return {
+      success: false,
+      message: "Plant not found.",
+    };
+  }
+
+  const existingPhotos = existingPlant.photos;
+
+  // Photos are uploaded by the browser straight to storage; the form only
+  // carries storage paths: ones already saved for this plant, plus new ones,
+  // which must point into the user's own folder.
+  const photosToKeep = validData.photos.filter((p) => typeof p === "string");
+
+  const uploadedPhotoPaths = photosToKeep.filter(
+    (path) => !existingPhotos.some((photo) => photo.url === path)
+  );
+
+  if (uploadedPhotoPaths.some((path) => !isOwnPhotoPath(path, userId))) {
+    return {
+      errors: { photos: ["Some photos could not be attached."] },
+      message: "Input validation failed. Please check your entries.",
+      success: false,
+    };
+  }
+
   try {
     await db.plant.update({
-      where: { id: plantId },
+      where: { id: plantId, userId },
       data: {
         additionalNotes: validData.additionalNotes,
         commonName: validData.commonName,
@@ -105,19 +137,13 @@ export const updatePlant = async (
     };
   }
 
-  const existingPhotos = await db.plantPhoto.findMany({ where: { plantId } });
-
-  const photosToKeep = validData.photos.filter((p) => typeof p === "string");
-
   const photosToDelete = existingPhotos.filter(
     (p) => !photosToKeep.includes(p.url)
   );
 
   for (const photo of photosToDelete) {
     try {
-      await supabaseAdmin.storage
-        .from("bloomsnap-plant-photos")
-        .remove([photo.url]);
+      await deletePhotos([photo.url]);
 
       await db.plantPhoto.delete({ where: { id: photo.id } });
     } catch (err) {
@@ -125,20 +151,7 @@ export const updatePlant = async (
     }
   }
 
-  const newFiles = validData.photos.filter((p) => p instanceof File);
-
-  const uploadedPhotoPaths: string[] = [];
-  const failedPhotos: string[] = []; // both for not uploaded and not saved to db
-
-  for (const file of newFiles) {
-    const path = await uploadImageToStorage(file, userId);
-
-    if (!path) {
-      failedPhotos.push(file.name);
-    } else {
-      uploadedPhotoPaths.push(path);
-    }
-  }
+  const failedPhotos: string[] = []; // uploaded, but not saved to db
 
   if (uploadedPhotoPaths.length > 0) {
     let attempt = 0;
@@ -172,7 +185,7 @@ export const updatePlant = async (
   }
 
   if (failedPhotos.length > 0) {
-    console.log("Some photos failed to upload or save to DB:", failedPhotos);
+    console.log("Some photos failed to save to DB:", failedPhotos);
 
     return {
       message: `${validData.commonName} updated successfully, but some photo(s) failed to upload.`,

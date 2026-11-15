@@ -3,6 +3,7 @@ import {
   LightExposureEnum,
   WindowDirectionEnum,
 } from "@/app/my-collection/[id]/PlantDetails/types";
+import { ALLOWED_PHOTO_EXTENSIONS } from "@/lib/photos";
 import z from "zod";
 
 export const PlantFormSchema = z.object({
@@ -91,14 +92,12 @@ export const PlantFormSchema = z.object({
     .superRefine((items, ctx) => {
       if (!items) return;
 
-      const allowedExtensions = /\.(jpe?g|png|webp|avif|heic|heif)$/i;
-
       items.forEach((item, index) => {
         // Only validate File objects
         if (item instanceof File) {
           const invalid =
             !item.type.startsWith("image/") ||
-            !allowedExtensions.test(item.name);
+            !ALLOWED_PHOTO_EXTENSIONS.test(item.name);
 
           if (invalid) {
             ctx.addIssue({

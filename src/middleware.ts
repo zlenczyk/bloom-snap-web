@@ -6,6 +6,9 @@ const GUEST_ROUTES = ["/sign-in", "/sign-up"];
 
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico|assets/).*)"],
+  // Node.js runtime: the auth setup imports Prisma, which does not fit in the
+  // size-limited Edge runtime.
+  runtime: "nodejs",
 };
 
 export default auth((req) => {

@@ -49,7 +49,7 @@ export default function Timeline({ events, plantId }: TimelineProps) {
             Plant Care Timeline
           </h1>
           <p className="text-muted-foreground mt-1">
-            Track your plant's journey and care events
+            Track your plant&apos;s journey and care events
           </p>
         </div>
         <Button onClick={openAddForm} className="gap-2">

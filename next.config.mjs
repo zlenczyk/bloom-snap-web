@@ -1,17 +1,12 @@
 /** @type {import('next').NextConfig} */
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-
 const nextConfig = {
-  experimental: {
-    serverActions: {
-      bodySizeLimit: "10mb",
-    },
-  },
   images: {
-    domains: ["bmzatgreusmpxojnbkra.supabase.co", "lh3.googleusercontent.com"],
+    remotePatterns: [
+      // Signed URLs of plant photos in the private Vercel Blob store
+      { protocol: "https", hostname: "*.private.blob.vercel-storage.com" },
+      // Google account avatars
+      { protocol: "https", hostname: "lh3.googleusercontent.com" },
+    ],
   },
 };
 

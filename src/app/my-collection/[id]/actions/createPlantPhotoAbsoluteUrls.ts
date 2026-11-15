@@ -1,31 +1,23 @@
 "use server";
 
-import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import { createSignedPhotoUrls } from "@/lib/storage";
 import { PlantWithAbsolutePhotoUrls, PlantWithPhotos } from "../../types";
 
 const createPlantPhotoAbsoluteUrls = async (
   plant: PlantWithPhotos
 ): Promise<PlantWithAbsolutePhotoUrls> => {
-  const photos = await Promise.all(
-    plant.photos.map(async (photo) => {
-      const { data, error } = await supabaseAdmin.storage
-        .from("bloomsnap-plant-photos")
-        .createSignedUrl(photo.url, 60 * 60 * 6); // 6 hours
+  let signedUrls: string[] = [];
 
-      if (error || !data) {
-        console.error("Failed to generate signed URL:", error);
-        return {
-          ...photo,
-          absoluteUrl: "",
-        };
-      }
+  try {
+    signedUrls = await createSignedPhotoUrls(plant.photos.map((p) => p.url));
+  } catch (error) {
+    console.error("Failed to generate signed URLs:", error);
+  }
 
-      return {
-        ...photo,
-        absoluteUrl: data.signedUrl,
-      };
-    })
-  );
+  const photos = plant.photos.map((photo, index) => ({
+    ...photo,
+    absoluteUrl: signedUrls[index] ?? "",
+  }));
 
   return { ...plant, photos };
 };

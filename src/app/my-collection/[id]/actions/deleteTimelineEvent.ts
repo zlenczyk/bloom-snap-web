@@ -42,7 +42,10 @@ const deleteTimelineEvent = async (
     }
 
     await db.timelineEvent.delete({
-      where: { id: validationResult.data.id },
+      where: {
+        id: validationResult.data.id,
+        plant: { userId: session.user.id },
+      },
     });
 
     return { success: true, message: "Timeline event deleted successfully" };

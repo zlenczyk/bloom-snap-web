@@ -18,7 +18,7 @@ export async function getTimelineEvents(
 
   try {
     const events = await db.timelineEvent.findMany({
-      where: { plantId },
+      where: { plantId, plant: { userId: session.user.id } },
       orderBy: {
         date: "desc",
       },

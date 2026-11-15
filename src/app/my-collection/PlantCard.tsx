@@ -139,7 +139,7 @@ const PlantCard = ({ plant }: PlantCardProps) => {
             >
               {plant.nickname && (
                 <p className="text-sm text-white/80 whitespace-normal break-words line-clamp-1 sm:line-clamp-2">
-                  "{plant.nickname}"
+                  &quot;{plant.nickname}&quot;
                 </p>
               )}
               {(plant.genus || plant.species) && (

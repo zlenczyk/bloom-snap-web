@@ -1,6 +1,7 @@
+import { auth } from "@/auth";
 import PlantDetailsForm from "@/components/PlantForm/PlantDetailsForm";
 import db from "@/lib/db";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import createPlantPhotoAbsoluteUrls from "../actions/createPlantPhotoAbsoluteUrls";
 
 interface EditPlantPageProps {
@@ -10,8 +11,15 @@ interface EditPlantPageProps {
 const EditPlantPage = async ({ params }: EditPlantPageProps) => {
   const { id: plantId } = await params;
 
-  const plant = await db.plant.findUnique({
-    where: { id: plantId },
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    redirect("/sign-in");
+  }
+
+  // Only the owner may open the edit form.
+  const plant = await db.plant.findFirst({
+    where: { id: plantId, userId: session.user.id },
     include: {
       photos: true,
     },
@@ -23,7 +31,9 @@ const EditPlantPage = async ({ params }: EditPlantPageProps) => {
 
   const plantWithUrls = await createPlantPhotoAbsoluteUrls(plant);
 
-  return <PlantDetailsForm existingPlant={plantWithUrls} />;
+  return (
+    <PlantDetailsForm existingPlant={plantWithUrls} userId={session.user.id} />
+  );
 };
 
 export default EditPlantPage;

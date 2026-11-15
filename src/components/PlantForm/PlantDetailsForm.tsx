@@ -37,11 +37,23 @@ import {
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  ALLOWED_PHOTO_EXTENSIONS,
+  buildPhotoPath,
+  MAX_PHOTO_SIZE_BYTES,
+} from "@/lib/photos";
 import { cn, getLocalDateString } from "@/lib/utils";
 import { PlantForm } from "@/lib/validations/plant";
+import { upload } from "@vercel/blob/client";
 import { Image as ImageIcon, Leaf, Notebook, Sprout, Sun } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { startTransition, useActionState, useEffect, useState } from "react";
+import {
+  startTransition,
+  useActionState,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { PlantFormState } from "./types";
@@ -89,13 +101,19 @@ const defaultValues: PlantForm = {
 
 interface PlantFormProps {
   existingPlant?: PlantWithAbsolutePhotoUrls | null;
+  userId: string;
 }
 
-const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
+const PlantDetailsForm = ({ existingPlant, userId }: PlantFormProps) => {
   const router = useRouter();
   const isEditing = !!existingPlant;
   const [activeTab, setActiveTab] = useState("Overview");
   const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [photoErrors, setPhotoErrors] = useState<string[]>([]);
+  // Storage paths of photos already uploaded in this session, so a retried
+  // submit does not upload the same file twice.
+  const uploadedPhotoPaths = useRef(new Map<File, string>());
 
   const today = new Date();
   const endMonth = new Date(
@@ -108,7 +126,19 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
     ? updatePlant.bind(null, existingPlant.id)
     : addPlant;
 
-  const [state, formAction, isPending] = useActionState(action, initialState);
+  const [actionState, formAction, isPending] = useActionState(
+    action,
+    initialState
+  );
+
+  // Photo problems found in the browser are shown the same way as the
+  // validation errors returned by the server action.
+  const state: PlantFormState =
+    photoErrors.length > 0
+      ? { ...actionState, errors: { ...actionState.errors, photos: photoErrors } }
+      : actionState;
+
+  const isBusy = isUploading || isPending;
 
   const form = useForm<PlantForm>({ defaultValues });
   const { reset, formState } = form;
@@ -167,12 +197,86 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
 
   useEffect(() => {
     if (tabsWithErrors.length > 0) setActiveTab(tabsWithErrors[0]);
-  }, [state.errors]);
+  }, [actionState.errors]);
 
-  const onSubmit: SubmitHandler<PlantForm> = (data) => {
+  // Sends new photos straight from the browser to storage and returns the
+  // storage paths of all photos, or null when a file fails validation.
+  const uploadNewPhotos = async (
+    photos: PlantForm["photos"]
+  ): Promise<string[] | null> => {
+    const files = photos.filter((photo) => photo instanceof File);
+
+    const errors = [
+      ...files
+        .filter(
+          (file) =>
+            !file.type.startsWith("image/") ||
+            !ALLOWED_PHOTO_EXTENSIONS.test(file.name)
+        )
+        .map((file) => `Unsupported format: ${file.name}`),
+      ...files
+        .filter((file) => file.size > MAX_PHOTO_SIZE_BYTES)
+        .map((file) => `File is too large (max 10 MB): ${file.name}`),
+    ];
+
+    setPhotoErrors(errors);
+
+    if (errors.length > 0) {
+      setActiveTab(TabEnum.Photos);
+
+      return null;
+    }
+
+    const paths: string[] = [];
+
+    for (const photo of photos) {
+      if (typeof photo === "string") {
+        paths.push(photo);
+
+        continue;
+      }
+
+      let path = uploadedPhotoPaths.current.get(photo);
+
+      if (!path) {
+        const blob = await upload(buildPhotoPath(userId, photo.name), photo, {
+          access: "private",
+          handleUploadUrl: "/api/blob/upload",
+        });
+
+        path = blob.pathname;
+        uploadedPhotoPaths.current.set(photo, path);
+      }
+
+      paths.push(path);
+    }
+
+    return paths;
+  };
+
+  const onSubmit: SubmitHandler<PlantForm> = async (data) => {
+    let photoPaths: string[] | null;
+
+    setIsUploading(true);
+
+    try {
+      photoPaths = await uploadNewPhotos(data.photos);
+    } catch (error) {
+      console.error("Photo upload failed:", error);
+      toast.error("Failed to upload photos. Please try again.");
+
+      return;
+    } finally {
+      setIsUploading(false);
+    }
+
+    if (!photoPaths) {
+      return;
+    }
+
     const formData = new FormData();
 
-    Object.entries(data).forEach(([key, value]) => {
+    Object.entries({ ...data, photos: photoPaths }).forEach(([key, value]) => {
       if (value instanceof Date) {
         formData.append(key, getLocalDateString(value));
 
@@ -200,18 +304,18 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
   };
 
   useEffect(() => {
-    if (!state.message) {
+    if (!actionState.message) {
       return;
     }
 
-    if (state.success) {
-      toast.success(state.message);
+    if (actionState.success) {
+      toast.success(actionState.message);
 
-      router.push(`/my-collection/${state.id}`);
+      router.push(`/my-collection/${actionState.id}`);
     } else {
-      toast.error(state?.message || "Something went wrong");
+      toast.error(actionState?.message || "Something went wrong");
     }
-  }, [state.message]);
+  }, [actionState.message]);
 
   const handleCancelClick = () => {
     if (isDirty) {
@@ -341,10 +445,11 @@ const PlantDetailsForm = ({ existingPlant }: PlantFormProps) => {
               </Button>
               <Button
                 type="submit"
+                disabled={isBusy}
                 className="bg-emerald-600 hover:bg-emerald-700 text-white"
               >
                 <Leaf className="h-4 w-4" />
-                {isPending
+                {isBusy
                   ? isEditing
                     ? "Saving..."
                     : "Adding..."

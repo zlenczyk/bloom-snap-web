@@ -13,6 +13,7 @@ This is a **private project** and requires environment variables provided by the
 - **Frontend:** React 19, Tailwind CSS, shadcn/ui, Lucide React Icons
 - **Authentication:** Auth.js
 - **Database:** PostgreSQL (Neon) with Prisma ORM
+- **File storage:** Vercel Blob (private store, plant photos)
 - **Forms & Validation:** React Hook Form + Zod
 
 ---
@@ -74,10 +75,10 @@ Add rest of the variables into new file and contact the project owner to obtain 
 AUTH_GOOGLE_ID=
 AUTH_GOOGLE_SECRET=
 AUTH_SECRET=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-NEXT_PUBLIC_SUPABASE_URL=
-SUPABASE_SERVICE_ROLE_KEY=
+BLOB_READ_WRITE_TOKEN=
 ```
+
+`BLOB_READ_WRITE_TOKEN` is the read-write token of a **private** Vercel Blob store (plant photos).
 
 ⚠️ Do not commit `.env` files to version control.
 
@@ -105,6 +106,12 @@ If the database is empty (first run), Prisma will apply the existing migrations 
 npm run migrate
 # or
 npx prisma migrate dev
+```
+
+For a production database, apply the existing migrations without creating new ones:
+
+```bash
+npx prisma migrate deploy
 ```
 
 ### ⚠️ During Development

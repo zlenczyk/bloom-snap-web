@@ -83,7 +83,7 @@ export function DeleteEventButton({
           <DialogHeader>
             <DialogTitle>Are you sure?</DialogTitle>
             <DialogDescription>
-              🗑️ You're about to remove a {isFuture ? "future" : "past"} event{" "}
+              🗑️ You&apos;re about to remove a {isFuture ? "future" : "past"} event{" "}
               <span className="font-medium text-zinc-800">{eventTitle}</span>{" "}
               {isFuture ? "planned for" : "from"}{" "}
               <span className="font-medium text-zinc-800">

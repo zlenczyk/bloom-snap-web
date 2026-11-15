@@ -62,7 +62,11 @@ const updateTimelineEvent = async (
     const validData = validationResult.data;
 
     const event = await db.timelineEvent.update({
-      where: { plantId: plantId, id: eventId },
+      where: {
+        id: eventId,
+        plantId: plantId,
+        plant: { userId: session.user.id },
+      },
       data: {
         title: validData.title,
         description: validData.description,

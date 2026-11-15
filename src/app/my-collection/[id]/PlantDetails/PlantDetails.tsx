@@ -159,11 +159,11 @@ const PlantDetails = ({ plant }: PlantProps) => {
           <DialogHeader>
             <DialogTitle>Are you sure?</DialogTitle>
             <DialogDescription>
-              🗑️ You're about to remove{" "}
+              🗑️ You&apos;re about to remove{" "}
               <span className="font-medium text-zinc-800">
                 {plant.commonName}
               </span>{" "}
-              from your collection. Once it's gone, there's no way to bring it
+              from your collection. Once it&apos;s gone, there&apos;s no way to bring it
               back. Are you ready to say goodbye? 💔
             </DialogDescription>
           </DialogHeader>
